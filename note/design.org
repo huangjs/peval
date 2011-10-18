@@ -16,7 +16,7 @@
 
    e.g. transformation rules
    - special transformation cases
-   - no transformation cases
+   - special non-transformation cases
    - general cases
 
    e.g. passes composition
@@ -25,9 +25,15 @@
 
    e.g. side-effect
 
+   - incompatible forms
+
 ** easy debugging
 
    able to check result for each passes
 
 ** avoid code bloating
+
+* design
+
+** replace variables as placeholder
 
