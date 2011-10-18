@@ -1,0 +1,23 @@
+pristine:0000000806-7349e3a5f40dd6a2041298621b691cf3101f25d1f0b10392d69c030f6b783633
+Starting with inventory:
+0000000295-402551c6cede28bbd60da039397906ece0e5f2fa0d43a0c72fdedbc6d5ef1a02
+[TAG 2011-01-31
+attila.lendvai@gmail.com**20110131003336
+ Ignore-this: 5d0d670f41763c336e6bf9b05045152a
+] 
+hash: 0000000222-6033fcd6df7d730b3e78c771456b499b6a404bd77d852710bac161bd42f75174
+[follow hdws/hdp split re doc
+attila.lendvai@gmail.com**20110131015536
+ Ignore-this: 42d6f6ab97feb32b14be86b5eccb9210
+] 
+hash: 0000000561-e7affeb26e6272a199c344869185becc1165753fad7ca7cfdda149e7acabdbc5
+[fix -test.asd: add :hu.dwim.util.compact-class dependency
+attila.lendvai@gmail.com**20110906095011
+ Ignore-this: 35139e0ce240d211d67b3ca1d0cab4a3
+] 
+hash: 0000000334-80fc04aafd125dd44de837604b4a70c979bdfb0cadd6226c78299c12ad1b92da
+[really fix -test.asd this time
+attila.lendvai@gmail.com**20110910211111
+ Ignore-this: 3223464b9f629d80a9e35209bcf2179a
+] 
+hash: 0000000241-fb99bc69e9c86f8a50d6010a791171d455a144970ee283b0bee918d1e70958b4

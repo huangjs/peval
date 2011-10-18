@@ -1,0 +1,10 @@
+* save function definitions
+
+Currently, ClozureCL will only save function body when 
+
+- (setq ccl:*save-definitions* t)
+
+then 
+
+(function-lambda-expression ...) will return the body
+

@@ -1,0 +1,33 @@
+* goal
+
+** extensibility
+
+   add new passes easily
+
+** abstraction
+
+   combine multiple passes to a new pass
+
+** composable
+
+   each pass should produce valid programs
+   
+** data-driven
+
+   e.g. transformation rules
+   - special transformation cases
+   - no transformation cases
+   - general cases
+
+   e.g. passes composition
+
+** warn possible problems of transformation 
+
+   e.g. side-effect
+
+** easy debugging
+
+   able to check result for each passes
+
+** avoid code bloating
+

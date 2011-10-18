@@ -1,0 +1,71 @@
+* general goal
+
+** write general code, achieve specialized efficiency
+
+** specialize on partial input data
+
+** transform programs using domain knowledge
+
+   e.g. algebra simplifier
+
+** instrument code
+
+   profiling, accounting, auto-parallelization, etc.
+
+* optimizations
+
+** constant unfolding
+
+** copy propagation
+
+** alpha, beta, eta reduction for lambdas
+
+** selective loop unroll
+
+** inlining (when appropriate)
+
+** dead and useless code elimination
+
+** common sub-expression elimination
+
+** remove data structure manipulations
+
+** remove temporary storage
+
+** automatic type declaration (based on profiling)
+
+** pipeline optimization (scheduler)
+
+   all quantities as explicit scalars expose all instruction level
+   parallelism
+
+** domain specific optimizations
+
+   e.g. 
+   topological sort of dag in FFTW
+   algebraic simplifier
+   
+
+* applications
+
+** numerical integration
+
+(define fancy-integrator
+  (quality-control-strategy
+    (make-runge-kutta-integrator
+      (particle-force gravitation))))
+
+** circuit simulation
+
+* situations when PE doesn't work well
+
+When computation is data-dependent.
+
+However, you can always transform the program.
+
+e.g.
+
+- linear programming
+
+  pivoting depends on the data
+

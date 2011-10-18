@@ -1,0 +1,14 @@
+* save function definitions
+
+Currently, SBCL will only save function body when 
+
+- (setq sb-ext:*evaluator-mode* :interpret)
+
+then 
+
+(function-lambda-expression ...) will return the body
+
+- declare function inline
+
+(function-lambda-expression ...) will return lambda-with-lexenv form
+
