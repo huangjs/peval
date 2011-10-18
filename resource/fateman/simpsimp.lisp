@@ -1,7 +1,5 @@
 ;;;-*- Mode: Common-Lisp; Package: ga; Base: 10 -*-
-(provide "simpsimp")
-(in-package :ga)
-(declaim (optimize (speed 3)(safety 0)))
+;; (declaim (optimize (speed 3)(safety 0)))
 
 ;; A small conservative simplifier that makes only minor
 ;; local changes at minor local costs. See h:/lisp/simpsimp.cl for

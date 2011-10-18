@@ -19,7 +19,7 @@
   ;; but exceptions cropped up.
 
   (cond ((or (and (numberp x) (< x 0));; like -3  ->  (-3)
-	     (ratiop x));; like 1/2   -> (1/2)
+	     (sb-int:ratiop x));; like 1/2   -> (1/2)
 	 (prinsc "(")
 	 (prinsc x)
 	 (prinsc ")"))
@@ -130,7 +130,7 @@
       (^ EXPT)
 ))
 
-(eval-when (load) ;;set up the precedences 
+(eval-when (:load-toplevel) ;;set up the precedences 
   (let ((count 0))
     (dolist (i preclist)
       (mapc #'(lambda (r) (setf (get r 'prec) count)) i)

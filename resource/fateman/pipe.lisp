@@ -39,7 +39,7 @@
 (defun integers-pipe (&optional (start 0) end) 
   "pipe of integers starting from start"
   (if (or (null end) (<= start end))
-      (make-pipe start (integers (+ start 1) end))nil))
+      (make-pipe start (integers-pipe (+ start 1) end))nil))
 
 (defun filter-pipe(pipe pred)
   (cond((empty-pipe pipe) pipe)
