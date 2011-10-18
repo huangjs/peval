@@ -110,8 +110,8 @@
 
 ;;;;;;;;;;;; the symbolic version
 (load "simpsimp") ;; needs symbolic simplifier
-(defparameter inf #.EXCL::*INFINITY-DOUBLE*)
-(defparameter minf #.EXCL::*NEGATIVE-INFINITY-DOUBLE*)
+(defparameter inf #.double-float-positive-infinity)
+(defparameter minf #.double-float-negative-infinity)
 
 (defun pss-deriv (s)(tail-pipe (map-pipe #'*s s (integers-pipe 0))))
 (defun pss-integ (s) (map-pipe #'/s s (integers-pipe 1))) ;; leaves off the constant though
