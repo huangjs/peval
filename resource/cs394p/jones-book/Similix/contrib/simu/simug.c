@@ -1,0 +1,611 @@
+
+/* simug.c --- The called back functions for the Exit and Help buttons. */
+
+#include "simudefs.h"
+#include "simutype.h"
+#include "simuextv.h"
+#include "simuextf.h"
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   Print the string (exit) when the user actives the menu item Exit, causing
+   the Similix process to exit before SIMU.
+*/
+
+void ExitSimu()
+{
+   char tmpstr[TEMPSTRINGLEN];
+   Position x, y;
+   Dimension width, height;
+   Cardinal n = 0;
+   Arg args[5];
+
+
+   if (shellFlag == True)
+      XtDestroyWidget(dialogShell);
+   dialogShell = CreateShell();
+
+   XtSetArg(dialog0Args[0], XtNlabel, "Quit the Simu system?");
+
+   dialog0 = XtCreateManagedWidget("dialog0", dialogWidgetClass, dialogShell,
+	        		   dialog0Args, XtNumber(dialog0Args));
+   XtVaSetValues(dialog0, XtNfont, font1Struct, NULL);
+
+   XawDialogAddButton(dialog0, "OK", ExitSimuOK, NULL); 
+   XawDialogAddButton(dialog0, "Cancel", CancelDialog, dialog0);
+   XawDialogAddButton(dialog0, "Help", ExitSimuHelp, NULL); 
+
+   XtRealizeWidget(dialogShell);
+   Popup(dialogShell, XtGrabNone);
+/*   XtPopup(dialogShell, XtGrabNone); */
+   shellFlag = True;
+}
+
+/*****************************************************************************/
+
+/*
+   The callback function of OK in the dialog created in ExitSimu.
+*/
+
+void ExitSimuOK(w, client_data, call_data)
+Widget w;
+XtPointer client_data;
+XtPointer call_data;
+{
+   Widget ww = (Widget) client_data;
+   char tmpstr[TEMPSTRINGLEN];
+   FILE *file_ptr;
+
+
+   file_ptr = fopen(TEMPFILENAME, "r");
+   if (file_ptr != NULL)
+   {
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, TEMPFILENAME);
+      system(tmpstr);
+   }
+   fclose(file_ptr);
+   file_ptr = fopen(TEMPFILENAME1, "r");
+   if (file_ptr != NULL)
+   {
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, TEMPFILENAME1);
+      system(tmpstr);
+   }
+   fclose(file_ptr);
+   file_ptr = fopen(TEMPFILENAME2, "r");
+   if (file_ptr != NULL)
+   {
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, TEMPFILENAME2);
+      system(tmpstr);
+   }
+   fclose(file_ptr);
+
+   XtDestroyWidget(dialog0);
+   XtDestroyWidget(XtParent(dialog0));
+   dialog0 = NULL;
+   shellFlag = False;
+
+   /* Tell Similix to exit. */
+
+   SendToSimilix("(exit)");
+   sleep(SIMUTWO);
+   XFreeFont(XtDisplay(toplevel), font0Struct);
+   XFreeFont(XtDisplay(toplevel), font1Struct);
+   XFreeFont(XtDisplay(toplevel), font2Struct);
+
+   exit(0);
+}
+
+/*****************************************************************************/
+
+/*
+   The callback function of Help in the dialog created in ExitSimu.
+*/
+
+void ExitSimuHelp()
+{
+   WholeHelp(EXITSIMUHELP);
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   The callback function of the Help button created in CreateInterface.
+   (simu0.c)
+*/
+
+void DisplayHelpManual()
+{
+
+   textglobals_context = XStringToContext(SIMUNAME);
+
+   (void) CreateDisplay(NULL);      /* in simug1.c */
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   This function is used to display an example file "minfil". (not used)
+*/
+
+void DisplayHelperManualTest()
+{
+   char tmpstr[TEMPSTRINGLEN];
+   FILE *file_ptr;
+   ShowpageGlobals * show_globals;	/* The psuedo global structure. */
+
+
+   file_ptr = fopen("minfil", "r");
+   if (file_ptr == NULL)
+   {
+      strcpy(tmpstr, "Warning! No such file or directory: ");
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+   fclose(file_ptr);
+
+   GenerateNewFile("minfil", TEMPFILENAME1);
+
+   strcpy(tmpstr, "nroff -ms ");
+   strcat(tmpstr, TEMPFILENAME1);
+   strcat(tmpstr, " > ");
+   strcat(tmpstr, TEMPFILENAME);
+   system(tmpstr);
+
+   file_ptr = fopen(TEMPFILENAME, "r");
+   strcpy(tmpstr, "rm ");
+   strcat(tmpstr, TEMPFILENAME1);
+   system(tmpstr);
+   strcpy(tmpstr, "rm ");
+   strcat(tmpstr, TEMPFILENAME);
+   system(tmpstr);
+   if (file_ptr == NULL)
+   {
+      strcpy(tmpstr, "Warning! File reading error:");
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+
+   textglobals_context = XStringToContext(SIMUNAME);
+
+   show_globals = InitPsuedoGlobals();
+   CreateDisplayWidget(show_globals, SIMUNAME);
+   ReadFile(show_globals, file_ptr);
+   strcpy(tmpstr, "The annotated program is: ");
+   strcat(tmpstr, ANNNAME);
+   strcpy(show_globals->showpage_title, tmpstr);
+   ChangeLabel(show_globals->label, tmpstr);
+   XtManageChild(show_globals->showpage);
+   StartDisplay(show_globals);
+   fclose(file_ptr);
+}
+
+/***************************************************************************/
+
+/*
+   Generate a new nroff file from the preprocessed program generated by
+   Similix.
+*/
+
+GenerateNewFile(filename0, filename1)
+char *filename0,   /* source preprocessed program */
+     *filename1;   /* target nroff file */
+{
+   FILE *file_ptr0, *file_ptr1;
+   char c, c1, c2, c3;
+
+
+   file_ptr0 = fopen(filename0, "r");
+   if (file_ptr0 == NULL)
+   {
+      fclose(file_ptr0);
+      return(-1);
+   }
+
+   c1 = fgetc(file_ptr0);
+   if (c1 == '.')
+   {
+      fclose(file_ptr0);
+      return(False);
+   }
+
+   file_ptr1 = fopen(filename1, "w");
+   if (file_ptr1 == NULL)
+   {
+      fclose(file_ptr1);
+      fclose(file_ptr0);
+      return(-1);
+   }
+
+   fputc('.', file_ptr1);
+   fputc('n', file_ptr1);
+   fputc('r', file_ptr1);
+   fputc(' ', file_ptr1);
+   fputc('H', file_ptr1);
+   fputc('M', file_ptr1);
+   fputc(' ', file_ptr1);
+   fputc('3', file_ptr1);
+   fputc('.', file_ptr1);
+   fputc('5', file_ptr1);
+   fputc('p', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('n', file_ptr1);
+   fputc('r', file_ptr1);
+   fputc(' ', file_ptr1);
+   fputc('F', file_ptr1);
+   fputc('M', file_ptr1);
+   fputc(' ', file_ptr1);
+   fputc('0', file_ptr1); /* 4.0p */
+   fputc('.', file_ptr1);
+   fputc('0', file_ptr1);
+   fputc('p', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('n', file_ptr1);
+   fputc('a', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('n', file_ptr1);
+   fputc('f', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('N', file_ptr1);
+   fputc('D', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('d', file_ptr1);
+   fputc('s', file_ptr1);
+   fputc(' ', file_ptr1);
+   fputc('C', file_ptr1);
+   fputc('H', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   fputc('.', file_ptr1);
+   fputc('p', file_ptr1);
+   fputc('o', file_ptr1);
+   fputc('+', file_ptr1);
+   fputc('0', file_ptr1);
+   fputc('\n', file_ptr1);
+
+   while (c1 != EOF)
+   {
+      if (c1 == '/')
+      {
+         c2 = fgetc(file_ptr0);
+         c3 = fgetc(file_ptr0);
+         if ((c2 == '/') && (c3 == '/'))
+	 {
+            fputc('\\', file_ptr1);
+            fputc('f', file_ptr1);
+            fputc('I', file_ptr1);
+	 }
+         else
+	 {
+            fputc(c1, file_ptr1);
+            fputc(c2, file_ptr1);
+            fputc(c3, file_ptr1);
+	 }
+      }
+      else if (c1 == '^')
+      {
+         c2 = fgetc(file_ptr0);
+         c3 = fgetc(file_ptr0);
+         if ((c2 == '^') && (c3 == '^'))
+	 {
+            fputc('\\', file_ptr1);
+            fputc('f', file_ptr1);
+            fputc('P', file_ptr1);
+	 }
+         else
+	 {
+            fputc(c1, file_ptr1);
+            fputc(c2, file_ptr1);
+            fputc(c3, file_ptr1);
+	 }
+      }
+      else
+         fputc(c1, file_ptr1);
+
+      c1 = fgetc(file_ptr0);
+   }
+   fclose(file_ptr0);
+   fclose(file_ptr1);
+   return(True);
+}
+
+/*****************************************************************************/
+
+/*
+   In the showing window, display the preprocessed program (actually a nroff
+   file).
+*/
+
+ShowAnnProg0()
+{
+   char tmpstr[TEMPSTRINGLEN];
+   FILE *file_ptr;
+   ShowpageGlobals * show_globals;	/* The psuedo global structure. */
+
+
+   file_ptr = fopen(ANNNAME, "r");
+
+   if (file_ptr == NULL)
+   {
+      strcpy(tmpstr, "Warning! No such file or directory: ");
+      strcat(tmpstr, ANNNAME);
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+   fclose(file_ptr);
+
+   if (GenerateNewFile(ANNNAME, TEMPFILENAME1) == True)
+    {
+      strcpy(tmpstr, "nroff -ms ");
+      strcat(tmpstr, TEMPFILENAME1);
+      strcat(tmpstr, " > ");
+      strcat(tmpstr, TEMPFILENAME);
+      system(tmpstr);
+
+      strcpy(tmpstr, "cp ");
+      strcat(tmpstr, TEMPFILENAME1);
+      strcat(tmpstr, " ");
+      strcat(tmpstr, ANNNAME);
+      system(tmpstr);
+
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, TEMPFILENAME1);
+      system(tmpstr);
+   }
+   else if (GenerateNewFile(ANNNAME, TEMPFILENAME1) == False)
+   {
+      strcpy(tmpstr, "nroff -ms ");
+      strcat(tmpstr, ANNNAME);
+      strcat(tmpstr, " > ");
+      strcat(tmpstr, TEMPFILENAME);
+      system(tmpstr);
+   }
+
+   file_ptr = fopen(TEMPFILENAME, "r");
+   if (file_ptr == NULL)
+   {
+      strcpy(tmpstr, "Warning! File reading error: ");
+      strcat(tmpstr, ANNNAME);
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+   else
+   {
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, TEMPFILENAME);
+      system(tmpstr);
+
+      textglobals_context = XStringToContext(SIMUNAME);
+
+      show_globals = InitPsuedoGlobals();
+      strcpy(tmpstr, TITLESHOW);
+      strcat(tmpstr, ANNNAME);
+      CreateDisplayWidget(show_globals, tmpstr);
+      ReadFile(show_globals, file_ptr);
+      strcpy(tmpstr, "The annotated program is: ");
+      strcat(tmpstr, ANNNAME);
+      strcpy(show_globals->showpage_title, tmpstr);
+      ChangeLabel(show_globals->label, tmpstr);
+      XtManageChild(show_globals->showpage);
+      StartDisplay(show_globals);
+      fclose(file_ptr);
+   }
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   In the showing window, display the residual program.
+*/
+
+ShowResProg0()
+{
+   char tmpstr[TEMPSTRINGLEN];
+   FILE *file_ptr;
+   ShowpageGlobals * show_globals;	/* The psuedo global structure. */
+
+
+   file_ptr = fopen(RESNAME, "r");
+
+   if (file_ptr == NULL) 
+   {
+      strcpy(tmpstr, "Warning! No such file or directory: ");
+      strcat(tmpstr, RESNAME);
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+
+   textglobals_context = XStringToContext(SIMUNAME);
+
+   show_globals = InitPsuedoGlobals();
+   strcpy(tmpstr, TITLESHOW);
+   strcat(tmpstr, RESNAME);
+   CreateDisplayWidget(show_globals, tmpstr);
+   ReadFile(show_globals, file_ptr);
+   strcpy(tmpstr, "The residual program is: ");
+   strcat(tmpstr, RESNAME);
+   strcpy(show_globals->showpage_title, tmpstr);
+   ChangeLabel(show_globals->label, tmpstr);
+   XtManageChild(show_globals->showpage);
+   StartDisplay(show_globals);
+   fclose(file_ptr);
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   Only Boldface font in a nroff file can be printed as boldface by the
+   laserprinter, but on the screen only Italic font can be shown as boldface.
+   So when using the laserprinter, we need to re-generate a tempory file in 
+   which the Italic font is replaced by the Boldface font.
+*/
+
+GenerateFileForLaserPrn(filename0, filename1)
+char *filename0, *filename1;
+{
+   FILE *file_ptr0, *file_ptr1;
+   char c, c1, c2, c3;
+   char tmpstr[TEMPSTRINGLEN];
+
+
+   file_ptr0 = fopen(filename0, "r");
+   file_ptr1 = fopen(filename1, "r");
+
+   if (file_ptr1 != NULL)
+   {
+      strcpy(tmpstr, "rm ");
+      strcat(tmpstr, filename1);
+      system(tmpstr);
+   }
+   fclose(file_ptr1);
+
+   file_ptr1 = fopen(filename1, "w");
+
+   if ((file_ptr0 == NULL) || (file_ptr1 == NULL))
+      return;
+
+   c1 = fgetc(file_ptr0);
+   while (c1 != EOF)
+   {
+      if (c1 == '\\')
+      {
+         c2 = fgetc(file_ptr0);
+         c3 = fgetc(file_ptr0);
+         if ((c2 == 'f') && (c3 == 'I'))
+	 {
+            fputc('\\', file_ptr1);
+            fputc('f', file_ptr1);
+            fputc('B', file_ptr1);
+	 }
+         else
+	 {
+            fputc(c1, file_ptr1);
+            fputc(c2, file_ptr1);
+            fputc(c3, file_ptr1);
+	 }
+      }
+      else
+         fputc(c1, file_ptr1);
+
+      c1 = fgetc(file_ptr0);
+   }
+   fclose(file_ptr0);
+   fclose(file_ptr1);
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   (not used)
+*/
+
+GenerateFileAfterLaserPrn(filename0, filename1)
+char *filename0, *filename1;
+{
+   FILE *file_ptr0, *file_ptr1;
+   char c, c1, c2, c3;
+
+
+   file_ptr0 = fopen(filename0, "r");
+   file_ptr1 = fopen(filename1, "w");
+
+   if ((file_ptr0 == NULL) || (file_ptr1 == NULL))
+      return;
+
+   c1 = fgetc(file_ptr0);
+   while (c1 != EOF)
+   {
+      if (c1 == '\\')
+      {
+         c2 = fgetc(file_ptr0);
+         c3 = fgetc(file_ptr0);
+         if ((c2 == 'f') && (c3 == 'B'))
+	 {
+            fputc('\\', file_ptr1);
+            fputc('f', file_ptr1);
+            fputc('I', file_ptr1);
+	 }
+         else
+	 {
+            fputc(c1, file_ptr1);
+            fputc(c2, file_ptr1);
+            fputc(c3, file_ptr1);
+	 }
+      }
+      else
+         fputc(c1, file_ptr1);
+
+      c1 = fgetc(file_ptr0);
+   }
+   fclose(file_ptr0);
+   fclose(file_ptr1);
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+/*
+   In the showing window, display the compiler program.
+*/
+
+ShowComProg0()
+{
+   char tmpstr[TEMPSTRINGLEN];
+   FILE *file_ptr;
+   ShowpageGlobals * show_globals;	/* The psuedo global structure. */
+
+
+   file_ptr = fopen(COMNAME, "r");
+
+   if (file_ptr == NULL) 
+   {
+      strcpy(tmpstr, "Warning! No such file or directory: ");
+      strcat(tmpstr, COMNAME);
+      WholeHelp(tmpstr);
+      fclose(file_ptr);
+      return;
+   }
+
+   textglobals_context = XStringToContext(SIMUNAME);
+
+   show_globals = InitPsuedoGlobals();
+   strcpy(tmpstr, TITLESHOW);
+   strcat(tmpstr, COMNAME);
+   CreateDisplayWidget(show_globals, tmpstr);
+   ReadFile(show_globals, file_ptr);
+   strcpy(tmpstr, "The compiler program is: ");
+   strcat(tmpstr, COMNAME);
+   strcpy(show_globals->showpage_title, tmpstr);
+   ChangeLabel(show_globals->label, tmpstr);
+   XtManageChild(show_globals->showpage);
+   StartDisplay(show_globals);
+   fclose(file_ptr);
+}
+
+/*****************************************************************************/
+/*****************************************************************************/
+

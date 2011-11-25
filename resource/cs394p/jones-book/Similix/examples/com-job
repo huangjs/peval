@@ -1,0 +1,52 @@
+; Similix job for running Lazy combinator interpreter example
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(load "../system/sim-scm.scm") ; (load "../system/sim-chez.so")
+
+(load "com-defs.sim")
+
+(loads "com-int.sim")
+
+
+(define evens (com-parse "evens.com"))
+; result = L int (source,data):
+(define result (ntimes (lambda () (_P evens 'goal 20)) 10))
+
+; target = L mix (int,source) (1 times):
+(similix '_P (list evens 'goal '***) "com-int.sim" 1 "evens.sim")
+(define com **Similix-preprocessed-program**)
+(define target (residual-program))
+(load "evens.sim")
+
+; new-result = L target data:
+(define new-result (ntimes (lambda () (_P-0 20)) 10))
+; result = new-result?:
+(equal? result new-result)
+
+; comp = L cogen int:
+(cogen '_P '(s s d) "com-int.sim" 1 "com-cmp.sim")
+(define com-cmp (current-compiler))
+(compile-sim-file "com-cmp.sim")
+
+; new-target = L comp source (1 times):
+(define new-target
+  (comp (string-append "com-cmp" **Similix-compiled-sim-suffix**)
+	(list evens 'goal '***) 1))
+; target = new-target?:
+(equal? target new-target)
+
+; new-comp = L mix (mix,int):
+(define new-com-cmp
+  (similix '_sim-specialize
+	   (list '_P '*** com '***)
+	   (string-append **Similix-path** "spec.sim")))
+; comp = new-comp?:
+(equal? com-cmp new-com-cmp)
+
+(exit)
+
+;-----------------------------------------------------------------------------

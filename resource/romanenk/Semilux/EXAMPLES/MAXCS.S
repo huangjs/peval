@@ -1,0 +1,34 @@
+;; File: MAXCS.S
+
+;; This is an example program to be specialized.
+;; When given two sequences "lst1" and "lst2",
+;; the function "max-sublst" finds a maximum common
+;; subsequence of "lst1" and "lst2".
+
+;; Try SD-specializing it with respect to Z123.DAT.
+
+(loadt "scheme.adt")
+
+(define (max-sublst lst1 lst2)
+  (cond
+    ((null? lst1) '())
+    ((null? lst2) '())
+    (else
+      (with (( (x . u)  lst1 )
+             ( (y . v)  lst2 )
+             )
+            (if (equal? x y)
+                `(,x . ,(max-sublst u v))
+                (lst-max (max-sublst u lst2) (max-sublst lst1 v))
+                )))))
+
+(define (lst-max u v)
+  (if (lst>? u v) u v))
+
+(define (lst>? u v)
+  (cond
+    ((null? v) #t)
+    ((null? u) #f)
+    (else
+      (lst>? (cdr u) (cdr v)))
+    ))

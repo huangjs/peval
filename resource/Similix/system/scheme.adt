@@ -1,0 +1,245 @@
+; Similix standard primitive operators
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;------------------------------------------------------------------------------
+; This file contains definitions for the standard procedures handled by
+; Similix
+
+
+;------------------------------------------------------------------------------
+; Booleans:
+
+(defprim 1 not not)
+
+(defprim 1 boolean? boolean?)
+
+;-----------------------------------------------------------------------------
+; Equivalence:
+
+(defprim 2 equal? equal?)
+
+;------------------------------------------------------------------------------
+; Pairs:
+
+(defprim 1 pair? pair?)
+(defprim-tin 2 cons cons)
+(defprim 1 car car)
+(defprim 1 cdr cdr)
+(defprim 1 caar caar)
+(defprim 1 cdar cdar)
+(defprim 1 cadr cadr)
+(defprim 1 cddr cddr)
+(defprim 1 caaar caaar)
+(defprim 1 cdaar cdaar)
+(defprim 1 cadar cadar)
+(defprim 1 cddar cddar)
+(defprim 1 caadr caadr)
+(defprim 1 cdadr cdadr)
+(defprim 1 caddr caddr)
+(defprim 1 cdddr cdddr)
+(defprim 1 caaaar caaaar)
+(defprim 1 cdaaar cdaaar)
+(defprim 1 cadaar cadaar)
+(defprim 1 cddaar cddaar)
+(defprim 1 caadar caadar)
+(defprim 1 cdadar cdadar)
+(defprim 1 caddar caddar)
+(defprim 1 cdddar cdddar)
+(defprim 1 caaadr caaadr)
+(defprim 1 cdaadr cdaadr)
+(defprim 1 cadadr cadadr)
+(defprim 1 cddadr cddadr)
+(defprim 1 caaddr caaddr)
+(defprim 1 cdaddr cdaddr)
+(defprim 1 cadddr cadddr)
+(defprim 1 cddddr cddddr)
+
+(defprim 1 null? null?)
+(defprim 1 list? list?)
+(defprim-tin list list)
+(defprim 1 length length)
+(defprim-tin append append)
+(defprim 1 reverse reverse)
+(defprim 2 list-ref list-ref)
+
+(defprim 2 member member)
+(defprim 2 assoc assoc)
+
+;------------------------------------------------------------------------------
+; Symbols:
+
+(defprim 1 symbol? symbol?)
+(defprim 1 symbol->string symbol->string)
+(defprim 1 string->symbol string->symbol)
+
+;------------------------------------------------------------------------------
+; Numbers:
+
+(defprim 1 number? number?)
+(defprim 1 complex? complex?)
+(defprim 1 real? real?)
+(defprim 1 rational? rational?)
+(defprim 1 integer? integer?)
+
+(defprim 1 exact? exact?)
+(defprim 1 inexact? inexact?)
+
+(defprim = =)
+(defprim < <)
+(defprim > >)
+(defprim <= <=)
+(defprim >= >=)
+
+(defprim 1 zero? zero?)
+(defprim 1 positive? positive?)
+(defprim 1 negative? negative?)
+(defprim 1 odd? odd?)
+(defprim 1 even? even?)
+
+(defprim max max)
+(defprim min min)
+
+(defprim-tin + +)
+(defprim-tin * *)
+
+(defprim-tin - -)
+(defprim-tin / /)
+
+(defprim 1 abs abs)
+
+(defprim-tin 2 quotient quotient)
+(defprim-tin 2 remainder remainder)
+(defprim-tin 2 modulo modulo)
+
+(defprim 2 gcd gcd)
+(defprim-tin 2 lcm lcm)
+
+(defprim 1 floor floor)
+(defprim 1 ceiling ceiling)
+(defprim 1 truncate truncate)
+(defprim 1 round round)
+
+(defprim number->string number->string)
+(defprim string->number string->number)
+
+;------------------------------------------------------------------------------
+; Characters:
+
+(defprim 1 char? char?)
+
+(defprim 2 char=? char=?)
+(defprim 2 char<? char<?)
+(defprim 2 char>? char>?)
+(defprim 2 char<=? char<=?)
+(defprim 2 char>=? char>=?)
+
+(defprim 2 char-ci=? char-ci=?)
+(defprim 2 char-ci<? char-ci<?)
+(defprim 2 char-ci>? char-ci>?)
+(defprim 2 char-ci<=? char-ci<=?)
+(defprim 2 char-ci>=? char-ci>=?)
+
+(defprim 1 char-alphabetic? char-alphabetic?)
+(defprim 1 char-numeric? char-numeric?)
+(defprim 1 char-whitespace? char-whitespace?)
+(defprim 1 char-upper-case? char-upper-case?)
+(defprim 1 char-lower-case? char-lower-case?)
+
+(defprim 1 char->integer char->integer)
+(defprim 1 integer->char integer->char)
+
+(defprim 1 char-upcase char-upcase)
+(defprim 1 char-downcase char-downcase)
+
+;------------------------------------------------------------------------------
+; Strings:
+
+(defprim 1 string? string?)
+
+(defprim make-string make-string)
+(defprim string string)
+
+(defprim 1 string-length string-length)
+(defprim 2 string-ref string-ref)
+
+(defprim 2 string=? string=?)
+(defprim 2 string-ci=? string-ci=?)
+
+(defprim 2 string<? string<?)
+(defprim 2 string>? string>?)
+(defprim 2 string<=? string<=?)
+(defprim 2 string>=? string>=?)
+(defprim 2 string-ci<? string-ci<?)
+(defprim 2 string-ci>? string-ci>?)
+(defprim 2 string-ci<=? string-ci<=?)
+(defprim 2 string-ci>=? string-ci>=?)
+
+(defprim 3 substring substring)
+
+(defprim-tin string-append string-append)
+
+(defprim 1 string->list string->list)
+(defprim 1 list->string list->string)
+
+;------------------------------------------------------------------------------
+; Vectors:
+
+(defprim 1 vector? vector?)
+
+(defprim make-vector make-vector)
+(defprim vector vector)
+(defprim 1 vector-length vector-length)
+(defprim 2 vector-ref vector-ref)
+
+(defprim 1 vector->list vector->list)
+(defprim 1 list->vector list->vector)
+
+;------------------------------------------------------------------------------
+; Control features:
+
+(defprim-dynamic 1 procedure? procedure?)
+
+;------------------------------------------------------------------------------
+; Input and output:
+
+(defprim-opaque 2 call-with-input-file call-with-input-file)
+(defprim-opaque 2 call-with-output-file call-with-output-file)
+
+(defprim-opaque 1 input-port? input-port?)
+(defprim-opaque 1 output-port? output-port?)
+
+(defprim-opaque 0 current-input-port current-input-port)
+(defprim-opaque 0 current-output-port current-output-port)
+
+(defprim-opaque 1 open-input-file open-input-file)
+(defprim-opaque 1 open-output-file open-output-file)
+
+(defprim-opaque 1 close-input-port close-input-port)
+(defprim-opaque 1 close-output-port close-output-port)
+
+(defprim-opaque read read)
+(defprim-opaque read-char read-char)
+(defprim-opaque peek-char peek-char)
+
+(defprim-opaque 1 eof-object? eof-object?)
+
+(defprim-opaque write write)
+(defprim-opaque display display)
+(defprim-opaque newline newline)
+(defprim-opaque write-char write-char)
+
+
+;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+; Error:
+
+(defprim-abort _sim-error _sim-error)
+
+;------------------------------------------------------------------------------
+; Manual memoization insertion:
+
+(defprim-dynamic 1 _sim-memoize _sim-memoize)
+
+;------------------------------------------------------------------------------

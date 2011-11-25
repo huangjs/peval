@@ -1,0 +1,2112 @@
+
+
+
+
+
+
+                             _S_i_m_u _M_a_n_u_a_l
+
+                             Liping Zong
+
+                              June 1994
+
+
+                               Abstract
+
+Simu is a user interface system for Similix (a Self-Applicable Partial
+Evaluator for a Large Subset of Scheme). The whole procedure of
+partial evaluation using Similix is directed through Simu.  According
+to the Similix working process model, six main components (_S_y_s_t_e_m,
+_P_r_e_p_r_o_c_e_s_s, _S_p_e_c_i_a_l_i_z_e, _C_o_g_e_n, _C_o_m_p_i_l_e and _R_u_n) are made up
+by Simu. In addition, on-lined _H_e_l_p is also supported. Under the
+X-Window environment, the user interacs with Similix by means of a set
+of interactive tools in Simu, such as menus, dialog boxes, and so on.
+
+Content features for this manual include the installation of Simu, the
+session of getting started with Simu and the detailed description of
+Simu commands.
+
+_C_o_n_t_e_n_t_s
+
+_1  _I_N_S_T_A_L_L_A_T_I_O_N                                                         3
+   1.1 Installation guide  : : : : : : : : : : : : : : : : : : : : : :  3
+   1.2 System requirements : : : : : : : : : : : : : : : : : : : : : :  3
+   1.3 Installing Scm, Similix and Simu on the machines  : : : : : : :  4
+   1.4 Running Simu  : : : : : : : : : : : : : : : : : : : : : : : : :  4
+       1.4.1 Move *.scm files to Similix directory : : : : : : : : : :  4
+       1.4.2 New definitions in simudefs.h : : : : : : : : : : : : : :  4
+       1.4.3 Making Simu on the machine  : : : : : : : : : : : : : : :  5
+
+_2  _G_E_T_T_I_N_G _S_T_A_R_T_E_D                                                      5
+
+_3  _M_E_N_U _C_O_M_M_A_N_D_S                                                       13
+   3.1 System  : : : : : : : : : : : : : : : : : : : : : : : : : : : : 13
+       3.1.1 Reset Similix : : : : : : : : : : : : : : : : : : : : : : 13
+       3.1.2 Load sim-file : : : : : : : : : : : : : : : : : : : : : : 14
+       3.1.3 Load scheme-file  : : : : : : : : : : : : : : : : : : : : 14
+       3.1.4 Reload ADT-file : : : : : : : : : : : : : : : : : : : : : 14
+       3.1.5 File->list  : : : : : : : : : : : : : : : : : : : : : : : 14
+       3.1.6 File->item  : : : : : : : : : : : : : : : : : : : : : : : 14
+       3.1.7 Sim->scheme : : : : : : : : : : : : : : : : : : : : : : : 15
+       3.1.8 Compile sim-file  : : : : : : : : : : : : : : : : : : : : 15
+       3.1.9 Compile and load sim-file : : : : : : : : : : : : : : : : 15
+       3.1.10 Frontend program : : : : : : : : : : : : : : : : : : : : 15
+       3.1.11 Text editor  : : : : : : : : : : : : : : : : : : : : : : 15
+   3.2 Preprocess  : : : : : : : : : : : : : : : : : : : : : : : : : : 16
+       3.2.1 Preprocess program  : : : : : : : : : : : : : : : : : : : 16
+       3.2.2 Show current preprocessed program   : : : : : : : : : : : 16
+       3.2.3 Write preprocessed program  : : : : : : : : : : : : : : : 17
+       3.2.4 Show preprocessed program : : : : : : : : : : : : : : : : 17
+       3.2.5 Print preprocessed program  : : : : : : : : : : : : : : : 18
+
+
+
+
+
+
+
+
+
+                           - 2 -
+
+
+       3.2.6 Verbose preprocessing : : : : : : : : : : : : : : : : : : 18
+       3.2.7 Memoization : : : : : : : : : : : : : : : : : : : : : : : 18
+   3.3 Specialize  : : : : : : : : : : : : : : : : : : : : : : : : : : 18
+       3.3.1 Specialize program  : : : : : : : : : : : : : : : : : : : 19
+       3.3.2 Show current residual program : : : : : : : : : : : : : : 20
+       3.3.3 Write residual program  : : : : : : : : : : : : : : : : : 20
+       3.3.4 Show residual program : : : : : : : : : : : : : : : : : : 20
+       3.3.5 Print residual program  : : : : : : : : : : : : : : : : : 20
+       3.3.6 Post unfolding  : : : : : : : : : : : : : : : : : : : : : 20
+       3.3.7 Verbose specialization  : : : : : : : : : : : : : : : : : 21
+       3.3.8 Verbose preprocessing : : : : : : : : : : : : : : : : : : 21
+       3.3.9 Memoization : : : : : : : : : : : : : : : : : : : : : : : 21
+   3.4 Cogen : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 21
+       3.4.1 Compiler generation : : : : : : : : : : : : : : : : : : : 21
+       3.4.2 Show current compiler : : : : : : : : : : : : : : : : : : 22
+       3.4.3 Write compiler  : : : : : : : : : : : : : : : : : : : : : 23
+       3.4.4 Show compiler : : : : : : : : : : : : : : : : : : : : : : 23
+       3.4.5 Print compiler  : : : : : : : : : : : : : : : : : : : : : 23
+       3.4.6 Show current preprocessed program : : : : : : : : : : : : 23
+       3.4.7 Write preprocessed program  : : : : : : : : : : : : : : : 23
+       3.4.8 Show preprocessed program   : : : : : : : : : : : : : : : 23
+       3.4.9 Print preprocessed program  : : : : : : : : : : : : : : : 23
+       3.4.10 Post unfolding : : : : : : : : : : : : : : : : : : : : : 23
+       3.4.11 Verbose specialization : : : : : : : : : : : : : : : : : 23
+       3.4.12 Verbose preprocessing  : : : : : : : : : : : : : : : : : 24
+       3.4.13 Memoization  : : : : : : : : : : : : : : : : : : : : : : 24
+   3.5 Compile : : : : : : : : : : : : : : : : : : : : : : : : : : : : 24
+       3.5.1 Compile : : : : : : : : : : : : : : : : : : : : : : : : : 24
+       3.5.2 Show current residual program : : : : : : : : : : : : : : 25
+       3.5.3 Write residual program  : : : : : : : : : : : : : : : : : 25
+       3.5.4 Show residual program   : : : : : : : : : : : : : : : : : 25
+       3.5.5 Print residual program  : : : : : : : : : : : : : : : : : 25
+       3.5.6 Post unfolding  : : : : : : : : : : : : : : : : : : : : : 25
+       3.5.7 Verbose specialization  : : : : : : : : : : : : : : : : : 25
+   3.6 Run : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 25
+       3.6.1 Run original program  : : : : : : : : : : : : : : : : : : 25
+       3.6.2 Run residual program  : : : : : : : : : : : : : : : : : : 25
+
+_4  _B_U_T_T_O_N _C_O_M_M_A_N_D_S                                                     26
+   4.1 Help  : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 26
+   4.2 Exit  : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 26
+
+_5  _T_E_X_T _E_D_I_T_O_R _F_O_R _U_S_E_R_S                                               26
+   5.1 Search and replace  : : : : : : : : : : : : : : : : : : : : : : 28
+   5.2 File insertion  : : : : : : : : : : : : : : : : : : : : : : : : 29
+
+_6  _A_D_D_I_T_I_O_N_A_L _F_A_C_I_L_I_T_I_E_S                                               29
+   6.1 Command-line  in Simu   : : : : : : : : : : : : : : : : : : : : 29
+   6.2 Interrupting Similix  : : : : : : : : : : : : : : : : : : : : : 29
+   6.3 Helps at the running  : : : : : : : : : : : : : : : : : : : : : 30
+   6.4 Other key bindings  : : : : : : : : : : : : : : : : : : : : : : 30
+   6.5 Known problems in Simu  : : : : : : : : : : : : : : : : : : : : 30
+
+_7  _C_O_N_C_L_U_S_I_O_N                                                          31
+
+
+
+
+
+
+
+
+
+                           - 3 -
+
+
+_A_c_k_n_o_w_l_e_d_g_e_m_e_n_t
+
+Many people deserve thanks for their support, encouragement and
+advice. The special thanks are due to my supervisor, Neil D. Jones,
+for giving me the chance to research Simu, and for the invaluable
+guidance throughout. This opportunity allows me to work with the
+combination of efficient partial evaluator and advanced user interface
+technology. I am most grateful to Jesper Joergensen for many
+stimulating discussions and reading the initial Simu manual draft, to
+Morten Voetman Christiansen for the helpful suggestions and constant
+technical assistance, and to Robert Glueck for the careful review of
+Simu Manual and many constructive comments. I also would like to
+express my thanks to Anders Bondorf, Peter Holst Andersen, Ryo
+Nakashige and other members at DIKU, particularly Erik Froekjaer for
+their sincere support. I am greatly indebted to Evon Liu in SUN
+Microsystems at Boston for the technical instructions, to Maoshun Ding
+in the Institute of Software, Academia Sinica, for the encouragement,
+to Mian Tuo in the Institute of Computing Technology, Academia Sinica,
+for the help and understanding, to Dirk Dussart and Ton Hospel at the
+Department of Computer Science, Leuven University, Belgium, for the
+comments and advice. Finally, I wish to thank the whole TOPPS Group at
+DIKU for providing a fruitful and congenial environment, and thank the
+people who have shown their interest in the Simu system.
+
+
+_1   _I_N_S_T_A_L_L_A_T_I_O_N
+
+_1._1  _I_n_s_t_a_l_l_a_t_i_o_n _g_u_i_d_e
+
+The Simu system directory contains the following files and subdirectories:
+
+README:            this file
+imakefile:         imakefile for Simu system
+*.c:               Simu system C files
+*.h:               Simu system include files
+*.scm:             Similix showing files relating to Simu
+simu.manual.nroff: on-lined help file for Simu system
+ex-norma/:         example of running Simu
+                   --- an interpreter for a miniature flow chart language
+                      with only two variables
+ex-lam/:           example of running Simu
+                   --- an interpreter for lambda expressions
+getting-started:   an introduction session for running Simu
+simu.dvi:          Simu manual in TeX dvi-format
+
+_1._2  _S_y_s_t_e_m _r_e_q_u_i_r_e_m_e_n_t_s
+
+Simu is an organic whole which depends on the systems of Scheme (Scm
+or similar), Similix [Bon93] and X-Window (X Version 11, Release 5).
+Here, we need to emphasize that, Simu is supported by X-Window
+environment [Mik92], and running Simu has to be on the machine which
+is installed with Xlib [SG90 ,GS91 ], Xtoolkit Intrinsics [AS90 ,MAS91
+] and Athena Widget Set [Pet91], after installing Scm and Similix. In
+order to understand this manual, [Bon93] is required, as well as the
+
+
+
+
+
+
+
+
+
+                           - 4 -
+
+
+knowledge of Scheme.
+
+_1._3  _I_n_s_t_a_l_l_i_n_g _S_c_m, _S_i_m_i_l_i_x _a_n_d _S_i_m_u _o_n _t_h_e _m_a_c_h_i_n_e_s
+
+In order to run Simu, the user needs to install the systems of Scm,
+Similix and Simu one by one.  The installation for Scm, Similix and
+Simu systems follows the _R_E_A_D_M_E of Similix.
+
+As a whole, it is necessary for the user to record three locations,
+i.e. the location for Scm (Location1), the location for Similix
+(Location2) and the location for Simu (Location3). After installing
+Scm, Similix and Simu into your environment, keep these path names
+respectively.
+
+_1._4  _R_u_n_n_i_n_g _S_i_m_u
+
+_1._4._1 _M_o_v_e *._s_c_m _f_i_l_e_s _t_o _S_i_m_i_l_i_x _d_i_r_e_c_t_o_r_y
+
+The *._s_c_m files in the Simu system directory, i.e. _s_i_m_u._s_c_m,
+_a_b_s_s_y_n_0._s_c_m, _s_i_m_u_0._s_c_m, _a_b_s_s_y_n_1._s_c_m and _s_i_m_u_1._s_c_m, are all
+concerned with showing functions, and they will be loaded when running
+Simu.  Moreover, Simu supposes them to be together with all of the
+other Similix system files. Therefore the user should first move these
+*._s_c_m files to the Similix system directory (Location2).
+
+_1._4._2 _N_e_w _d_e_f_i_n_i_t_i_o_n_s _i_n _s_i_m_u_d_e_f_s._h
+
+The user needs to define the new names in Simu's include file
+_s_i_m_u_d_e_f_s._h (see the file), for those relating to the locations for
+Scm, Similix and Simu, so that all of the files relating to Scm (_s_c_m),
+the initialization file for Similix (_s_i_m-_s_c_m._s_c_m), the Similix showing
+files (*._s_c_m files originally in Simu directory), and the on-lined
+help file for Simu (_s_i_m_u._m_a_n_u_a_l._n_r_o_f_f), etc. can be located when
+running Simu.
+
+First, define _S_C_M as the appropriate Location1/_s_c_m which
+defines where and which Scm is.  Because Scm has the different
+versions when running on the machines with the different
+architectures, _S_C_M should make sense when Scm is running on
+certain machine. For example, at DIKU Scm can be running on
+_h_u_g_i_n, a SPARC station machine, or _t_y_r, an HP machine,
+then _S_C_M is defined as follows:
+
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/sun4/scm"
+#endif
+
+   or
+
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/hp9000s700/scm"
+#endif
+
+Then, define _S_I_M_I_L_I_X_P_A_T_H as the appropriate Location2 which
+
+
+
+
+
+
+
+
+
+                           - 5 -
+
+
+defines where Similix system is.  For example, if Similix is loaded in
+the directory /_h_o_m_e/_a_s_k_2/_l_p_z_o_n_g/_S_i_m_i_l_i_x/_s_y_s_t_e_m, then
+_S_I_M_I_L_I_X_P_A_T_H is defined as:
+
+#ifndef SIMILIXPATH
+#define SIMILIXPATH "/home/ask2/lpzong/Similix/system"
+#endif
+
+At last, define _H_E_L_P_F_I_L_E as the appropriate
+Location3/_s_i_m_u._m_a_n_u_a_l._n_r_o_f_f. Here, Location3 defines where Simu system
+is, and Location3/_s_i_m_u._m_a_n_u_a_l._n_r_o_f_f defines the on-lined help file for
+Simu. For example, if all of Simu system files (also the on-lined help
+file) are loaded into Location3 which is /_h_o_m_e/_a_s_k_2/_l_p_z_o_n_g/_S_i_m_u, then
+_H_E_L_P_F_I_L_E is defined as:
+
+#ifndef HELPFILE
+#define HELPFILE "/home/ask2/lpzong/Simu/simu.manual.nroff"
+#endif
+
+_1._4._3 _M_a_k_i_n_g _S_i_m_u _o_n _t_h_e _m_a_c_h_i_n_e
+
+Under Simu system environment with the file _i_m_a_k_e_f_i_l_e, run _x_m_k_m_f to
+get the file _M_a_k_e_f_i_l_e --- this automatedly generated _M_a_k_e_f_i_l_e is the
+one concerning the specific machine architecture. Then corresponding
+to the _M_a_k_e_f_i_l_e, run _m_a_k_e to compile all of *._c source files, link all
+concerned libraries and finally get the executable Simu version ---
+_s_i_m_u.
+
+The user now can begin to run _s_i_m_u.
+
+
+_2   _G_E_T_T_I_N_G _S_T_A_R_T_E_D
+
+This section contains an introduction to running Simu. Assuming the
+Simu system is installed in the directory /_h_o_m_e/_a_s_k_2/_l_p_z_o_n_g/_S_i_m_u, we
+contain the complete session as follows, to demonstrate how Simu
+works.
+
+The session uses an example program called _n_o_r_m_a-_i_n_t._s_i_m, which is
+an interpreter written in Scheme for a miniature flow chart language
+with only two variables, x and y. Program input is through x, and
+output is the final value of y.
+
+(define (execute pgm x y)
+   (run pgm pgm x y))
+
+(define (run pgm ptail x y)
+   (if (null? ptail)
+      y
+   (if (equal? (car ptail) 'x:=x+1)
+      (run pgm (cdr ptail) (+ x 1) y)
+   (if (equal? (car ptail) 'x:=x-1)
+      (run pgm (cdr ptail) (- x 1) y)
+   (if (equal? (car ptail) 'y:=y+1)
+
+
+
+
+
+
+
+
+
+                           - 6 -
+
+
+      (run pgm (cdr ptail) x (+ y 1))
+   (if (equal? (car ptail) 'y:=y-1)
+      (run pgm (cdr ptail) x (- y 1))
+   (if (equal? (caar ptail) 'goto)
+      (run pgm (nth pgm (cadar ptail)) x y)
+   (if (equal? (caar ptail) 'ifx=0goto)
+      (if (equal? x 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+   (if (equal? (caar ptail) 'ify=0goto)
+      (if (equal? y 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+      'Syntax-error)))))))))
+
+(define (nth pgm i)
+   (if (null? pgm)
+      pgm
+      (if (equal? i 0)
+         pgm
+         (nth (cdr pgm) (- i 1)))))
+
+Following is the interpreted language's program syntax:
+
+Program ::= (I0 I1 ... In-1)
+
+I       ::= x:=x+1 | x:=x-1 | y:=y+1 | y:=y-1
+        |  (goto Label) | (ifx=0goto Label) | (ify=0goto Label)
+
+Label   ::= 0 | 1 | ... (Label >= n causes program termination)
+
+We will specialize this interpreter to static program input
+pgm.norma, which is
+
+(ifx=0goto 5)
+y:=y+1
+y:=y+1
+x:=x-1
+(goto 0)
+
+and dynamic x and y. (This example is in the directory
+/_h_o_m_e/_a_s_k_2/_l_p_z_o_n_g/_S_i_m_u/_e_x-_n_o_r_m_a.)
+
+_I. _S_t_a_r_t_i_n_g _S_i_m_u/_E_x_i_t_i_n_g
+
+1. Starting Simu:
+
+   Simu starts by presenting a small bulletin board that contains
+   six menu commands and two button commands, and a working area
+   displaying the output of Similix. The user may pull down the
+   respective menu items and choose one of them to do the required
+   work at any time Simu is running.  However, when Simu is invoked,
+   some menu items are not available, since they will only be
+   available after certain operations have been performed.
+
+
+
+
+
+
+
+
+
+                           - 7 -
+
+
+   The working area is a text window where the user may search for
+   and scroll through the output text from Similix. Unfortunately,
+   it is used only for viewing the output with the Append editing
+   type.  Except for some special characters (such as Ctrl-c,
+   Ctrl-s, Ctrl-x and Ctrl-q), it simply echoes the character which
+   the user is typing.
+
+   After Simu is started up, a window system for Simu pops up and
+   Simu's working area displays:
+
+   Welcome to Similix 5.0
+   Copyright (C) 1993 Anders Bondorf
+   Contributions by Olivier Danvy and Jesper Joergensen
+
+   util langext abssyn miscspec runtime front lam-lift bt-eod sp oc rl
+post spec
+   #<unspecified>
+   > #<unspecified>
+   >
+
+2. Exiting from the Simu system:
+
+   Choose the _E_x_i_t button, and click on OK button in the next dialog
+   box. Then all of the windows in Simu will be closed and the whole
+   system will be quited.
+
+_I_I. _B_a_s_i_c _o_p_e_r_a_t_i_o_n_s
+
+1. Changing the working directory:
+
+   In the working area type Ctrl-q, then a small command-line window is
+   activated. In this window, type (_c_h_d_i_r "_e_x-_n_o_r_m_a") followed by Return,
+   then a new label pops up at the upper working area, indicating the
+   current working directory is /_n_e_t/_a_s_k/_h_o_m_e/_a_s_k_2/_l_p_z_o_n_g/_S_i_m_u/_e_x-_n_o_r_m_a.
+   And the working area displays:
+
+   > (chdir "/examples/ex-norma")
+   #t
+   >
+
+   If the user wants to remove this small window, just clicks on Close
+   button in the left upper of the command-line window.
+
+2. Loading the program:
+
+   Choose the _L_o_a_d _s_i_m-_f_i_l_e item in the _S_y_s_t_e_m menu, type the example
+   program name _n_o_r_m_a-_i_n_t._s_i_m in the input entry of the dialog box, and
+   click on OK button.  Then the program with goal function execute is
+   loaded into Similix, and the working area displays:
+
+   > (loads "norma-int.sim")
+   ()
+   >
+
+
+
+
+
+
+
+
+
+
+                           - 8 -
+
+
+3. Converting the file _p_g_m._n_o_r_m_a into a list:
+
+   Choose the _F_i_l_e->_l_i_s_t item in the _S_y_s_t_e_m menu, type the file name
+   _p_g_m._n_o_r_m_a and the list name _p_g_m in the two input entries of the
+   working board, and click on OK button. Then the file _p_g_m._n_o_r_m_a is
+   converted into a list _p_g_m and the working area displays:
+
+   > (define pgm (file->list "pgm.norma"))
+   #<unspecified>
+   >
+
+4. Applying the program to its arguments:
+
+   Choose the _R_u_n _o_r_i_g_i_n_a_l _p_r_o_g_r_a_m item in the _R_u_n menu, type the goal
+   function name _e_x_e_c_u_t_e and a list of arguments ,_p_g_m _2 _0 in the first
+   two input entries of the working board respectively, and click on
+   OK button. Then the program runs and the working area displays:
+
+   > (apply execute `(,pgm 2 0))
+   4
+   >
+
+
+   (Please note: Simu always supplies the user with the default name
+    or value which is specified in some input entry the last time. The
+    user may modify or delete it if the default name or value is not
+    appropriate.)
+
+5. Timing the program running:
+
+   Choose the _R_u_n _o_r_i_g_i_n_a_l _p_r_o_g_r_a_m item in the _R_u_n menu again, type
+   the goal function name _e_x_e_c_u_t_e, a list of arguments ,_p_g_m _2 _0 and
+   the running times _1_0_0_0, in the three input entries of the working
+   board respectively, and click on OK button. Then the program runs
+   with the timing information and the working area displays:
+
+   > (ntimes (lambda() (apply execute `(,pgm 2 0))) 1000)
+   Run time: 3.8833333333333 seconds
+   4
+   >
+
+_I_I_I. _P_r_e_p_r_o_c_e_s_s_i_n_g
+
+1. Preprocessing the program:
+
+   Choose the _P_r_e_p_r_o_c_e_s_s _p_r_o_g_r_a_m item in the _P_r_e_p_r_o_c_e_s_s _m_e_n_u, type the
+   program name _n_o_r_m_a-_i_n_t._s_i_m, the goal function name _e_x_e_c_u_t_e and the
+   argument binding-time pattern _s _d _d, in the three input entries of
+   the working board respectively, and click on OK button. Then the
+   program is preprocessed and the working area displays:
+
+   > (preprocess! `execute `(s d d) "norma-int.sim")
+   front-end flow bt sp eod oc rl
+   done
+
+
+
+
+
+
+
+
+
+                           - 9 -
+
+
+   >
+
+2. Showing the current preprocessed program (or with the data flow classes):
+
+   Choose the _S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m item in the _P_r_e_p_r_o_c_e_s_s
+   menu, click on OK buttons in order for the label of _S_h_o_w _c_u_r_r_e_n_t
+   _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m and for the one of _S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d
+   _p_r_o_g_r_a_m _w_i_t_h _a_l_l _o_f _f_l_o_w_s respectively in the working box _S_h_o_w
+   _C_u_r_r_e_n_t _P_r_e_p_r_o_c_e_s_s_e_d _P_r_o_g_r_a_m _F_u_n_c_t_i_o_n_s. Then in the two showing
+   windows, the current preprocessed program and the one with all of
+   the data flow classes are displayed with the pretty-printing
+   separatedly, where the boldface indicates the dynamic names or
+   values, or the numbers of the data flow class. Now the working area
+   displays:
+
+   > (writelpp (showpall) "temp%%%")
+   #<unspecified>
+   > (writelpp (showpallflow) "temp%%%")
+   #<unspecified>
+   >
+
+   In the corresponding showing window, click on Close button in the
+   upper left, and click on OK button in the next dialog box. Then the
+   showing window is closed in order.
+
+3. Showing the current preprocessed program with the number of flow:
+
+   Choose the _S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m item again in the
+   _P_r_e_p_r_o_c_e_s_s menu, type _6 in the input entry of the working box
+   _S_h_o_w _C_u_r_r_e_n_t _P_r_e_p_r_o_c_e_s_s_e_d _P_r_o_g_r_a_m _F_u_n_c_t_i_o_n_s and click on the last
+   OK button. Then the current preprocessed program with the number of
+   data flow class, _6, is displayed with the pretty-printing in the
+   showing window, where the boldface indicates the dynamic names or
+   values, or _6, which is the number of the data flow class. Now the
+   working area displays:
+
+   > (displayflow 6)
+   (writelpp (showpallflowid) "temp%%%")
+   #<unspecified>
+   > #<unspecified>
+   >
+
+   In this showing window, click on Close button in the upper left,
+   and click on OK button in the next dialog box. Then the showing
+   window is closed.
+
+4. Writing the preprocessed program:
+
+   Choose the _W_r_i_t_e _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m item in the _P_r_e_p_r_o_c_e_s_s menu,
+   type the name of the preprocessed program without flow, _n_o_r_m_a._a_n_n,
+   in the first input entry of the working board, and click on OK
+   button. Then the preprocessed program is written onto the file
+   _n_o_r_m_a._a_n_n. Now the working area displays:
+
+
+
+
+
+
+
+
+
+
+                           - 10 -
+
+
+    > (writelpp (showpall) "norma-int.ann")
+    #<unspecified>
+    >
+
+5. Showing the preprocessed program:
+
+   Choose the _S_h_o_w _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m item in the _P_r_e_p_r_o_c_e_s_s menu,
+   type the preprocessed program name, _n_o_r_m_a-_i_n_t._a_n_n, in the input
+   entry of the dialog box, and click on OK button.  Then the
+   preprocessed program _n_o_r_m_a-_i_n_t._a_n_n is displayed in the showing
+   window, with boldface indicating dynamic names or values. In the
+   corresponding showing window, click on Close button in the upper
+   left, and click on OK button in the next dialog box. Then the
+   showing window is closed.
+
+6. Printing the preprocessed program:
+
+   Choose the _P_r_i_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m item in the _P_r_e_p_r_o_c_e_s_s
+   menu, type the preprocessed program name _n_o_r_m_a-_i_n_t._a_n_n, the printer
+   type _0 and the printer name _c_i_q_m_1_a, in the three input
+   entries of the working board respectively, and click on OK
+   button. Then the file _n_o_r_m_a-_i_n_t._a_n_n is printed out by the
+   lineprinter _c_i_q_m_1_a.
+
+_I_V. _S_p_e_c_i_a_l_i_z_i_n_g
+
+1. Specializing the program:
+
+   Choose the _S_p_e_c_i_a_l_i_z_e _p_r_o_g_r_a_m item in the _S_p_e_c_i_a_l_i_z_e menu, type
+   the program name _n_o_r_m_a-_i_n_t._s_i_m, the goal function name _e_x_e_c_u_t_e and
+   the argument pattern ,_p_g_m *** ***, in the three input entries of
+   the working board respectively, and click on OK button. Then the
+   program is specialized and the working area displays:
+
+   > (similix `execute `(,pgm *** ***) "norma-int.sim")
+   front-end flow bt sp eod oc rl
+   specializing
+   ((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+    (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+   >
+
+_V. _R_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+1. Showing the current residual program:
+
+   Choose the _S_h_o_w _c_u_r_r_e_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _S_p_e_c_i_a_l_i_z_e
+   menu, and click on OK button in the working box _S_h_o_w _C_u_r_r_e_n_t
+   _R_e_s_i_d_u_a_l _P_r_o_g_r_a_m. Then the current residual program is displayed
+   in the showing window and the working area displays:
+
+   > (writelpp (residual-program) "temp%%%")
+   #<unspecified>
+   >
+
+
+
+
+
+
+
+
+
+
+                           - 11 -
+
+
+   In the corresponding showing window, click on Close button in the
+   upper left, and click on OK button in the next dialog box. Then the
+   showing window is closed.
+
+2. Writing the residual program:
+
+   Choose the _W_r_i_t_e _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _S_p_e_c_i_a_l_i_z_e menu,
+   type the residual program name, _n_o_r_m_a-_r_e_s._s_i_m, in the input entry
+   of the dialog box, and click on OK button. Then the residual
+   program is written onto the file norma-res.sim and the working area
+   displays:
+
+   > (writelpp (residual-program) "norma-res.sim")
+   #<unspecified>
+   >
+
+3. Showing the residual program:
+
+   Choose the _S_h_o_w _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _S_p_e_c_i_a_l_i_z_e menu, type
+   the residual program name, _n_o_r_m_a-_r_e_s._s_i_m, in the input entry of the
+   dialog box, and click on OK button. Then the residual program
+   _n_o_r_m_a-_r_e_s._s_i_m is displayed in the showing window. In the
+   corresponding showing window, click on Close button in the upper
+   left, and click on OK button in the next dialog box. Then the
+   showing window is closed.
+
+4. Printing the residual program:
+
+   Choose the _P_r_i_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _S_p_e_c_i_a_l_i_z_e menu,
+   type the residual program name _n_o_r_m_a-_r_e_s._s_i_m, the printer type _0
+   and the printer name _c_i_q_m_1_a in the three input entries of the working
+   board respectively, and click on OK button. Then the file
+   _n_o_r_m_a-_r_e_s._s_i_m is printed out by the lineprinter _c_i_q_m_1_a.
+
+5. Applying the residual program to its dynamic arguments:
+
+   Choose the _R_u_n _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _R_u_n menu, leave the
+   first input entry of the working board empty, type a list of
+   dynamic arguments _2 _0 in the second input entry, and click on
+   OK button. Then the residual program with the default goal function
+   _e_x_e_c_u_t_e-_0 is loaded and runs. The working area displays:
+
+   > (load-residual-program)
+   (apply execute-0 `(2 0))
+   ()
+   > 4
+   >
+
+6. Timing the residual program:
+
+   Choose the _R_u_n _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m item in the _R_u_n menu again, leave
+   the first input entry of the working board empty, type a list of
+   dynamic arguments _2 _0 and the running times _1_0_0_0 in the second and
+   the third input entries respectively, and click on OK button.  Then
+
+
+
+
+
+
+
+
+
+                           - 12 -
+
+
+   the residual program with the default goal function _e_x_e_c_u_t_e-_0 runs
+   with the timing information. The working area displays:
+
+   > (load-residual-program)
+   (ntimes (lambda() (apply execute-0 `(2 0))) 1000)
+   ()
+   > Run time: 733.33333333333e-3 seconds
+   4
+   >
+
+_V_I. _G_e_n_e_r_a_t_i_n_g _e_x_t_e_n_s_i_o_n
+
+1. Generating a generating extension (currying):
+
+   Choose the _C_o_m_p_i_l_e_r _g_e_n_e_r_a_t_i_o_n item in the _C_o_g_e_n menu, type the
+   program name _n_o_r_m_a-_i_n_t._s_i_m, the goal function name _e_x_e_c_u_t_e and the
+   argument binding-time pattern _s _d _d in the first three input entries
+   of the working board respectively, leave the other input entries
+   empty, and click on OK button.  Then the Similix compiler generator
+   is used to generate a generating extension of _n_o_r_m_a-_i_n_t, and the
+   working area displays:
+
+   > (cogen `execute `(s d d) "norma-int.sim")
+   front-end flow bt sp eod oc rl
+   generating compiler
+   ()
+   >
+
+2. Showing the current compiler program:
+
+   Choose the _S_h_o_w _c_u_r_r_e_n_t _c_o_m_p_i_l_e_r item in the _C_o_g_e_n menu, and click
+   on OK button in the working box _S_h_o_w _C_u_r_r_e_n_t _C_o_m_p_i_l_e_r _P_r_o_g_r_a_m.
+   Then the current compiler program is displayed in the showing
+   window and the working area displays:
+
+   > (writelpp (current-compiler) "temp%%%")
+   #<unspecified>
+   >
+
+   In the corresponding showing window, click on Close button in the
+   upper left, and click on OK button in the next dialog box. Then the
+   showing window is closed.
+
+3. Writing the compiler program:
+
+   Choose the _W_r_i_t_e _c_o_m_p_i_l_e_r item in the _C_o_g_e_n menu, type the
+   compiler program name _n_o_r_m_a-_i_n_t._c_o_m in the input entry of the dialog
+   box, and click on OK button.  Then the compiler program is written
+   onto the file _n_o_r_m_a-_i_n_t._c_o_m and the working area displays:
+
+   > (writelpp (current-compiler) "norma-cmp.sim")
+   #<unspecified>
+   >
+
+
+
+
+
+
+
+
+
+
+                           - 13 -
+
+
+4. Showing the compiler program:
+
+   Choose the _S_h_o_w _c_o_m_p_i_l_e_r item in the _C_o_g_e_n menu, type the compiler
+   program name _n_o_r_m_a-_c_m_p._s_i_m in the input entry of the dialog box, and
+   click on OK button. Then the compiler program _n_o_r_m_a-_c_m_p._s_i_m is
+   displayed in the showing window. In the corresponding showing
+   window, click on Close button in the upper left, and click on OK
+   button in the next dialog box. Then the showing window is closed.
+
+5. Printing the compiler program:
+
+   Choose the _P_r_i_n_t _c_o_m_p_i_l_e_r item in the _C_o_g_e_n menu, type the
+   compiler program name _n_o_r_m_a-_c_m_p._s_i_m, the printer type _0 and the
+   printer name _c_i_q_m_1_a in the three input entries of the working board
+   respectively, and click on OK button. Then the file _n_o_r_m_a-_c_m_p._s_i_m is
+   printed out by the lineprinter _c_i_q_m_1_a.
+
+6. Running the generating extension:
+
+   Choose the _C_o_m_p_i_l_e item in the _C_o_m_p_i_l_e menu, type the compiler
+   program name _n_o_r_m_a-_c_m_p._s_i_m in the first input entry of the working
+   board, and the argument pattern ,_p_g_m *** *** in the third
+   input entry, leave the other input entries empty, and click on OK
+   button.  Then the generating extension is now applied to the same
+   input that _n_o_r_m_a-_i_n_t._s_i_m was specialized with respect to above,
+   generating the specialized _n_o_r_m_a-_i_n_t program that we have
+   already seen. The working area displays:
+
+   > (comp "norma-int.com" `(,pgm *** ***))
+   loading compiler norma-int.com
+   specializing
+   ((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+    (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+   >
+
+
+_3   _M_E_N_U _C_O_M_M_A_N_D_S
+
+There are six menu commands in Simu, and they are: _S_y_s_t_e_m,
+_P_r_e_p_r_o_c_e_s_s, _S_p_e_c_i_a_l_i_z_e, _C_o_g_e_n, _C_o_m_p_i_l_e and _R_u_n. This section
+describes all of these commands in detail. By placing the mouse
+pointer on any menu command and clicking on a button, the user may
+pull down the corresponding menu and select one of the items.
+
+_3._1  _S_y_s_t_e_m
+
+There are eleven items in the System menu, and all of them are
+relating to general Similix and Scheme utilities, and basic operations
+in Simu.
+
+_3._1._1 _R_e_s_e_t _S_i_m_i_l_i_x
+
+The corresponding command in Similix is: (_r_e_s_e_t-_s_i_m_i_l_i_x). It resets
+flags and other global variables used by Similix, and it's useful for
+
+
+
+
+
+
+
+
+
+                           - 14 -
+
+
+resetting flags and for freeing heap space. These flags are relating
+to verbose preprocessing, post unfolding, verbose specializing and
+memoization. When the user chooses this item, a working box will pop
+up, in order to let the user decide whether to do the reseting.
+
+_3._1._2 _L_o_a_d _s_i_m-_f_i_l_e
+
+The corresponding command in Similix is: (_l_o_a_d_s _s_i_m-_f_i_l_e), which
+loads _s_i_m-_f_i_l_e.  This item should be used at the top-level
+instead of the item _L_o_a_d _s_c_h_e_m_e-_f_i_l_e, if _s_i_m-_f_i_l_e contains
+_c_a_s_e_m_a_t_c_h- or _c_a_s_e_c_o_n_s_t_r- forms. (_l_o_a_d_s _s_i_m-_f_i_l_e) is the another
+version of (_l_o_a_d _s_c_h_e_m_e-_f_i_l_e) in Similix.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+_3._1._3 _L_o_a_d _s_c_h_e_m_e-_f_i_l_e
+
+The corresponding command in Similix is: (_l_o_a_d _s_c_h_e_m_e-_f_i_l_e), which
+loads _s_c_h_e_m_e-_f_i_l_e.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Scheme source file name.
+
+_3._1._4 _R_e_l_o_a_d _A_D_T-_f_i_l_e
+
+The corresponding command in Similix is: (_l_o_a_d_t! _f_i_l_e), which
+recompiles and reloads primitive operators and constructors. If during
+a session, a file with primitive operator and constructor definitions
+is modified, we always follow the modifications by choosing this item;
+otherwise, the modification will not come into effect during the
+session.  You must redo the _l_o_a_d_t! for all possible full file names
+(with paths) that are used to refer to _f_i_l_e (this may be relevant if
+you are specializing programs from different directories that all use
+the file).
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the name of the ._a_d_t file.
+
+_3._1._5 _F_i_l_e->_l_i_s_t
+
+The corresponding command in Similix is: (_d_e_f_i_n_e _l_i_s_t-_n_a_m_e (_f_i_l_e->_l_i_s_t
+_f_i_l_e)), which returns a list of the objects in _f_i_l_e.
+
+When the user chooses this item, a working board will pop up, in order
+to get the file name and the list name in two input entries.
+
+_3._1._6 _F_i_l_e->_i_t_e_m
+
+The corresponding command in Similix is: (_d_e_f_i_n_e _i_t_e_m-_n_a_m_e (_f_i_l_e->_i_t_e_m
+_f_i_l_e)), which returns the first object in _f_i_l_e.
+
+When the user chooses this item, a working board will pop up, in order
+to get the file name and the item name in two input entries.
+
+
+
+
+
+
+
+
+
+                           - 15 -
+
+
+_3._1._7 _S_i_m->_s_c_h_e_m_e
+
+The corresponding command in Similix is: (_s_i_m_2_s_c_h_e_m_e _s_i_m-_f_i_l_e). It
+converts Similix Scheme programs into stand-alone Scheme programs
+which can be run without loading Similix first.  All definitions in
+files loaded and loadt'ed by _s_i_m-_f_i_l_e are in-lined, and primitive
+operator and constructor definitions are converted to ordinary Scheme
+definitions. The output is written on the file _f_i_l_e-_n_a_m_e._p_o_s_t_f_i_x,
+where _f_i_l_e-_n_a_m_e is equal to _s_i_m-_f_i_l_e without possible ._s_i_m suffix and
+_p_o_s_t_f_i_x is the standard postfix used for source files in the Scheme
+system used.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+_3._1._8 _C_o_m_p_i_l_e _s_i_m-_f_i_l_e
+
+The corresponding command in Similix is: (_c_o_m_p_i_l_e-_s_i_m-_f_i_l_e _s_i_m-_f_i_l_e),
+which compiles _s_i_m-_f_i_l_e.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+_3._1._9 _C_o_m_p_i_l_e _a_n_d _l_o_a_d _s_i_m-_f_i_l_e
+
+The corresponding command in Similix is: (_c_o_m_p_i_l_e-_a_n_d-_l_o_a_d-_s_i_m-_f_i_l_e
+_s_i_m-_f_i_l_e), which compiles and loads _s_i_m-_f_i_l_e.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+_3._1._1_0  _F_r_o_n_t_e_n_d _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_f_r_o_n_t-_e_n_d)
+  2. (_f_r_o_n_t-_e_n_d _g_o_a_l _s_o_u_r_c_e-_s_i_m-_f_i_l_e)
+
+where the commands do the following:
+
+  1. displays information about input formats to _f_r_o_n_t-_e_n_d.
+
+  2. expands and converts the program in file _s_o_u_r_c_e-_s_i_m-_f_i_l_e with the
+     goal function _g_o_a_l into internal abstract syntax.
+
+Procedure _f_r_o_n_t-_e_n_d is typically not called directly by the
+user, but it may for instance be useful for debugging. It returns the
+program text represented in abstract syntax.
+
+When the user chooses this item, a working board will pop up, in order
+to get the Similix source file name and the source goal function name
+in two input entries.
+
+_3._1._1_1  _T_e_x_t _e_d_i_t_o_r
+
+
+
+
+
+
+
+
+
+                           - 16 -
+
+
+_T_e_x_t _e_d_i_t_o_r is especially used in editing text file.  Simu
+supports multiple windows, so the user may open an editor window at
+any time, to create, open or save the file being specified, or close
+any one of editor windows freely. The editing functions of the window
+are similar to those of EMACS, thus the user may use almost all of the
+EMACS editing functions, such as search for, scroll through, cut and
+paste in the text, and so on. See also Section 5 "_T_E_X_T _E_D_I_T_O_R _F_O_R
+_U_S_E_R_S" below.
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the file name to be opened.
+
+_3._2  _P_r_e_p_r_o_c_e_s_s
+
+There are seven items in the _P_r_e_p_r_o_c_e_s_s menu, and all of them are
+relating to the preprocessing in Similix.
+
+_3._2._1 _P_r_e_p_r_o_c_e_s_s _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_p_r_e_p_r_o_c_e_s_s!)
+  2. (_p_r_e_p_r_o_c_e_s_s! _g_o_a_l _b_t-_p_a_t _s_o_u_r_c_e-_s_i_m-_f_i_l_e)
+
+where the commands do the following:
+
+  1. displays information about input formats to _p_r_e_p_r_o_c_e_s_s!.
+
+  2. front-ends and preprocesses the program in file _s_o_u_r_c_e-_s_i_m-_f_i_l_e
+     with the goal function _g_o_a_l w.r.t. binding-time pattern _b_t-_p_a_t.
+     Argument _b_t-_p_a_t is a list of binding-time values; a binding-time value
+     must be one of either _s, _s_t_a_t_i_c, _d, _d_y_n_a_m_i_c, or the symbol denoting
+     dynamic input (initially ***, redefinable by
+     (_s_e_t-_d_y_n_a_m_i_c-_i_n_p_u_t-_s_y_m_b_o_l...)); the forms _s and _s_t_a_t_i_c are equivalent:
+     they specify static first-order input; the forms _d, _d_y_n_a_m_i_c, and the
+     symbol denoting dynamic input are also equivalent: they specify
+     dynamic input. The length of _b_t-_p_a_t must be equal to the number of
+     parameters to the goal function.
+
+Procedure _p_r_e_p_r_o_c_e_s_s! is typically not called directly by the user,
+but it may be useful for binding-time debugging when inspecting
+preprocessed (annotated) programs; the preprocessed program can be
+displayed by _s_h_o_w_p/_s_h_o_w_p_a_l_l in Similix, and by menu item _S_h_o_w _c_u_r_r_e_n_t
+_p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m/_S_h_o_w _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m in Simu.
+
+When the user chooses this item, a working board will pop up, in order
+to get the Similix source file name, the source goal function name and
+the argument binding-time pattern in three input entries.
+
+_3._2._2 _S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l) "_t_e_m_p%%%")
+
+
+
+
+
+
+
+
+
+                           - 17 -
+
+
+  2. (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l_f_l_o_w) "_t_e_m_p%%%")
+  3. (_d_i_s_p_l_a_y_f_l_o_w _f_l_o_w-_n_u_m), (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l_f_l_o_w_i_d) "_t_e_m_p%%%")
+
+where _t_e_m_p%%% is the temporary file name and _f_l_o_w-_n_u_m is the number of
+the data flow class.
+
+This item is used to show the current preprocessed program, or the
+current preprocessed program with all of the data flow classes or
+certain data flow class [BJ93], with the pretty-printing on the
+screen, right after the preprocessing.
+
+After preprocessing the program, if the user chooses this item, a
+working board will pop up.  The user may simply click on the
+respective OK button, then the current preprocessed program or this
+program with all of the data flow classes will be displayed in the
+showing window. If the user inputs the number of the data flow class
+in the input entry and then clicks on OK button, the current
+preprocessed program with this data flow class will be displayed in
+the showing window.
+
+When displaying the preprocessed program, the boldface indicates the
+dynamic names or values, or the numbers of data flow class.
+
+_3._2._3 _W_r_i_t_e _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l) _f_i_l_e)
+  2. (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l_f_l_o_w) _f_i_l_e)
+  3. (_d_i_s_p_l_a_y_f_l_o_w _f_l_o_w-_n_u_m), (_w_r_i_t_e_l_p_p (_s_h_o_w_p_a_l_l_f_l_o_w_i_d) _f_i_l_e)
+
+This item is used to write the current preprocessed program, or the
+current preprocessed program with all of the data flow classes or
+certain data flow class, onto the file file with the pretty-printing.
+
+After preprocessing program, if the user chooses this item, a working
+board will pop up.  The user may input the respective file name in the
+first two input entries, then the current preprocessed program or this
+program with all of the data flow classes will be written onto their
+files correspondingly.  If the user inputs the number of the data flow
+class in the third input entry and the file name in the fourth input
+entry, then the current preprocessed program with this data flow class
+number will be written onto the file.
+
+_3._2._4 _S_h_o_w _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+This item is used to show preprocessed programs or preprocessed
+program with the data flow class(es) on the screen.
+
+After writing out a preprocessed program, if the user chooses this
+item with the name of the preprocessed program, then the preprocessed
+program is shown in a showing window with boldface indicating the
+dynamic names or values, or the number of data flow class.
+
+
+
+
+
+
+
+
+
+
+                           - 18 -
+
+
+_3._2._5 _P_r_i_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+This item is used to print out the preprocessed program using any one
+of laserprinters or lineprinters which is available.
+
+When the user chooses this item, a working board will pop up, in order
+to get the name of preprocessed program, the printer type (the
+lineprinter type is _0, and the laserprinter type is any other value
+which is not equal to _0), and the printer name in three input entries.
+
+If the printer type is specified as _0, then the lineprinter is used to
+print out the file, and the characters which are displayed in boldface
+on the screen will be underscored on the paper.  Otherwise, if the
+printer type is specified as any other value, then the laserprinter is
+used, and the characters which are displayed in boldface on the screen
+will also be boldfaced on the paper.
+
+_3._2._6 _V_e_r_b_o_s_e _p_r_e_p_r_o_c_e_s_s_i_n_g
+
+The corresponding commands in Similix are:
+
+  1. (_v_e_r_b_o_s_e-_p_r_e_p-_o_n)
+  2. (_v_e_r_b_o_s_e-_p_r_e_p-_o_f_f)
+
+which set and clear the verbose preprocessing flag respectively.
+Initially, the flag is set. When the flag is set, the preprocessor
+gives warnings when different procedure (function) arities are mixed
+and when constructors from different constructor families are
+mixed. Such mixings make more expressions dynamic.
+
+When the user chooses this item, a radio indicating the current flag
+state of verbose preprocessing will pop up, and the user may select
+one of the two radio buttons to set or clear the flag.
+
+_3._2._7 _M_e_m_o_i_z_a_t_i_o_n
+
+The corresponding commands in Similix are:
+
+  1. (_s_t_a_n_d_a_r_d-_m_e_m_o_i_z_a_t_i_o_n-_o_n)
+  2. (_s_t_a_n_d_a_r_d-_m_e_m_o_i_z_a_t_i_o_n-_o_f_f)
+
+which set and clear the standard memoization flag respectively.
+Initially, the flag is set. When the flag is set, standard memoization
+points are inserted when programs are preprocessed. Standard
+memoization points are generated from dynamic conditionals
+(conditionals that are not reduced at specialization time due to a
+dynamic test) and dynamic lambda-expressions (lambdas that are not
+beta-reduced at specialization time). When the flag is not set,
+memoization points are only inserted when user-specified by
+__s_i_m-_m_e_m_o_i_z_e. This is useful as it gives the user full control of
+memoization point insertion; dynamic choice of static values is
+enabled when the flag is cleared.
+
+When the user chooses this item, a radio indicating the current flag
+
+
+
+
+
+
+
+
+
+                           - 19 -
+
+
+state of standard memoization will pop up, and the user may select one
+of the two radio buttons to set or clear the flag.
+
+_3._3  _S_p_e_c_i_a_l_i_z_e
+
+There are nine items in the _S_p_e_c_i_a_l_i_z_e menu, and all of them are
+relating to the specializing in Similix.
+
+_3._3._1 _S_p_e_c_i_a_l_i_z_e _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_s_i_m_i_l_i_x)
+  2. (_s_i_m_i_l_i_x _g_o_a_l _a_r_g-_p_a_t _s_o_u_r_c_e-_s_i_m-_f_i_l_e [_n] [_r_e_s_i_d-_g_o_a_l]
+      [_r_e_s_i_d-_s_i_m-_f_i_l_e '_p_p])
+  3. (_s_i_m_i_l_i_x _a_r_g-_p_a_t [_n] [_r_e_s_i_d-_g_o_a_l] [_r_e_s_i_d-_s_i_m-_f_i_l_e '_p_p])
+
+where the commands do the following:
+
+  1. displays information about input formats to _s_i_m_i_l_i_x.
+
+  2. partially evaluates the program in file _s_o_u_r_c_e-_s_i_m-_f_i_l_e with the
+     goal function _g_o_a_l with respect to the input specified by
+     _a_r_g-_p_a_t.  The _a_r_g-_p_a_t is a list of pe-values, a pe-value being
+     either the symbol *** denoting a dynamic value or some static
+     value (the symbol denoting dynamic input may be redefined by
+     (_s_e_t-_d_y_n_a_m_i_c-_i_n_p_u_t-_s_y_m_b_o_l...)). If the static value is the name
+     of list or item (converted by a file), then the name should be
+     preceded by the symbol , (Scheme unquote). The length of
+     _a_r_g-_p_a_t must be equal to the arity of _g_o_a_l. If
+     _n is specified, the specialization is run _n times and
+     timing information is output.  The timing figures include
+     specialization time only, not time for preprocessing. If
+     _r_e_s_i_d-_g_o_a_l is supplied, the goal function of the residual
+     program gets the name _r_e_s_i_d-_g_o_a_l. Otherwise, it gets the default
+     name _g_o_a_l-_0. The residual program is written onto the file
+     _r_e_s_i_d-_s_i_m-_f_i_l_e if this argument is supplied, and it is
+     pretty-printed, since the argument '_p_p now is always supplied in
+     Simu.
+
+  3. specializes an already preprocessed program with respect to the
+     input specified by _a_r_g-_p_a_t.  The form is useful for avoiding
+     preprocessing if the program to be partially evaluated has
+     already been preprocessed with respect to the same binding-time
+     pattern (no change in which parameters are static and which are
+     dynamic). If _n is specified, the specialization is run _n times
+     and timing information is output. The timing figures include
+     specialization time only, not time for preprocessing.  If
+     _r_e_s_i_d-_g_o_a_l is supplied, the goal function of the residual program
+     gets the name _r_e_s_i_d-_g_o_a_l.  Otherwise, it gets the default name
+     _g_o_a_l-_0.  The residual program is written onto the file
+     _r_e_s_i_d-_s_i_m-_f_i_l_e if this argument is supplied, and it is
+     pretty-printed, since the argument '_p_p now is always supplied in
+     Simu.
+
+
+
+
+
+
+
+
+
+                           - 20 -
+
+
+When the user chooses this item, a working board will pop up, in order
+to get the Similix source file name, the source goal function name,
+the argument pattern, the residual program name, the residual goal
+function name and the running times, in six input entries (but some
+input entries may be left empty).
+
+_3._3._2 _S_h_o_w _c_u_r_r_e_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+The corresponding command in Similix is: (_w_r_i_t_e_l_p_p (_r_e_s_i_d_u_a_l-_p_r_o_g_r_a_m)
+"_t_e_m_p%%%"), where _t_e_m_p%%% is the temporary file name.  This item is
+used to show the current residual program with the pretty-printing on
+the screen, right after the specializing.
+
+After specializing the program, if the user chooses this item, a
+working box will pop up. The user may simply click on OK button, then
+the current residual program will be displayed in the showing window.
+
+_3._3._3 _W_r_i_t_e _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+The corresponding command in Similix is: (_w_r_i_t_e_l_p_p (_r_e_s_i_d_u_a_l-_p_r_o_g_r_a_m)
+_f_i_l_e), which writes the latest generated specialized (residual)
+program with the pretty-printing onto the file.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the name of the residual program.
+
+_3._3._4 _S_h_o_w _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+This item is used to show residual programs on the screen. After
+writing out a residual program, if the user chooses this item with the
+name of the residual program, the residual program will be shown in a
+showing window.
+
+_3._3._5 _P_r_i_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+This item is used to print out the residual program using any one of
+laserprinters or lineprinters which is available.
+
+When the user chooses this item, a working board will pop up, in order
+to get the residual program name, the printer type (the lineprinter
+type is _0, and the laserprinter type is any other value which is not
+equal to _0), and the printer name, in three input entries.
+
+_3._3._6 _P_o_s_t _u_n_f_o_l_d_i_n_g
+
+The corresponding commands in Similix are:
+
+  1. (_p_o_s_t_u_n_f_o_l_d-_o_n)
+  2. (_p_o_s_t_u_n_f_o_l_d-_o_f_f)
+
+which set and clear the post-unfold flag respectively. Initially, the
+flag is set. When the flag is set, residual procedure calls are
+post-unfolded by the phase of postprocessing. When the flag is not
+set, residual procedure calls are never post-unfolded.
+
+
+
+
+
+
+
+
+
+                           - 21 -
+
+
+When the user chooses this item, a radio indicating the current flag
+state of post-unfold will pop up, and the user may select one of the
+two radio buttons to set or clear the flag.
+
+_3._3._7 _V_e_r_b_o_s_e _s_p_e_c_i_a_l_i_z_a_t_i_o_n
+
+The corresponding command in Similix is: (_v_e_r_b_o_s_e-_s_p_e_c _n), where
+argument _n must be _0, _1 or _2. The value of _n controls trace
+information generated during specialization. This information is
+particularly useful if specialization does not terminate as it may
+help to locate what cause the loop.  If _n = _0, no trace information is
+printed; this is the initial value.  If _n = _1, the information is
+printed each time the specializer encounters a
+specialization/memoization point.  The information printed is _s_p:_n_a_m_e,
+where _n_a_m_e is the name of the specialization point in the source
+program. If _n = _2, the information printed if _n = _1 is also
+printed. Additionally, each time a call to a user-defined procedure _P
+is unfolded, the name _P is printed. The two forms are distinguishable
+as specialization point names are preceded by _s_p: .
+
+When the user chooses this item, a radio indicating the current value
+state of verbose specialization will pop up, and the user may select
+one of the three radio buttons to set the required value.
+
+_3._3._8 _V_e_r_b_o_s_e _p_r_e_p_r_o_c_e_s_s_i_n_g
+
+See "_V_e_r_b_o_s_e _p_r_e_p_r_o_c_e_s_s_i_n_g" in Section 3.2.6.
+
+_3._3._9 _M_e_m_o_i_z_a_t_i_o_n
+
+See "_M_e_m_o_i_z_a_t_i_o_n" in Section 3.2.7.
+
+_3._4  _C_o_g_e_n
+
+There are thirteen items in the _C_o_g_e_n menu, and all of them are
+relating to the compiler generation in Similix.
+
+_3._4._1 _C_o_m_p_i_l_e_r _g_e_n_e_r_a_t_i_o_n
+
+The corresponding commands in Similix are:
+
+  1. (_c_o_g_e_n)
+  2. (_c_o_g_e_n _g_o_a_l _b_t-_p_a_t _s_o_u_r_c_e-_s_i_m-_f_i_l_e [_n] [_c_m_p-_g_o_a_l] [_c_m_p-_s_i_m-_f_i_l_e '_p_p])
+  3. (_c_o_g_e_n [_n] [_c_m_p-_g_o_a_l] [_c_m_p-_s_i_m-_f_i_l_e '_p_p])
+
+where the commands do the following:
+
+  1. displays information about input formats to _c_o_g_e_n.
+
+  2. generates a generating extension of the program in file
+     _s_o_u_r_c_e-_s_i_m-_f_i_l_e with the goal function _g_o_a_l.  Argument _b_t-_p_a_t is
+     a binding-time pattern, i.e.  a list of binding-time values; a
+     binding-time value must be one of either _s, _s_t_a_t_i_c, _d, _d_y_n_a_m_i_c_s,
+     or the symbol denoting dynamic input (initially ***, redefinable
+
+
+
+
+
+
+
+
+
+                           - 22 -
+
+
+     by (_s_e_t-_d_y_n_a_m_i_c-_i_n_p_u_t-_s_y_m_b_o_l...)); the forms _s and _s_t_a_t_i_c are
+     equivalent: they specify static first-order input; the forms _d,
+     _d_y_n_a_m_i_c, and the symbol denoting dynamic input are also
+     equivalent: they specify dynamic input. The length of _b_t-_p_a_t must
+     be equal to the number of parameters to the goal function. Static
+     parameters become the "early" parameters in the generating
+     extension, dynamic parameters become the "late" ones.  The
+     generating extension is run by using procedure _c_o_m_p. The
+     generation of a generating extension is done in two steps: first,
+     the source program is preprocessed with respect to the giving
+     _b_t-_p_a_t (see the description of procedure _p_r_e_p_r_o_c_e_s_s!), then the
+     Similix-generated compiler generator is applied to the
+     preprocessed source program.  A typical application of _c_o_g_e_n is
+     to generate a compiler from an interpreter. The interpreter's
+     program parameter is classified as _s_t_a_t_i_c, and the data parameter
+     is classified as _d_y_n_a_m_i_c. If _n is specified, the compiler
+     generator is applied _n times to the preprocessed program and
+     timing information is output. The timing figures do not include
+     the time used for preprocessing the source program. If _c_m_p-_g_o_a_l
+     is supplied, the goal function of the generated generating
+     extension gets the name _c_m_p-_g_o_a_l. Otherwise, it gets the default
+     name __s_i_m-_s_p_e_c_i_a_l_i_z_e-_0. The generating extension is written onto
+     the file _c_m_p-_s_i_m-_f_i_l_e if this argument is supplied, and it is
+     pretty-printed, since the argument '_p_p now is always supplied in
+     Simu.
+
+  3. curries an already preprocessed program. The form is useful for
+     avoiding preprocessing if the program to be curried has already
+     been preprocessed. If _n is specified, the compiler generator is
+     applied _n times to the preprocessed program and timing
+     information is output.  The timing figures do not include the
+     time used for preprocessing the source program. If _c_m_p-_g_o_a_l is
+     supplied, the goal function of the generated generating extension
+     gets the name _c_m_p-_g_o_a_l. Otherwise, it gets the default name
+     __s_i_m-_s_p_e_c_i_a_l_i_z_e-_0. The generating extension is written onto the
+     file _c_m_p-_s_i_m-_f_i_l_e if this argument is supplied, and it is
+     pretty-printed, since the argument '_p_p now is always supplied in
+     Simu.
+
+When the user chooses this item, a working board will pop up, in order
+to get the Similix source file name, the source goal function name,
+the argument binding-time pattern, the compiler program name, the
+compiler goal function name and the running times, in six input
+entries (but some input entries may be left empty).
+
+_3._4._2 _S_h_o_w _c_u_r_r_e_n_t _c_o_m_p_i_l_e_r
+
+The corresponding command in Similix is: (_w_r_i_t_e_l_p_p (_c_u_r_r_e_n_t-_c_o_m_p_i_l_e_r)
+"_t_e_m_p%%%"), where _t_e_m_p%%% is the temporary file name.  This item is
+used to show the current compiler program with the pretty-printing on
+the screen, right after the compiler generation.
+
+After generating the compiler program, if the user chooses this item,
+a working box will pop up. The user may simply click on OK button,
+
+
+
+
+
+
+
+
+
+                           - 23 -
+
+
+then the current compiler program will be displayed in the showing
+window.
+
+_3._4._3 _W_r_i_t_e _c_o_m_p_i_l_e_r
+
+The corresponding command in Similix is: (_w_r_i_t_e_l_p_p (_c_u_r_r_e_n_t-_c_o_m_p_i_l_e_r)
+_f_i_l_e), which writes the latest generated compiler program with the
+pretty-printing onto the file file.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the name of the compiler program.
+
+_3._4._4 _S_h_o_w _c_o_m_p_i_l_e_r
+
+This item is used to show compiler programs on the screen.
+
+After writing out a compiler program, if the user chooses this item
+with the name of the compiler program, then the compiler program will
+be shown in a showing window.
+
+_3._4._5 _P_r_i_n_t _c_o_m_p_i_l_e_r
+
+This item is used to print out the compiler program using any one of
+laserprinters or lineprinters which is available.
+
+When the user chooses this item, a working board will pop up, in order
+to get the name of the compiler program, the printer type (the
+lineprinter type is _0, and the laserprinter type is any other value
+which is not equal to _0), and the printer name, in three input
+entries.
+
+_3._4._6 _S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+See "_S_h_o_w _c_u_r_r_e_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m" in Section 3.2.2.
+
+_3._4._7 _W_r_i_t_e _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+See "_W_r_i_t_e _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m" in Section 3.2.3.
+
+_3._4._8 _S_h_o_w _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+See "Show preprocessed program" in Section 3.2.4.
+
+_3._4._9 _P_r_i_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m
+
+See "_P_r_i_n_t _p_r_e_p_r_o_c_e_s_s_e_d _p_r_o_g_r_a_m" in Section 3.2.5.
+
+_3._4._1_0  _P_o_s_t _u_n_f_o_l_d_i_n_g
+
+See "_P_o_s_t _u_n_f_o_l_d_i_n_g" in Section 3.3.6.
+
+_3._4._1_1  _V_e_r_b_o_s_e _s_p_e_c_i_a_l_i_z_a_t_i_o_n
+
+See "_V_e_r_b_o_s_e _s_p_e_c_i_a_l_i_z_a_t_i_o_n" in Section 3.3.7.
+
+
+
+
+
+
+
+
+
+                           - 24 -
+
+
+_3._4._1_2  _V_e_r_b_o_s_e _p_r_e_p_r_o_c_e_s_s_i_n_g
+
+See "_V_e_r_b_o_s_e _p_r_e_p_r_o_c_e_s_s_i_n_g" in Section 3.2.6.
+
+_3._4._1_3  _M_e_m_o_i_z_a_t_i_o_n
+
+See "_M_e_m_o_i_z_a_t_i_o_n" in Section 3.2.7.
+
+_3._5  _C_o_m_p_i_l_e
+
+There are seven items in the _C_o_m_p_i_l_e menu, and all of them are
+relating to the compiling in Similix.
+
+_3._5._1 _C_o_m_p_i_l_e
+
+The corresponding commands in Similix are:
+
+  1. (_c_o_m_p)
+  2. (_c_o_m_p [_c_m_p-_g_o_a_l] [_c_m_p-_f_i_l_e] _a_r_g-_p_a_t [_n] [_r_e_s_i_d-_g_o_a_l] [_r_e_s_i_d-_s_i_m-_f_i_l_e '_p_p])
+
+where the commands do the following:
+
+  1. displays information about input formats to _c_o_m_p.
+
+  2. applies a generating extension generated by _c_o_g_e_n to _a_r_g-_p_a_t. The
+     length of _a_r_g-_p_a_t must be equal to the length of the _b_t-_p_a_t that
+     was supplied to _c_o_g_e_n when generating the generating
+     extension. For those arguments that were specified as static in
+     _b_t-_p_a_t when running cogen, supply a value in _a_r_g-_p_a_t. If the
+     static value is the name of list or item (converted by a file),
+     then the name should be preceded by the symbol , (Scheme
+     unquote). For those arguments that were specified as _d_y_n_a_m_i_c in
+     bt-pat when running _c_o_g_e_n, supply the symbol ***.  A
+     typical application of _c_o_m_p is to run a compiler generated by
+     applying _c_o_g_e_n to an interpreter. If _c_m_p-_g_o_a_l is supplied,
+     the goal function of the generating extension is assumed to have this
+     name (this name must be equal to the _c_m_p-_g_o_a_l specified when
+     generating the generating extension by _c_o_g_e_n). Otherwise, the
+     default name __s_i_m-_s_p_e_c_i_a_l_i_z_e-_0 is chosen. If _c_m_p-_f_i_l_e is
+     supplied, the generating extension is read from this file.  Otherwise,
+     the program in **_S_i_m_i_l_i_x-_c_u_r_r_e_n_t-_c_o_m_p_i_l_e_r** is used.  If _n
+     is supplied, the generating extension is applied _n times and
+     timing information is output.  If _r_e_s_i_d-_g_o_a_l is supplied, the
+     goal function of the residual program gets the name
+     _r_e_s_i_d-_g_o_a_l. Otherwise, it gets the default name _g_o_a_l-_0
+     where _g_o_a_l is the goal function name of the source program that
+     was specified when generating the generating extension. The residual
+     program is written onto the file _r_e_s_i_d-_s_i_m-_f_i_l_e if this argument
+     is supplied, and it is pretty-printed, since the argument '_p_p
+     now is always supplied in Simu.
+
+When the user chooses this item, a working board will pop up, in
+order to get the compiler program name, the compiler goal function
+name, the argument pattern, the residual program name, the residual
+
+
+
+
+
+
+
+
+
+                           - 25 -
+
+
+goal function name and the running times, in six input entries (but
+some input entries may be left empty).
+
+_3._5._2 _S_h_o_w _c_u_r_r_e_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+See "_S_h_o_w _c_u_r_r_e_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m" in Section 3.3.2.
+
+_3._5._3 _W_r_i_t_e _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+See "_W_r_i_t_e _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m" in Section 3.3.3.
+
+_3._5._4 _S_h_o_w _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+See "_S_h_o_w _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m" in Section 3.3.4.
+
+_3._5._5 _P_r_i_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+See "_P_r_i_n_t _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m" in Section 3.3.5.
+
+_3._5._6 _P_o_s_t _u_n_f_o_l_d_i_n_g
+
+See "_P_o_s_t _u_n_f_o_l_d_i_n_g" in Section 3.3.6.
+
+_3._5._7 _V_e_r_b_o_s_e _s_p_e_c_i_a_l_i_z_a_t_i_o_n
+
+See "_V_e_r_b_o_s_e _s_p_e_c_i_a_l_i_z_a_t_i_o_n" in Section 3.3.7.
+
+_3._6  _R_u_n
+
+There are two items in the _R_u_n menu, and both of them are relating to
+the running and timing in Similix.
+
+_3._6._1 _R_u_n _o_r_i_g_i_n_a_l _p_r_o_g_r_a_m
+
+The corresponding commands in Similix are:
+
+  1. (_a_p_p_l_y _g_o_a_l _a_r_g_s)
+  2. (_n_t_i_m_e_s (_l_a_m_b_d_a() (_a_p_p_l_y _g_o_a_l _a_r_g_s)) _n)
+
+where the commands do the following:
+
+  1. executes the goal function _g_o_a_l in a Similix source file with
+     respect to a list of arguments _a_r_g_s, only after the corresponding
+     Similix source file being loaded into Similix.
+
+  2. applies (_l_a_m_b_d_a() (_a_p_p_l_y _g_o_a_l _a_r_g_s)) n times and prints the
+     respective timing information of running, only after the
+     corresponding Similix source file being loaded into Similix.
+
+When the user chooses this item, a working board will pop up, in order
+to get the source goal function name, a list of arguments and running
+times, in three input entries.
+
+_3._6._2 _R_u_n _r_e_s_i_d_u_a_l _p_r_o_g_r_a_m
+
+
+
+
+
+
+
+
+
+                           - 26 -
+
+
+The corresponding commands in Similix are:
+
+  1. (_a_p_p_l_y _r_e_s_i_d-_g_o_a_l _a_r_g_s)
+  2. (_n_t_i_m_e_s (_l_a_m_b_d_a() (_a_p_p_l_y _r_e_s_i_d-_g_o_a_l _a_r_g_s)) _n)
+
+where the commands do the following:
+
+  1. executes the goal function _g_o_a_l in a residual program which is
+     latest generated, with respect to a list of dynamic arguments
+     _a_r_g_s. If _r_e_s_i_d-_g_o_a_l is supplied in the specialization, the goal
+     function of the residual program gets the name _r_e_s_i_d-_g_o_a_l;
+     otherwise, it gets the default name _g_o_a_l-_0, where _g_o_a_l is the
+     goal function name of the source program.
+
+  2. applies (_l_a_m_b_d_a() (_a_p_p_l_y _r_e_s_i_d-_g_o_a_l _a_r_g_s)) n times and prints
+     timing information of running the residual program which is
+     latest generated.  If _r_e_s_i_d-_g_o_a_l is supplied in the specializing
+     or compiling, the goal function of the residual program gets the
+     name _r_e_s_i_d-_g_o_a_l; otherwise, it gets the default name _g_o_a_l-_0,
+     where _g_o_a_l is the goal function name of the source program.
+
+When the user chooses this item, a working board will pop up, in order
+to get the goal function name of the residual program, a list of
+dynamic arguments and running times, in three input entries.
+
+
+_4   _B_U_T_T_O_N _C_O_M_M_A_N_D_S
+
+There are two button commands in Simu, and they are _H_e_l_p and _E_x_i_t.
+
+_4._1  _H_e_l_p
+
+Simu supplies the user with an on-lined manual about the system, in
+order to help the user through the system. The _H_e_l_p button serves the
+showing window to display the whole manual.  Whenever the user presses
+this button at any time running Simu, the Simu manual text will be
+presented in a showing window.
+
+_4._2  _E_x_i_t
+
+The _E_x_i_t button gives a way to quit the whole Simu system. After
+the user chooses the button, a dialog box will pop up to let the user
+confirm again whether he/she really wants to quit Simu or not.
+
+
+_5   _T_E_X_T _E_D_I_T_O_R _F_O_R _U_S_E_R_S
+
+The _T_e_x_t _e_d_i_t_o_r [Pet91] provides many of the common keyboard
+editing commands. These commands allow users to move around and edit
+the buffer. Actually, the working area in Simu is a text editor, too,
+but with the _A_p_p_e_n_d editing type. Some of the editing functions
+about the _T_e_x_t _e_d_i_t_o_r here are also suitable to the working
+area.
+
+
+
+
+
+
+
+
+
+
+                           - 27 -
+
+
+The default key bindings are patterned after those in the EMACS text
+editor:
+
+Ctrl-a                  Beginning of line
+Ctrl-b                  Backward character
+Ctrl-d                  Delete next character
+Ctrl-e                  End of line
+Ctrl-f                  Forward character
+Ctrl-g                  Multiply reset
+Ctrl-h                  Delete previous character
+Ctrl-j                  Newline and indent
+Ctrl-k                  Kill to end of line
+Ctrl-l                  Redraw display
+Ctrl-m                  Newline
+Ctrl-n                  Next line
+Ctrl-o                  Newline and backup
+Ctrl-p                  Previous line
+Ctrl-r                  Search/replace backward
+Ctrl-s                  Search/replace forward
+Ctrl-t                  Transpose characters
+Ctrl-u                  Multiply by 4
+Ctrl-v                  Next page
+Ctrl-w                  Kill selection
+Ctrl-y                  Unkill
+Ctrl-z                  Scroll one line up
+
+Meta-b                  Backward word
+Meta-f                  Forward word
+
+Meta-i                  Insert file
+Meta-k                  Kill to end of paragraph
+Meta-q                  Form paragraph
+Meta-v                  Previous page
+Meta-y                  Inset current selection
+Meta-z                  Scroll one line down
+Meta-d                  Delete next word
+Meta-D                  Kill word
+Meta-h                  Delete previous word
+Meta-H                  Backward kill word
+Meta-<                  Beginning of file
+Meta->                  End of file
+Meta-]                  Forward paragraph
+Meta-[                  Backward paragraph
+
+Meta-Delete             Delete previous word
+Meta-Shift Delete       Kill previous word
+Meta-Backspace          Delete previous word
+Meta-Shift Backspace    Kill previous word
+
+   In addition, the mouse may be used to cut and paste text:
+
+Button 1 Down           Start selection
+Button 1 Motion         Adjust selection
+Button 1 Up             End selection (cut)
+
+
+
+
+
+
+
+
+
+                           - 28 -
+
+
+Button 2 Down           Insert current selection (paste)
+
+Button 3 Down           Extend current selection
+Button 3 Motion         Adjust selection
+Button 3 Up             End selection (cut)
+
+_5._1  _S_e_a_r_c_h _a_n_d _r_e_p_l_a_c_e
+
+The text editor provides a search popup that can be used to search for
+a string within the current editor. The popup can be activated by
+typing either Ctrl-r or Ctrl-s. If Ctrl-s is used, the search will be
+forward in the file from the current location of the insertion point;
+if Ctrl-r is used, the search will be backward.  The activated popup
+is placed under the mouse pointer.  It has a number of buttons that
+allow both text searches and text replacements to be performed.
+
+At the top of the search popup are two toggle buttons labeled _b_a_c_k_w_a_r_d
+and _f_o_r_w_a_r_d.  One of these buttons will always be highlighted; this is
+the direction in which the search will be performed. The user can
+change the direction at any time by clicking on the appropriate
+button.
+
+Directly under the buttons there are two text areas, one labeled
+_S_e_a_r_c_h _f_o_r: and the other labeled _R_e_p_l_a_c_e _w_i_t_h:. After each of these
+labels will be a text field. This fields will allow the user to enter
+a string to search for and the string to replace it with. Only one of
+these text fields will have a window border around it; this is the
+active text field. Any key presses that occur when the focus in the
+search popup will be directed to the active text field. There are also
+a few special key sequences:
+
+Return                  Execute the action, and pop down the search window.
+Tab                     Execute the action, then move to the next field.
+Shift Return            Execute the action, then move to the next field.
+Ctrl-q Tab              Enter a Tab into a text field.
+Ctrl-c                  Pop down the search popup.
+
+Using these special key sequences should allow simple searches without
+ever removing one's hands from the keyboard.
+
+At the bottom of the search popup is a row of buttons. These buttons
+allow the same actions to be performed as the key sequences, but the
+buttons will leave the popup active. This can be quite useful if many
+searches are being performed, as the popup will be left on the
+display.  Since the search popup is a transient window, it may be
+picked up with the window manager and pulled off to the side for use
+at a later time.
+
+Search                  Search for the specified string.
+
+Replace                 Replace the currently highlighted string with the
+                        string in the _R_e_p_l_a_c_e _w_i_t_h text field, and move
+                        onto the next occurrence of the _S_e_a_r_c_h _f_o_r text
+                        field. The functionality is commonly referred to
+
+
+
+
+
+
+
+
+
+                           - 29 -
+
+
+                        as query-replace.
+
+Replace-All             Replace all occurrences of the search string with
+                        the replace string from the current insertion
+                        point position to the end (or beginning) of the
+                        file. There is no key sequence to perform this
+                        action.
+
+Cancel                  Remove the search popup from the screen.
+
+_5._2  _F_i_l_e _i_n_s_e_r_t_i_o_n
+
+To insert a file into a text window, type the key sequence Meta-i,
+which will activate the file insert popup. This popup will appear
+under the mouse pointer, and any text typed while the focus is in this
+popup will be redirected to the text field used for the filename. When
+the desired filename has been entered, click on _I_n_s_e_r_t _F_i_l_e, or type
+Return. The named file will then be inserted in the text window
+beginning at the insertion point position. If an error occurs when
+opening the file, an error message will be printed, prompting the user
+to enter the filename again.  The file insert may be aborted by
+clicking on Cancel. If Meta-i is typed at a text window that is
+Read-only, it will beep, as no file insertion is allowed.
+
+
+_6   _A_D_D_I_T_I_O_N_A_L _F_A_C_I_L_I_T_I_E_S
+
+_6._1  _C_o_m_m_a_n_d-_l_i_n_e _i_n _S_i_m_u
+
+Each time when the user types Ctrl-q in the working area, this
+operation will remove the previous command-line window (if any) and
+create the new one. The command-line window is a small input window,
+and is especially used to let the user input any command-line to
+Similix. It acts as if the user is working on the own environment of
+Similix. Within the command-line window, when the user types any
+command which is followed by Return, the command will be sent to
+Similix, and the output from Similix will be displayed in the working
+area. At the same time, the small window will be empty again to be
+ready to receive the next new input from the user. If the user wants
+to remove this small window, just clicks on Close button in the left
+upper of the command-line window.
+
+If a special command in Similix which the user wants to use is not
+custom-made in Simu's menu items, the command-line form in Simu is a
+kind of remedy, and this is just the purpose of the small command-line
+window.
+
+_6._2  _I_n_t_e_r_r_u_p_t_i_n_g _S_i_m_i_l_i_x
+
+When the user types something wrong, or there for some other reasons
+is no output from Similix in the working area, this could mean that
+Similix needs to be interrupted by the user. Then, the user may type
+Ctrl-c in the small command-line window to interrupt Similix.
+Alternately, the user may simply type Ctrl-c in the working area to
+
+
+
+
+
+
+
+
+
+                           - 30 -
+
+
+break Similix.
+
+_6._3  _H_e_l_p_s _a_t _t_h_e _r_u_n_n_i_n_g
+
+During the interaction between the user and Simu, for instance, when
+the dialog box or the working board pops up, there always is a _H_e_l_p
+button. If the user presses this button, the brief directions will be
+shown. Corresponding to each level of system components which the user
+is operating on, this kind of _H_e_l_ps tell the user how and what to do
+concisely.
+
+_6._4  _O_t_h_e_r _k_e_y _b_i_n_d_i_n_g_s
+
+Simu still contains a set of preinstalled keyboard definitions,
+besides those used in the Text editor. These are a set of key bindings
+that perform many of the additional operations. It is not necessary to
+use the mouse, and these actions can be performed more quickly.
+
+The default key bindings for Simu are as follows.
+
+In the working area:
+
+Ctrl-x                  A dialog box pops up, to get the name of the
+                        file onto which the content of the working
+                        area will be saved.
+
+In any input entry of dialog box or working board:
+
+Return                  Has the same effect as the one clicks on OK button.
+
+In the showing window only:
+
+b                       Page back
+f                       Page forward
+<Space>                 Page forward
+1                       One line forward
+2                       Two lines forward
+3                       Three lines forward
+4                       Four lines forward
+
+_6._5  _K_n_o_w_n _p_r_o_b_l_e_m_s _i_n _S_i_m_u
+
+When the preprocessed program with the boldface is displayed in the
+showing window on the screen, if the user scrolls this showing window,
+sometimes the text in the window will become ``dirty''. One solution
+to this problem is to use the mouse to choose _R_e_f_r_e_s_h function
+supported by twm and make the text ``clean''.
+
+Some machines might not support _f_o_r_m_a_t facility, which is used
+to print the preprocessed program in Simu by the laserprinter. For
+instance, at DIKU _t_y_r can't accept _f_o_r_m_a_t, so that it will
+not work well when the user wants to print the preprocessed program by
+the laserprinter.
+
+
+
+
+
+
+
+
+
+
+                           - 31 -
+
+
+Finally, Simu is relating to two processes in the operating system
+[Lab83,YP92 ], and the child process is _s_c_m. When the user quits
+Simu, it's suggested that the user should use the command _s_p_s -_a
+to get all of the current process states (IDs), in order to check
+whether the child process really exits or not. If it still exists, the
+user should use _k_i_l_l _I_D to kill the process, where _I_D is
+the number of process _s_c_m.
+
+
+_7   _C_O_N_C_L_U_S_I_O_N
+
+The Simu system presented here was done during the period from June,
+1993 to May, 1994 at DIKU, Department of Computer Science, University
+of Copenhagen, Denmark.
+
+_M_o_r_e _i_n_f_o_r_m_a_t_i_o_n _a_b_o_u_t _S_i_m_i_l_i_x Simu serves for Similix 5.0, and
+the description about Similix in this manual quotes the part of
+"Similix 5.0 Manual" [Bon93] written by Anders Bondorf. For more
+detailed information the user is refered to the "Similix 5.0 Manual".
+
+_A_d_v_a_n_t_a_g_e_s _o_f _S_i_m_u The principle advantages for Simu are its
+efficient communication mechanisms between the user interface system
+and the other else executable systems, its portability to be
+potentially used in other machine environment, and its adequacy to the
+friendly practice in the partial evaluation theory.  At the end of
+1993, the students in the course of "Introduction to Semantics" at
+DIKU began to use the Simu system while studying the section of
+"Partial Evaluation".
+
+_B_u_g _r_e_p_o_r_t _a_n_d _c_o_n_t_a_c_t_i_n_g _a_d_d_r_e_s_s Simu is still a system under
+development, and the current version was finished not long ago. So
+it's possible that it has some hidden errors or bugs which have not
+yet been found, though Simu has been tested many times. Users are very
+welcome to tell the author about bugs, comments, suggestions,
+etc. Please direct any Simu communication to the following address,
+preferably by e-mail (_s_i_m_i_l_i_x@_d_i_k_u._d_k):
+
+        DIKU, Department of Computer Science
+        University of Copenhagen
+        Universitetsparken 1
+        DK-2100, Copenhagen East
+        Denmark
+
+
+_R_e_f_e_r_e_n_c_e_s
+
+[AS90] Paul J. Asente and Ralph R. Swick. X Window System
+Toolkit. Digital Press, 1990.
+
+[BJ93] Anders Bondorf and Jesper Joergensen. Efficient analyses for
+realistic off-line partial evaluation.  Journal of Functional
+Programming, special issue on partial evaluation, 3(3):315-346, 1993.
+
+[Bon93] Anders Bondorf.  Similix 5.0 Manual.  DIKU, University of
+
+
+
+
+
+
+
+
+
+                           - 32 -
+
+
+Copenhagen, Denmark, May 1993. Included in Similix distribution, 82
+pages.
+
+[GS91] James Gettys and Robert W. Scheifler. Xlib - C Language
+Interface, MIT X Consortium Standard, X Version 11, Release 5. August
+1991.
+
+[Lab83] Bell Telephone Laboratories. Unix Programmer's Manual. 1983.
+
+[MAS91] Joel McCormack, Paul Asente, and Ralph R. Swick.  X Toolkit
+Intrinsics - C Language Interface, X Window System, X Version 11,
+Release 5.  Digital Equipment Corporation, August 1991.
+
+[Mik92] Steven Mikes. X Window System Program Design and
+Development. Addison-Wesley, 1992.
+
+[Pet91] Chris D. Peterson. Athena Widget Set - C Language Interface, X
+Window System, X Version 11, Release 5. formly MIT X Consortium, July
+1991.
+
+[SG90] Robert W. Scheifler and James Gettys. X Window System, Second
+Edition. Digital Press, 1990.
+
+[YP92] Douglas A. Young and John A. Pew.  The X Window System -
+Programming and Applications with Xt OPEN LOOK Edition. Prentice-Hall,
+1992.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

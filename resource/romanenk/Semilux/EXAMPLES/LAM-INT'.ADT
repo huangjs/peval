@@ -1,0 +1,32 @@
+;; lam-int'.adt
+
+(defprim (is-cst? e))
+(defprim (cst-c e))
+
+(defprim (is-var? e))
+(defprim (var-v e) e)
+
+(defprim (is-binop? e))
+(defprim (binop-b e))
+(defprim (binop-e1 e))
+(defprim (binop-e2 e))
+
+(defprim (is-if? e))
+(defprim (if-e1 e))
+(defprim (if-e2 e))
+(defprim (if-e3 e))
+
+(defprim (is-lambda? e))
+(defprim (lambda-v e))
+(defprim (lambda-e e))
+
+(defprim (is-letrec? e))
+(defprim (letrec-v e))
+(defprim (letrec-e1 e))
+(defprim (letrec-e2 e))
+
+(defprim (is-apply? e))
+(defprim (apply-e1 e))
+(defprim (apply-e2 e))
+
+(defprim (ext op a1 a2))

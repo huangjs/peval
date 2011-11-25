@@ -1,0 +1,53 @@
+;; File: mp-int.adt
+
+(defprim (p->v1* p))
+(defprim (p->v2* p))
+(defprim (p->b p))
+
+(defprim (empty-block? b))
+(defprim (block->head b))
+(defprim (block->tail b))
+
+(defprim (is-assignment? c))
+(defprim (c-assignment->v c))
+(defprim (c-assignment->e c))
+
+(defprim (is-conditional? c))
+(defprim (c-conditional->e c))
+(defprim (c-conditional->b1 c))
+(defprim (c-conditional->b2 c))
+
+(defprim (is-while? c))
+(defprim (c-while->e c))
+(defprim (c-while->b c))
+
+(defprim (is-write? c))
+(defprim (c-write->e c))
+
+(defprim (is-constant? e))
+(defprim (e-constant->value e))
+
+(defprim (is-variable? e))
+(defprim (e-variable->name e))
+
+(defprim (is-prim? e))
+(defprim (e->operator e))
+(defprim (e->e e))
+(defprim (e->e1 e))
+(defprim (e->e2 e))
+
+(defprim (is-cons? e))
+(defprim (is-equal? e))
+(defprim (is-car? e))
+(defprim (is-cdr? e))
+(defprim (is-atom?? e))
+
+(defprim (is-true? x))
+
+(defprim (init-environment v1* v2*))
+(defprim (lookup-env v env))
+
+(defprim-opaque (init-store! input-v1* length-v2*))
+(defprim-opaque (update-store! location value))
+(defprim-opaque (lookup-store location))
+(defprim-opaque (free-store!))

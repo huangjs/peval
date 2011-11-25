@@ -1,0 +1,53 @@
+; The stuff contained in this file should be added to your .emacs file.
+; Replace the text
+;
+;       <****default-machine-name-****>
+;
+; by a local machine name.
+;
+; Also notice that the location of the Scheme system is site-dependent
+
+;;	Scheme mode
+(setq auto-mode-alist
+      (cons '("\\.adt$" . scheme-mode)
+	    (cons '("\\.sim$" . scheme-mode)
+		  (cons '("\\.ss$" . scheme-mode)
+			(cons '("\\.scm$" . scheme-mode)
+			       auto-mode-alist)))))
+
+
+(defun run-scheme (host)
+  "Run an inferior Scheme process on HOST (default <****default-machine-name-****>)"
+  (interactive "sHost name (default <****default-machine-name-****>): ")
+  (if (equal host "") (setq host "<****default-machine-name-****>"))
+  (require 'shell)
+  (pop-to-buffer
+   (make-shell (concat "Scheme@" host)
+	       "/bin/sh" nil "-c"
+	       (format "rsh %s 'cd %s; scheme'"
+;;                                     ^^^^^^
+;;                                     ****site dependent***
+;;
+		       host
+		       (file-name-directory (buffer-file-name)))))
+  (inferior-lisp-mode)
+  (make-local-variable 'shell-prompt-pattern)
+  (setq shell-prompt-pattern "> " )
+  (setq mode-name "Scheme"))
+
+; Pedestrian version --- does not use rsh:
+(defun run-scheme1 ()
+  "Run an inferior Scheme process, input and output via buffer *lisp*."
+  (interactive)
+  (require 'shell)
+  (pop-to-buffer
+   (make-shell
+    "Scheme" "/bin/sh" nil "-c"
+    "/home/..../scheme" ))
+;;   ^^^^^^^^^^^^^^^^^
+;;   ****site dependent***
+;;
+  (inferior-lisp-mode) 
+  (make-local-variable 'shell-prompt-pattern)
+  (setq shell-prompt-pattern "> " )
+  (setq mode-name "Scheme"))

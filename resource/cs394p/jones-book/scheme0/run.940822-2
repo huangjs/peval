@@ -1,0 +1,118 @@
+SCM version 4c5, Copyright (C) 1990, 1991, 1992, 1993 Aubrey Jaffer.
+SCM comes with ABSOLUTELY NO WARRANTY; for details type `(terms)'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `(terms)' for details.
+;loading "/home/sestoft/scheme/scm/Transcen.scm"
+;done loading "/home/sestoft/scheme/scm/Transcen.scm"
+;Evaluation took 366 mSec (0 in gc) 8492 cons work
+
+> (load "scheme0.ss")
+;loading "scheme0.ss"
+;done loading "scheme0.ss"
+;Evaluation took 83 mSec (0 in gc) 1554 cons work
+#<unspecified>
+
+> (create)
+;loading "spec.ss"
+;done loading "spec.ss"
+;loading "annotate.ss"
+;done loading "annotate.ss"
+;loading "analyse.ss"
+;done loading "analyse.ss"
+;loading "subject.ss"
+;done loading "subject.ss"
+;Evaluation took 683 mSec (150 in gc) 44551 cons work
+#<unspecified>
+
+> (load "subject.ss")
+;loading "subject.ss"
+;done loading "subject.ss"
+;Evaluation took 66 mSec (0 in gc) 5140 cons work
+#<unspecified>
+
+> (define norma2-sd (monotate norma2 '(s d)))
+;Evaluation took 1350 mSec (566 in gc) 113966 cons work
+#<unspecified>
+
+> norma2-sd
+;Evaluation took 0 mSec (0 in gc) 1 cons work
+((define (((execute 1) s d) (pgm) (x))
+   (calls ((run 2 2) s s d d) (pgm pgm) (x (lift ()))))
+ (define (((run 2 2) s s d d) (pgm suf) (x y))
+   (ifs (ops null? suf)
+	y 
+   (ifs (ops equal? (ops car suf) (quote x:=x+1))
+	(calld ((run 2 2) s s d d)
+	       (pgm (ops cdr suf))
+	       ((opd cons (lift 1) x) y))
+   (ifs (ops equal? (ops car suf) (quote y:=y+1))
+	(calld ((run 2 2) s s d d)
+	       (pgm (ops cdr suf))
+	       (x (opd cons (lift 1) y)))
+   (ifs (ops equal? (ops car suf) (quote x:=x-1))
+	(calld ((run 2 2) s s d d) (pgm (ops cdr suf)) ((opd cdr x) y))
+   (ifs (ops equal? (ops car suf) (quote y:=y-1))
+	(calld ((run 2 2) s s d d) (pgm (ops cdr suf)) (x (opd cdr y)))
+   (ifs (ops equal? (ops car (ops car suf)) (quote goto))
+	(calls ((run 2 2) s s d d) 
+	       (pgm (calls ((hop) s s) (pgm (ops cdr (ops car suf))) ()))
+	       (x y))
+   (ifs (ops equal? (ops car (ops car suf)) (quote ifx=0))
+	(ifd (opd null? x)
+	     (calld ((run 2 2) s s d d)
+		    (pgm (calls ((hop) s s) (pgm (ops cdr (ops car suf))) ()))
+		    (x y))
+	     (calld ((run 2 2) s s d d) (pgm (ops cdr suf)) (x y)))
+   (ifs (ops equal? (ops car (ops car suf)) (quote ify=0))
+	(ifd (opd null? y) 
+	     (calld ((run 2 2) s s d d)
+		    (pgm (calls ((hop) s s) (pgm (ops cdr (ops car suf))) ()))
+		    (x y))
+	     (calld ((run 2 2) s s d d)
+		    (pgm (ops cdr suf))
+		    (x y))) 
+	(calls ((run 2 2) s s d d) (pgm pgm) (y x)))))))))))
+ (define (((hop) s s) (pgm dest) ())
+   (ifs (ops null? dest)
+	pgm
+	(calls ((hop) s s) ((ops cdr pgm) (ops cdr dest)) ()))))
+
+> (define twice-target (spec norma2-sd (list twice)))
+;Evaluation took 183 mSec (66 in gc) 11558 cons work
+#<unspecified>
+
+> (make 'twtar twice-target)
+;Evaluation took 16 mSec (0 in gc) 3982 cons work
+#<unspecified>
+
+> (twtar '(1 1 1))
+;Evaluation took 0 mSec (0 in gc) 91 cons work
+(1 1 1 1 1 1)
+
+> (twtar '())
+;Evaluation took 0 mSec (0 in gc) 37 cons work
+()
+
+> (twtar '(1 1 1 1 1 1 1))
+;Evaluation took 0 mSec (0 in gc) 163 cons work
+(1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+
+> (define sann (monotate specializer '(s d)))
+;Evaluation took 3250 mSec (1450 in gc) 261544 cons work
+#<unspecified>
+
+> (define norma2-comp (spec sann (list norma2-sd)))
+;Evaluation took 6200 mSec (2833 in gc) 401044 cons work
+#<unspecified>
+
+> (make 'norma2-c norma2-comp)
+;Evaluation took 833 mSec (433 in gc) 55264 cons work
+#<unspecified>
+
+> (define twice-target2 (norma2-c (list twice)))
+;Evaluation took 133 mSec (83 in gc) 3183 cons work
+#<unspecified>
+
+> (equal? twice-target twice-target2)
+;Evaluation took 0 mSec (0 in gc) 0 cons work
+#t

@@ -1,0 +1,49 @@
+% dwflyer.tex                Gordon S. Novak Jr.            28 Sep 94
+
+\documentstyle[12pt]{article}
+\setlength{\oddsidemargin}{0 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{9.0 in}
+\setlength{\parskip}{0.1 in}
+\setlength{\parindent}{0.0 in}
+\setlength{\topmargin}{-0.4in}
+\hyphenpenalty=9990
+
+\begin{document}
+
+\begin{center} \large{{\bf Interface from AKCL to X Windows}} \end{center}
+
+An interface between Austin Kyoto Common Lisp (AKCL) and X windows has
+been \linebreak developed.  The Xakcl system contains interfaces to the
+X library in C, written and adapted by Hiep Huu Nguyen.
+The {\tt dwindow} package, written by Gordon Novak, is an ``easy to use''
+interface from Lisp to the functions provided by Xakcl.
+
+The Xakcl system can be executed on IBM's or Sun's
+by entering {\tt /p/bin/Xakcl} \  .  To load the {\tt dwindow} package
+after starting Xakcl, enter:
+\begin{verbatim}
+   (load "/u/cs381k/dw.lsp")               ; on IBM's
+
+   (load "/u/cs381k/dwtranssun.o")         ; on Sun's
+\end{verbatim}
+
+The dwindow files are available in the directory {\tt /u/cs381k/} .
+These files include the following:
+
+\begin{tabular}{ll}
+{\tt dw.lsp}        & load the {\tt dwindow} files for IBM \\
+{\tt dwindow.lsp}   & {\tt dwindow} package, GLISP source \\
+{\tt dwtrans.lsp}   & {\tt dwindow} package, compiled to Common Lisp \\
+{\tt dwtrans.o}     & {\tt dwindow} package, compiled for IBM's \\
+{\tt dwtranssun.o}  & {\tt dwindow} package, compiled for Sun Sparcstation \\
+{\tt dwtest.lsp}    & examples, {\tt (wtesta)} through {\tt (wtesth)} \\
+{\tt dwdoc.dvi}     & documentation \\
+{\tt dwdoc.tex}     & documentation, LaTex source \\
+{\tt dwflyer.dvi}   & this document \\
+{\tt dwflyer.tex}   & this document, LaTex source \\
+{\tt pcalc.lsp}     & pocket calculator: {\tt (pcalc)} \\
+{\tt drawtrans.lsp} & drawing program: {\tt (draw 'foo)} \\
+\end{tabular}
+
+\end{document}

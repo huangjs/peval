@@ -1,0 +1,19 @@
+#!/bin/sh
+
+mv abssyn.scm abssyn.ss
+mv bt-eod.scm bt-eod.ss
+mv constr.scm constr.ss
+mv front.scm front.ss
+mv lam-lift.scm lam-lift.ss
+mv langext.scm langext.ss
+mv loadsysf.scm loadsysf.ss
+mv miscspec.scm miscspec.ss
+mv oc.scm oc.ss
+mv post.scm post.ss
+mv rl.scm rl.ss
+mv runtime.scm runtime.ss
+mv sp.scm sp.ss
+mv util.scm util.ss
+
+cp cogen.sim cogen.ss
+cp spec.sim spec.ss

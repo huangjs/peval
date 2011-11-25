@@ -1,0 +1,185 @@
+Sample Scheme0 session.  The lay-out has been edited.
+
+SCM version 4c5, Copyright (C) 1990, 1991, 1992, 1993 Aubrey Jaffer.
+SCM comes with ABSOLUTELY NO WARRANTY; for details type `(terms)'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `(terms)' for details.
+;loading "/home/sestoft/scheme/scm/Transcen.scm"
+;done loading "/home/sestoft/scheme/scm/Transcen.scm"
+;Evaluation took 366 mSec (0 in gc) 8492 cons work
+
+> (load "scheme0.ss")
+;loading "scheme0.ss"
+;done loading "scheme0.ss"
+;Evaluation took 66 mSec (0 in gc) 1561 cons work
+#<unspecified>
+
+> (create)
+;loading "/home/sestoft/scheme/pe/ftp/spec.ss"
+;done loading "/home/sestoft/scheme/pe/ftp/spec.ss"
+;loading "/home/sestoft/scheme/pe/ftp/annotate.ss"
+;done loading "/home/sestoft/scheme/pe/ftp/annotate.ss"
+;loading "/home/sestoft/scheme/pe/ftp/analyse.ss"
+;done loading "/home/sestoft/scheme/pe/ftp/analyse.ss"
+;loading "/home/sestoft/scheme/pe/ftp/subject.ss"
+;done loading "/home/sestoft/scheme/pe/ftp/subject.ss"
+;Evaluation took 783 mSec (133 in gc) 44551 cons work
+#<unspecified>
+
+> (load "subject.ss")
+;loading "subject.ss"
+;done loading "subject.ss"
+;Evaluation took 83 mSec (0 in gc) 5140 cons work
+#<unspecified>
+
+> (define pa2 (monotate power2 '(s d)))
+;Evaluation took 116 mSec (66 in gc) 6229 cons work
+#<unspecified>
+
+> pa2
+;Evaluation took 0 mSec (0 in gc) 1 cons work
+((define (((pow 2) s d) (n) (x)) 
+   (ifs (ops equal? n 0) 
+	(lift 1) 
+	(ifs (ops even? n) 
+	     (calld ((pow 2) s d) ((ops quotient n 2)) ((opd * x x))) 
+	     (opd * x (calls ((pow 2) s d) ((ops - n 1)) (x)))))))
+
+> (scheme (spec pa2 '(22)))
+;Evaluation took 50 mSec (0 in gc) 6103 cons work
+((define (pow*sd-1 x) (pow*sd-2 (* x x))) 
+ (define (pow*sd-2 x) (* x (pow*sd-3 (* x x)))) 
+ (define (pow*sd-3 x) (* x (pow*sd-4 (* x x))))
+ (define (pow*sd-4 x) (pow*sd-5 (* x x)))
+ (define (pow*sd-5 x) (* x (quote 1))))
+
+> (make 'to22 (spec pa2 '(22)))
+;Evaluation took 133 mSec (66 in gc) 6009 cons work
+#<unspecified>
+
+> (to22 1)
+;Evaluation took 16 mSec (0 in gc) 75 cons work
+1
+
+> (to22 2)
+;Evaluation took 0 mSec (0 in gc) 33 cons work
+4194304
+
+> (to22 3)
+;Evaluation took 0 mSec (0 in gc) 35 cons work
+31381059609
+
+> (define sann (monotate specializer '(s d)))
+;Evaluation took 3200 mSec (1416 in gc) 261565 cons work
+#<unspecified>
+
+> (define sp2 (spec sann (list pa2)))
+;Evaluation took 816 mSec (300 in gc) 61072 cons work
+#<unspecified>
+
+> (length sp2)
+;Evaluation took 0 mSec (0 in gc) 0 cons work
+11
+
+> (scheme sp2)
+;Evaluation took 133 mSec (83 in gc) 10028 cons work
+((define (specialize*sd-1 vs0)
+   (complete*dds-1 (cons (cons (quote ((pow 2) s d)) vs0) (quote ()))
+		   (quote ())))
+ (define (complete*dds-1 pending marked) 
+   (if (null? pending)
+       (quote ())
+       (generate*dsdds-1 (car pending) pending marked)))
+ (define (generate*dsdds-1 fvs pending marked)
+   (if (equal? (quote ((pow 2) s d)) (car fvs))
+       (gen1*sdddds-1 (reduce*ssdsds-1 (cdr fvs) (quote (x)))
+		      fvs pending (cons fvs marked))
+       (generate*dsdds-2 fvs pending marked)))
+ (define (reduce*ssdsds-1 vs vd) 
+   (if (evalbase (quote equal?) (cons (car vs) (cons (quote 0) (quote ()))))
+       (reduce*ssdsds-2 vs vd)
+       (reduce*ssdsds-3 vs vd)))
+ (define (reduce*ssdsds-2 vs vd) 
+   (cons (quote quote) (cons (quote 1) (quote ()))))
+ (define (reduce*ssdsds-3 vs vd)
+   (if (evalbase (quote even?) (cons (car vs) (quote ())))
+       (reduce*ssdsds-4 vs vd)
+       (reduce*ssdsds-5 vs vd)))
+ (define (reduce*ssdsds-4 vs vd)
+   (cons (quote call)
+   (cons (cons (quote ((pow 2) s d))
+	       (cons (evalbase (quote quotient)
+			       (cons (car vs) 
+			       (cons (quote 2) 
+				     (quote ()))))
+		     (quote ())))
+   (cons (cons (quote op) 
+	 (cons (quote *) 
+         (cons (car vd) 
+         (cons (car vd) 
+	       (quote ())))))
+	 (quote ())))))
+ (define (reduce*ssdsds-5 vs vd)
+   (cons (quote op)
+   (cons (quote *) 
+   (cons (car vd) 
+   (cons (docalls*ssdd-1 
+	  (cons (evalbase (quote -) 
+			  (cons (car vs) 
+			  (cons (quote 1) 
+				(quote ())))) 
+		(quote ())) 
+	  (cons (car vd) (quote ())))
+	 (quote ()))))))
+ (define (docalls*ssdd-1 args argd)
+   (if (nodup (quote (2)) argd)
+       (reduce*ssdsds-1 args argd)
+       (cons (quote call) (cons (cons (quote ((pow 2) s d)) args) argd))))
+ (define (gen1*sdddds-1 evs fvs pending newmarked)
+   (cons (cons (quote define)
+	 (cons (cons fvs (quote (x)))
+	 (cons evs (quote ())))) 
+	 (complete*dds-1 (diff (successors evs pending) newmarked) newmarked)))
+ (define (generate*dsdds-2 fvs pending marked)
+   (error (quote generate) (quote "Undefined function: ~s") (car fvs))))
+
+> (make 'p2gen sp2)
+;Evaluation took 150 mSec (66 in gc) 10458 cons work
+#<unspecified>
+
+> (scheme (p2gen '(22)))
+;Evaluation took 33 mSec (0 in gc) 3675 cons work
+((define (pow*sd-1 x) (pow*sd-2 (* x x)))
+ (define (pow*sd-2 x) (* x (pow*sd-3 (* x x))))
+ (define (pow*sd-3 x) (* x (pow*sd-4 (* x x))))
+ (define (pow*sd-4 x) (pow*sd-5 (* x x)))
+ (define (pow*sd-5 x) (* x (quote 1))))
+
+> (define cc (spec sann (list sann)))
+;Evaluation took 24683 mSec (13016 in gc) 1369210 cons work
+#<unspecified>
+
+> (length cc)
+;Evaluation took 0 mSec (0 in gc) 0 cons work
+60
+
+> (make 'cogen cc)
+;Evaluation took 1733 mSec (583 in gc) 175003 cons work
+#<unspecified>
+
+> (define cp2 (cogen (list pa2)))
+;Evaluation took 233 mSec (0 in gc) 15291 cons work
+#<unspecified>
+
+> (equal? sp2 cp2)
+;Evaluation took 0 mSec (0 in gc) 0 cons work
+#t
+
+> (define ccc (cogen (list sann)))
+;Evaluation took 3316 mSec (1250 in gc) 259712 cons work
+#<unspecified>
+
+> (equal? cc ccc)
+;Evaluation took 16 mSec (0 in gc) 0 cons work
+#t
+

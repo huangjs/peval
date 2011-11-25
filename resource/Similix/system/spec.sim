@@ -1,0 +1,457 @@
+; Similix specializer
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+; -----------------------------------------------------------------------------
+
+(loadt (string-append **Similix-library** "spec.adt"))
+
+(define (_sim-specialize goal value* pgm residual-goal)
+  (let* ((udp (_sim-fetch-pgm-udp pgm))
+	 (def&index (_sim-lookup-goal-procedure udp))
+	 (def (car def&index))
+	 (index (cdr def&index))
+	 (btp (_sim-fetch-def-btp def))
+	 (arity (length btp))
+	 (adt (_sim-fetch-pgm-adt-file* pgm)))
+    ;-------------------------------------------------------------------------
+    ; Processing expressions:
+    
+    (define (id-c) (lambda (value/rexp) value/rexp))
+    
+    (define (proc-e-memo e r c) (_sim-memoize (proc-e e r c)))
+    
+    (define (proc-e e r c)
+      (cond
+	((_sim-isLift? e)
+	 (proc-e (_sim-fetch-lift-arg e) r
+		 (lambda (value) (c (_sim-build-cst value)))))
+	((_sim-isCst? e)
+	 (c (_sim-fetch-cst-value e)))
+	((_sim-isVar? e)
+	 (c (lookup-env (_sim-fetch-var-debruijn e) r)))
+	((_sim-isCond? e)
+	 (let* ((test-part (_sim-fetch-cond-test e))
+		(then-part (_sim-fetch-cond-then e))
+		(else-part (_sim-fetch-cond-else e)))
+	   (proc-e
+	    test-part r
+	    (lambda (value/rexp)
+	      (if (and (_sim-isDynamic? test-part)
+		       (_sim-isDynamic? then-part))
+		  ; (_sim-isDynamic? else-part) also holds
+		  (let* ((rexp-then (proc-e then-part r (id-c)))
+			 (rexp-else (proc-e else-part r (id-c))))
+		    (c (_sim-build-cond value/rexp rexp-then rexp-else)))
+		  (let ((c (collapse1 c)))
+		    (if (_sim-isStatic? test-part)
+			(if value/rexp
+			    (proc-e then-part r c)
+			    (proc-e else-part r c))
+			(_sim-build-cond value/rexp
+					 (proc-e then-part r c)
+					 (proc-e else-part r c))))))
+	    )))
+	((_sim-isLet? e)
+	 (let* ((formal (_sim-fetch-let-formal e))
+		(actual (_sim-fetch-let-actual e))
+		(body (_sim-fetch-let-body e)))
+	   (proc-e
+	    actual r
+	    (if (_sim-isLet-unfoldable? e)
+		(lambda (value/rexp) (proc-e body (upd-env value/rexp r) c))
+		(lambda (rexp)
+		  (let ((residual-formal (_sim-generate-var-name!
+					  (_sim-varname->name formal))))
+		    (_sim-build-let
+		     residual-formal (_sim-fetch-eod-tag actual) rexp
+		     (proc-e
+		      body (upd-env (_sim-build-var residual-formal) r)
+		      c))))))))
+	((_sim-isBegin? e)
+	 (let ((snd (_sim-fetch-begin-snd e)))
+	   (proc-e
+	    (_sim-fetch-begin-fst e) r
+	    (if (_sim-isBegin-unfoldable? e)
+		(lambda (value/rexp) (proc-e snd r c))
+		(lambda (rexp) (_sim-build-begin rexp (proc-e snd r c)))))))
+	((_sim-isPrimop? e)
+	 (let ((name (_sim-fetch-primop-name e)))
+	   (proc-e*
+	    (_sim-fetch-primop-args e) r _sim-isImperative?
+	    (cond
+	      ((member (_sim-fetch-primop-referentiality e) '(abort abort-eoi))
+	       (lambda (rexp*) (_sim-build-primop name rexp*)))
+	      ((_sim-isStatic? e)
+	       (lambda (value*)
+		 (c (_sim-delta-reduce (_sim-fetch-primop-n+i e) value*))))
+	      (else
+	       (lambda (rexp*) (c (_sim-build-primop name rexp*))))))))
+	((_sim-isCstr? e)
+	 (let ((e* (_sim-fetch-cstr-args e)))
+	   (if (_sim-isDynamic? e)
+	       (proc-e*
+		e* r _sim-isImperative?
+		(lambda (rexp*)
+		  (c (_sim-build-cstr (_sim-fetch-cstr-name e) rexp*))))
+	       (proc-e*
+		e* r _sim-isDynamic?
+		(let ((btp (_sim-fetch-bt-tag* e*)))
+		  (lambda (value/rexp*)
+		    (c (_sim-make-psds
+			; projection function:
+			(lambda (proj value formal rf* ra* pos ca c)
+			  (let* ((name (_sim-get-constr-val-cstr-name value)))
+			    (project-value/rexp*
+			     formal (_sim-get-constr-val-args value)
+			     btp rf* ra* pos ca
+			     (lambda (new-v* p* rf* ra* pos ca)
+			       (let* ((new-v
+				       (_sim-make-psds
+					proj
+					; here _sim-make-constr-val is used
+					; to rebuild a value originally
+					; constructed by _sim-cstr-reduce;
+					; this is a HACK as it relies
+					; on a particular implementation of
+					; _sim-cstr-reduce
+					(_sim-make-constr-val name new-v*)))
+				      (p (cons name p*)))
+				 (c new-v p rf* ra* pos
+				    (_sim-upd-cache-ps
+				     value new-v p pos ca)))))))
+			; _sim-cstr-reduce is used to allow using
+			; _sim-sel-reduce for implementing selectors
+			; and _sim-pred-reduce for implementing predicates;
+			; thus it is not necessary to re-implement
+			; testing on the constructor name; the standard
+			; built-in implementation is simply reused
+			(_sim-cstr-reduce
+			 (_sim-fetch-cstr-n+i e) value/rexp*)))))))))
+	((_sim-isSel? e)
+	 (let ((arg (_sim-fetch-sel-arg e)))
+	   (proc-e
+	    arg r
+	    (if (_sim-isDynamic? arg)
+		(lambda (rexp)
+		  (c (_sim-build-sel (_sim-fetch-sel-name e)
+				     (_sim-fetch-sel-proj e)
+				     (_sim-fetch-sel-cstr e)
+				     rexp)))
+		(lambda (value)
+		  (c (_sim-sel-reduce
+		      (_sim-fetch-sel-n+i e) (_sim-get-psds-value value))))))))
+	((_sim-isPred? e)
+	 (let ((arg (_sim-fetch-pred-arg e)))
+	   (proc-e
+	    arg r (if (_sim-isDynamic? arg)
+		      (lambda (rexp)
+			(c (_sim-build-pred (_sim-fetch-pred-name e)
+					    (_sim-fetch-pred-cstr e)
+					    rexp)))
+		      (lambda (value)
+			(c (_sim-pred-reduce
+			    (_sim-fetch-pred-n+i e)
+			    (_sim-get-psds-value value))))))))
+	((_sim-isPcall? e)
+	 (let ((def (_sim-fetch-udp-def udp e)))
+	   (if (_sim-unfoldable-procedure? def)
+	       (let* ((e* (_sim-fetch-pcall-args e))
+		      (arity (length e*)))
+		 (_sim-pcall-test-output! (_sim-fetch-def-name def))
+		 (let loop ((offset 0)
+			    (c (lambda (new-r)
+				 (proc-e-memo
+				  (_sim-fetch-def-exp def) new-r
+				  (collapse1 c)))))
+		   (if (= offset arity)
+		       (c (init-env))
+		       (let ((e (list-ref e* offset)))
+			 (proc-e-insert-let-if-pred
+			  e r _sim-isImperative?
+			  (lambda (value/rexp)
+			    (loop
+			     (+ 1 offset)
+			     (lambda (new-r)
+			       (c (upd-env value/rexp new-r))))))))))
+	       (specialize-pcall def e r c))))
+    	((_sim-isAbs? e)
+	 (let* ((free* (_sim-fetch-abs-free-variable-debruijns e))
+		(arity-free (length free*))
+		(body (_sim-fetch-abs-body e)))
+	   (c (if (_sim-isClosure? e)
+		  ; make a closure:
+		  (_sim-make-closure
+		   (_sim-fetch-abs-index e)
+		   ; create a list of the values of the free variables:
+		   (let loop ((offset 0))
+		     (if (= offset arity-free)
+			 '()
+			 (cons (lookup-env (list-ref free* offset) r)
+			       (loop (+ 1 offset)))))
+		   ; projection function:
+		   (lambda (index values proj act formal rf* ra* pos ca c)
+		     (project-value/rexp*
+		      formal values
+		      (_sim-fetch-bt-tag* (_sim-fetch-abs-free-variables e))
+		      rf* ra* pos ca
+		      (lambda (new-v* p* rf* ra* pos ca)
+			(let* ((new-v
+				(_sim-make-closure index new-v* proj act))
+			       (p (cons index p*)))
+			  (c new-v p rf* ra* pos
+			     (_sim-upd-cache-cl
+			      index values new-v p pos ca))))))
+		   ; activation function:
+		   (lambda (free-var-values arg-values c)
+		     (proc-e-memo
+		      body
+		      (list-to-environment1
+		       arg-values 0 (length (_sim-fetch-abs-formals e))
+		       (list-to-environment free-var-values 0 arity-free))
+		      (lambda (value/rexp) (c value/rexp))))) ; eta-expansion
+		  ; build a residual lambda-expression:
+		  (let* ((formal* (_sim-fetch-abs-formals e))
+			 (arity-formals (length formal*))
+			 ; first compute r1 by "thinning" r --- only the
+			 ; names in r which are free variables in
+			 ; abstraction e count:
+			 (r1 (let loop ((offset 0))
+			       (if (= offset arity-free)
+				   (init-env)
+				   (upd-env (lookup-env
+					     (list-ref free* offset) r)
+					    (loop (+ 1 offset)))))))
+		    ; then generate names for residual formals and bind these
+		    ; by extending r1 to r2 --- this piece is in cps because
+		    ; both r2 and the list of generated names must be
+		    ; returned:
+		    (let loop ((offset 0)
+			       (c (lambda (r2 residual-formal*)
+				    (_sim-build-abs
+				     residual-formal*
+				     (proc-e
+				      (_sim-fetch-abs-body e) r2 (id-c))))))
+		      (if (= offset arity-formals)
+			  (c r1 '())
+			  (let ((residual-formal
+				 (_sim-generate-var-name!
+				  (_sim-varname->name
+				   (list-ref formal* offset)))))
+			    (loop (+ 1 offset)
+				  (lambda (r2 rf*)
+				    (c (upd-env
+					(_sim-build-var residual-formal) r2)
+				       (cons residual-formal rf*))))))))))))
+	(else ;; (_sim-isApp? e)
+	 (let* ((exp (_sim-fetch-app-exp e))
+		(e* (_sim-fetch-app-args e)))
+	   (proc-e-insert-let-if-pred
+	    exp r _sim-isImperative?
+	    (if (_sim-isClosure? exp)
+		(lambda (value)
+		  (proc-e*
+		   e* r _sim-isImperative?
+		   (let* ((free-var-values (_sim-get-closure-values value))
+			  (activation (_sim-get-closure-activation value)))
+		     (lambda (arg-values)
+		       (activation free-var-values arg-values
+				   ; eta-expansion:
+				   (lambda (value/rexp) (c value/rexp)))))))
+		(lambda (rexp)
+		  (proc-e*
+		   e* r _sim-isImperative?
+		   (lambda (rexp*) (c (_sim-build-app rexp rexp*)))))))))))
+    
+    (define (proc-e* e* r pred c)
+      (let ((arity (length e*)))
+	(let loop ((offset 0) (c c))
+	  (if (= offset arity)
+	      (c '())
+	      (let ((e (list-ref e* offset)))
+		(proc-e-insert-let-if-pred
+		 e r pred
+		 (lambda (value/rexp)
+		   (loop (+ 1 offset)
+			 (lambda (value/rexp*)
+			   (c (cons value/rexp value/rexp*)))))))))))
+
+    (define (proc-e-insert-let-if-pred e r pred c)
+      (proc-e
+       e r (if (pred e)
+	       ; e must now be dynamic
+	       (lambda (rexp)
+		 (let ((residual-formal (_sim-generate-var-name! 'g)))
+		   (_sim-conditional-build-let
+		    residual-formal (_sim-fetch-eod-tag e) rexp
+		    (c (_sim-select-value rexp residual-formal)))))
+	       c)))
+    
+    ;-------------------------------------------------------------------------
+    ; Specializing procedure calls:
+    
+    (define (specialize-pcall def e r c)
+      (let* ((formal* (_sim-fetch-def-pars def))
+	     (e* (_sim-fetch-pcall-args e))
+	     (btp (_sim-fetch-def-btp def))
+	     (arity (length e*)))
+	(let loop ((offset 0)
+		   (c (lambda (p* rf* ra* pos ca r1)
+			(let* ((residual-name_seenb4
+				(_sim-generate-proc-name!
+				 (_sim-fetch-pcall-name e)
+				 (cons p* (_sim-pos-pairs-in-cache ca))
+				 ))
+			       (residual-name (car residual-name_seenb4)))
+			  (and (not (cdr residual-name_seenb4))
+			       (_sim-add-residual-definition!
+				(_sim-build-def
+				 residual-name rf*
+				 (proc-e-memo
+				  (_sim-fetch-def-exp def) r1 (id-c)))))
+			  (c (_sim-build-pcall residual-name ra*))))))
+	  (if (= offset arity)
+	      (c '() '() '() 0 (_sim-init-cache) (init-env))
+	      (let* ((btv (list-ref btp offset))
+		     (formal (list-ref formal* offset))
+		     (e (list-ref e* offset)))
+		(proc-e-insert-let-if-pred
+		 e r _sim-isImperative?
+		 (lambda (value/rexp)
+		   (loop
+		    (+ 1 offset)
+		    (lambda (p* rf* ra* pos ca rn)
+		      (project-value/rexp
+		       formal value/rexp btv rf* ra* pos ca
+		       (lambda (new-v p rf* ra* pos ca)
+			 (c (cons p p*) rf* ra* pos ca
+			    (upd-env new-v rn)))))))))))))
+    
+    (define (project-value/rexp formal v btv rf* ra* pos ca c)
+      (let ((pos (+ 1 pos)))
+	(if (_sim-bt-static? btv)
+	    (c v v rf* ra* pos ca)
+	    (let* ((c (collapse6 c))
+		   (found-in-cache-cont
+		    ; x = ((new-v p) . ca)
+		    (lambda (x) (c (caar x) (cadar x) rf* ra* pos (cdr x)))))
+	      (cond
+		; this code gives no dag-specialization at leaf-level:
+		;((_sim-bt-dynamic? btv)
+		; (let* ((rf (_sim-generate-var-name!
+		;	     (_sim-varname->name formal))))
+		;   (c (_sim-build-var rf) 'hole (cons rf rf*) (cons v ra*)
+		;      pos ca)))
+		;
+		; this code gives dag-specialization at leaf-level also:
+		((_sim-bt-dynamic? btv)
+		 (let ((x (_sim-lookup-cache-d v pos ca)))
+		   (if (equal? x 'not-found)
+		       (let* ((rf (_sim-generate-var-name!
+				   (_sim-varname->name formal)))
+			      (new-v (_sim-build-var rf))
+			      (p 'hole))
+			 (c new-v p (cons rf rf*) (cons v ra*) pos
+			    (_sim-upd-cache-d v new-v p pos ca)))
+		       (found-in-cache-cont x))))
+		((_sim-bt-psds? btv)
+		 (let* ((value (_sim-get-psds-value v))
+			(x (_sim-lookup-cache-ps value pos ca)))
+		   (if (equal? x 'not-found)
+		       (let ((proj (_sim-get-psds-projection v)))
+			 (proj
+			  proj value formal rf* ra* pos ca
+			  ; eta-expansion:
+			  (lambda (new-v p rf* ra* pos ca)
+			    (c new-v p rf* ra* pos ca))))
+		       (found-in-cache-cont x))))
+		((_sim-bt-closure? btv)
+		 (let* ((index (_sim-get-closure-index v))
+			(values (_sim-get-closure-values v))
+			(x (_sim-lookup-cache-cl index values pos ca)))
+		   (if (equal? x 'not-found)
+		       (let ((proj (_sim-get-closure-projection v)))
+			 (proj
+			  index values proj
+			  (_sim-get-closure-activation v) formal rf* ra* pos ca
+			  ; eta-expansion:
+			  (lambda (new-v p rf* ra* pos ca)
+			    (c new-v p rf* ra* pos ca))))
+		       (found-in-cache-cont x))))
+		(else
+		 (_sim-error 'project-value/rexp
+			     "unexpected binding time value: ~s"
+			     btv)))))))
+    
+    (define (project-value/rexp* formal v* btp rf* ra* pos ca c)
+      (let ((arity (length btp)))
+	(let loop ((offset 0) (rf* rf*) (ra* ra*) (pos pos) (ca ca) (c c))
+	  (if (= offset arity)
+	      (c '() '() rf* ra* pos ca)
+	      (project-value/rexp
+	       formal (list-ref v* offset) (list-ref btp offset) rf* ra* pos ca
+	       (lambda (new-v p rf* ra* pos ca)
+		 (loop (+ 1 offset) rf* ra* pos ca
+		       (lambda (new-v* p* rf* ra* pos ca)
+			 (c (cons new-v new-v*) (cons p p*) rf* ra* pos ca)
+			 ))))))))
+    
+    ;-------------------------------------------------------------------------
+    ; Environments:
+    
+    (define (init-env) (_sim-binding-nil))
+    (define (upd-env value r) (_sim-binding-cons value r))
+    (define (lookup-env index r)
+      (cond ((_sim-binding-nil? r)
+	     (_sim-error 'lookup-env "unbound variable: ~s" index))
+	    ((equal? index 0)
+	     (_sim-binding-car r))
+	    (else
+	     (lookup-env (- index 1) (_sim-binding-cdr r)))))
+    
+    (define (list-to-environment value* offset arity)
+      (list-to-environment1 value* offset arity (init-env)))
+    (define (list-to-environment1 value* offset arity r)
+      (let loop ((offset offset))
+	(if (= offset arity)
+	    r
+	    (upd-env (list-ref value* offset) (loop (+ 1 offset))))))
+
+    ; used for the initial call --- dummy residual expressions (all
+    ; different, ensured by using _sim-generate-var-name! --- important
+    ; because of dag-specialization) are generated for dynamic inputs
+    (define (make-pseudo-environment btp value*)
+      (let ((arity (length btp)))
+	(let loop ((offset 0))
+	  (if (= offset arity)
+	      (init-env)
+	      (upd-env (if (_sim-bt-dynamic? (list-ref btp offset))
+			   (_sim-generate-var-name! 'g)
+			   (list-ref value* offset))
+		       (loop (+ 1 offset)))))))
+    
+    ;-------------------------------------------------------------------------
+    ; Collapsing continuations:
+    
+    (define (collapse1 cont)
+      (let ((cont1 (lambda (a) (cont a))))
+	(lambda (a)
+	  ((if #t cont1 (_sim-generalize cont1)) a))))
+    
+    (define (collapse6 cont)
+      (let ((cont1 (lambda (a b c d e f) (cont a b c d e f))))
+	(lambda (a b c d e f)
+	  ((if #t cont1 (_sim-generalize cont1)) a b c d e f))))
+    
+    ;-------------------------------------------------------------------------
+    ; Main program body:
+    
+    (_sim-initialize-magic! adt)
+    (specialize-pcall
+     def (_sim-make-pseudo-call index arity)
+     (make-pseudo-environment btp value*) (id-c))
+    ; this is the only place where goal and residual-goal are used:
+    (_sim-postprocess! adt (_sim-get-residual-program!) goal residual-goal)))
+
+;------------------------------------------------------------------------------

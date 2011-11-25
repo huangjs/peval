@@ -1,0 +1,329 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                            -----------
+                            Similix 5.0
+                            -----------
+
+                           Anders Bondorf
+
+                           DIKU, May 1993
+
+-----------------------------------------------------------------------------
+
+    Similix, a Self-Applicable Partial Evaluator for a Subset of Scheme
+    Copyright (C) 1993 Anders Bondorf
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+-----------------------------------------------------------------------------
+
+The GNU General Public License may be found in the file COPYING.
+
+
+PLEASE NOTE: Similix is an experimental system under development which
+may contain bugs and errors. You are encouraged to mail us about bugs,
+comments, suggestions and the like, but we cannot promise to give
+detailed answers to every communication.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                    General Description of Similix
+                    ------------------------------
+
+Similix is an autoprojector (self-applicable partial evaluator) for a
+large higher-order subset of the strict functional language Scheme.
+Similix treats source programs that use a limited class of
+side-effects, for instance input/output operations. Similix handles
+partially static data structures.
+
+Similix is automatic: in general, no user annotations (such as
+unfolding information) are required; user assistance may in some cases
+be required to avoid looping, however. Similix gives certain
+guarantees concerning the residual programs it generates: computations
+are never discarded (partial evaluation thus preserves termination
+properties) and never duplicated.
+
+Similix is well-suited for partially evaluating for instance
+interpreters that use environments represented as functions and
+interpreters written in continuation passing style. Since Similix is
+self-applicable, stand-alone compilers can be generated from
+interpreters.
+
+Similix is highly portable. It conforms to the IEEE and R4RS Scheme
+standards, but it also runs under R3RS Scheme. This distribution
+should immediately enable you to run Similix on Scm and on Chez
+Scheme. We have tested this version of Similix on Scm version 4c0 and
+on Chez Scheme version 3.2.
+
+Similix 5.0 is based on the former Similix 4.0 (by Anders Bondorf and
+Olivier Danvy). A part of Similix 5.0 has been written jointly by
+Anders Bondorf and Jesper J{\o}rgensen.
+
+The manual contains a section that summarizes some often used
+binding-time improvements. These are needed in order to obtain good
+results of partial evaluation. The section is partly Similix-specific,
+but parts of it are of more general interest.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                        Mailing Address
+                        ---------------
+
+Please direct any Similix communication to Anders Bondorf, preferably
+by e-mail:
+
+        Anders Bondorf
+        DIKU, Department of Computer Science
+        University of Copenhagen
+        Universitetsparken 1
+        DK-2100 Copenhagen \O
+        Denmark
+
+        e-mail: anders@diku.dk
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                        Installation Guide
+                        ------------------
+
+The Similix directory contains the following files and subdirectories:
+
+COPYING:        the GNU General Public License
+README:         this file
+emacs-stuff:    file for running Scheme within emacs
+examples/:      examples of running Similix
+manual.dvi:     Similix manual in TeX dvi-format
+system/:        Similix system files
+
+-----------------------------------------------------------------------------
+
+This distribution should immediately enable you to run Similix on Scm
+and on Chez Scheme.
+
+                -------------------------------------
+
+Scm is a public domain system developed by
+
+        Aubrey Jaffer
+        84 Pleasant St.
+        Wakefield
+        MA 01880
+        USA
+
+Scm can be obtained by anonymous ftp at altdorf.ai.mit.edu
+(archive/scm) and at nexus.yorku.ca (pub/scheme/new). You will need
+the "slib" files "pp.scm" and "format.scm" which can be obtained at
+the same ftp-sites.
+
+                -------------------------------------
+
+Chez Scheme is a commercial system distributed by Cadence Research
+Systems. Contact address:
+
+        Kent Dybvig
+        Cadence Research Systems
+        620 Park Ridge Road
+        Bloomington
+        IN 47408
+        USA
+
+Information can also be requested via e-mail at
+
+        dyb@cadence.bloomington.in.us
+
+-----------------------------------------------------------------------------
+
+Installing Similix on Scm:
+--------------------------
+
+(1) Insert two path names in the file "system/sim-scm.scm" (see the file).
+
+(2) Similix is now installed. Try to run the job "getting-started" in
+    the "examples" directory.
+
+(3) If someone else is going to use Similix, this person should execute
+
+        (load "<your local path>/system/sim-scm.scm")
+
+    instead of
+
+        (load "../system/sim-scm.scm")
+
+(4) When loading Similix, the directory of the Scheme session must
+    always be one where the Similix user has write permission. The
+    reason is that Similix uses a temporary file named "_simtmp" in
+    the Scheme session directory that was active when Similix was
+    loaded.
+
+-----------------------------------------------------------------------------
+
+Installing Similix on Chez Scheme:
+----------------------------------
+
+(1) Position yourself in the "system" directory.
+
+(2) Insert one path name in the file "system/sim-chez.ss" (see the file).
+
+(3) Rename all files "<file>.scm" in system diretcory to "<file>.ss" and
+    copy "cogen.sim" to "cogen.ss" and "spec.sim" to "spec.ss"; these
+    operations can be done by simply executing the shell script
+    "script1".
+
+(4) Start Chez Scheme and execute the following expressions:
+
+        (compile-file "abssyn")
+        (compile-file "bt-eod")
+        (compile-file "constr")
+        (compile-file "front")
+        (compile-file "lam-lift")
+        (compile-file "langext")
+        (compile-file "loadsysf")
+        (compile-file "miscspec")
+        (compile-file "oc")
+        (compile-file "post")
+        (compile-file "rl")
+        (compile-file "runtime")
+        (compile-file "sp")
+        (compile-file "util")
+        (compile-file "cogen")
+        (compile-file "spec")
+        (compile-file "sim-chez.ss")
+        (exit)
+
+(5) Remove the copies "cogen.ss" and "spec.ss" from the system directory;
+    this can be done by executing the shell script "script2".
+
+(6) Similix is now installed. Try to run the job "getting-started" in
+    the "examples" directory. In general, when executing job-files in the
+    examples directory, remember to execute
+
+        (load "../system/sim-chez.so")
+
+    instead of
+
+        (load "../system/sim-scm.scm").
+
+(7) If someone else is going to use Similix, this person should execute
+
+        (load "<your local path>/system/sim-chez.so")
+
+    instead of
+
+        (load "../system/sim-chez.so")
+
+-----------------------------------------------------------------------------
+
+Porting and installing Similix on other Scheme systems:
+-------------------------------------------------------
+
+The only non-standard part of Similix is a part of the initial load
+file ("sim-scm.scm" for Scm and "sim-chez.ss" for Chez Scheme). To
+port Similix, all you you need to do is to change this system
+dependent part.
+
+If you use a Scheme system with a compiler, use "sim-chez.ss" as a
+starting point (and read the the above installation manual for Similix
+on Chez Scheme). If the Scheme system only has an interpreter, use
+"sim-scm.scm" as a starting point. In particular, notice the different
+ways the variables **Similix-...-suffix** are set up in "sim-chez.ss"
+and "sim-scm.scm".
+
+The load file "sim-poor.scm" gives a fully portable, but indeed very
+"poor man's", set of usable procedure definitions (it sets up the
+variables **Similix-...-suffix** for an interpretive Scheme system).
+You may use this file as a starting point (we successfully tried
+"sim-poor.scm" on MIT-Scheme version 7.1.3); consult the files
+"sim-scm.scm" and "sim-chez.ss" to get hints for more useful
+definitions.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                Running Scheme within emacs:
+                ----------------------------
+
+If the emacs editor is used, first insert site-dependent information
+in the file "emacs-stuff". Then add the contents of "emacs-stuff" to
+your ".emacs" file. You can now run Scheme within emacs by typing
+
+        M-x ("escape-x") run-scheme
+or
+        M-x ("escape-x") run-scheme1
+
+Note: This only works if you are in a file buffer (it does not work
+from the *scratch* buffer, for instance). Scheme starts in the current
+directory.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                       References:
+                       -----------
+
+William Clinger and Jonathan Rees: Revised$^4$ report on the
+algorithmic language Scheme, November 1991.
+
+IEEE Standard for the Scheme Programming Language, May 1990, IEEE Std
+1178-1990.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                Obtaining Similix via anonymous ftp:
+                ------------------------------------
+
+          ftp ftp.diku.dk
+
+login:    anonymous
+password: <your username, full e-mail address>
+          cd pub/diku/dists
+          binary
+          hash
+          get Similix.tar.Z
+          bye
+
+
+To decode the file Similix.tar.Z, run
+
+        uncompress < Similix.tar.Z | tar xvpf -
+
+A directory named
+
+        Similix
+
+then appears. Now read the file Similix/README.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+(end of README file)

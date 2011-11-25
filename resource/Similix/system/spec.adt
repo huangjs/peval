@@ -1,0 +1,205 @@
+; Similix  primitives for the specializer
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+(defprim-opaque 1 _sim-initialize-magic! _sim-initialize-magic!)
+
+(defprim-opaque 0 _sim-get-residual-program! _sim-get-residual-program!)
+(defprim-opaque 4 _sim-postprocess! _sim-postprocess!)
+
+(defprim-opaque 2 _sim-generate-proc-name! _sim-generate-proc-name!)
+(defprim-opaque 1 _sim-add-residual-definition! _sim-add-residual-definition!)
+
+(defprim-opaque 1 _sim-generate-var-name! _sim-generate-var-name!)
+(defprim 1 _sim-varname->name _sim-varname->name)
+
+(defprim-opaque 1 _sim-pcall-test-output! _sim-pcall-test-output!)
+
+
+(defprim 1 _sim-fetch-pgm-adt-file* _sim-fetch-pgm-adt-file*)
+(defprim 1 _sim-fetch-pgm-udp _sim-fetch-pgm-udp)
+
+(defprim 1 _sim-isBottom? _sim-isBottom?)
+(defprim 1 _sim-isStatic? _sim-isStatic?)
+(defprim 1 _sim-isPsds? _sim-isPsds?)
+(defprim 1 _sim-isClosure? _sim-isClosure?)
+(defprim 1 _sim-isDynamic? _sim-isDynamic?)
+
+(defprim (_sim-isStatic*? e*) (map _sim-isStatic? e*))
+
+(defprim 1 _sim-isImperative? _sim-isImperative?)
+
+(defprim 1 _sim-isLift? _sim-isLift?)
+(defprim 1 _sim-isCst? _sim-isCst?)
+(defprim 1 _sim-isVar? _sim-isVar?)
+(defprim 1 _sim-isCond? _sim-isCond?)
+(defprim 1 _sim-isLet? _sim-isLet?)
+(defprim 1 _sim-isLet-unfoldable?  _sim-isLet-unfoldable?)
+(defprim 1 _sim-isBegin? _sim-isBegin?)
+(defprim 1 _sim-isBegin-unfoldable? _sim-isBegin-unfoldable?)
+(defprim 1 _sim-isPrimop? _sim-isPrimop?)
+(defprim 1 _sim-isCstr? _sim-isCstr?)
+(defprim 1 _sim-isSel? _sim-isSel?)
+(defprim 1 _sim-isPred? _sim-isPred?)
+(defprim 1 _sim-isPcall? _sim-isPcall?)
+(defprim 1 _sim-isAbs? _sim-isAbs?)
+(defprim 1 _sim-isApp? _sim-isApp?)
+
+
+(defprim 1 _sim-fetch-def-name _sim-fetch-def-name)
+(defprim 1 _sim-fetch-def-btp _sim-fetch-def-btp)
+(defprim 1 _sim-fetch-def-pars _sim-fetch-def-pars)
+(defprim 1 _sim-fetch-def-exp _sim-fetch-def-exp)
+(defprim 1 _sim-unfoldable-procedure? _sim-unfoldable-procedure?)
+(defprim 1 _sim-fetch-def-arity _sim-fetch-def-arity)
+
+(defprim 1 _sim-fetch-lift-arg _sim-fetch-lift-arg)
+
+(defprim 1 _sim-fetch-cst-value _sim-fetch-cst-value)
+
+(defprim 1 _sim-fetch-var-debruijn _sim-fetch-var-debruijn)
+
+(defprim 1 _sim-fetch-cond-test _sim-fetch-cond-test)
+(defprim 1 _sim-fetch-cond-then _sim-fetch-cond-then)
+(defprim 1 _sim-fetch-cond-else _sim-fetch-cond-else)
+
+(defprim 1 _sim-fetch-let-formal _sim-fetch-let-formal)
+(defprim 1 _sim-fetch-let-actual _sim-fetch-let-actual)
+(defprim 1 _sim-fetch-let-body _sim-fetch-let-body)
+
+(defprim 1 _sim-fetch-begin-fst _sim-fetch-begin-fst)
+(defprim 1 _sim-fetch-begin-snd _sim-fetch-begin-snd)
+
+(defprim 1 _sim-fetch-primop-n+i _sim-fetch-primop-n+i)
+(defprim 1 _sim-fetch-primop-name _sim-fetch-primop-name)
+(defprim 1 _sim-fetch-primop-index _sim-fetch-primop-index)
+(defprim 1 _sim-fetch-primop-referentiality _sim-fetch-primop-referentiality)
+(defprim 1 _sim-fetch-primop-args _sim-fetch-primop-args)
+
+(defprim 1 _sim-fetch-cstr-n+i _sim-fetch-cstr-n+i)
+(defprim 1 _sim-fetch-cstr-name _sim-fetch-cstr-name)
+(defprim 1 _sim-fetch-cstr-args _sim-fetch-cstr-args)
+
+(defprim 1 _sim-fetch-sel-n+i _sim-fetch-sel-n+i)
+(defprim 1 _sim-fetch-sel-name _sim-fetch-sel-name)
+(defprim 1 _sim-fetch-sel-proj _sim-fetch-sel-proj)
+(defprim 1 _sim-fetch-sel-cstr _sim-fetch-sel-cstr)
+(defprim 1 _sim-fetch-sel-arg _sim-fetch-sel-arg)
+
+(defprim 1 _sim-fetch-pred-n+i _sim-fetch-pred-n+i)
+(defprim 1 _sim-fetch-pred-name _sim-fetch-pred-name)
+(defprim 1 _sim-fetch-pred-cstr _sim-fetch-pred-cstr)
+(defprim 1 _sim-fetch-pred-arg _sim-fetch-pred-arg)
+
+(defprim 1 _sim-fetch-pcall-n+i _sim-fetch-pcall-n+i)
+(defprim 1 _sim-fetch-pcall-name _sim-fetch-pcall-name)
+(defprim 1 _sim-fetch-pcall-args _sim-fetch-pcall-args)
+
+(defprim 1 _sim-fetch-abs-formals _sim-fetch-abs-formals)
+(defprim 1 _sim-fetch-abs-formals-btp _sim-fetch-abs-formals-btp)
+(defprim 1 _sim-fetch-abs-body _sim-fetch-abs-body)
+(defprim 1 _sim-fetch-abs-free-variables _sim-fetch-abs-free-variables)
+(defprim 1 _sim-fetch-abs-free-variable-debruijns
+  _sim-fetch-abs-free-variable-debruijns)
+(defprim 1 _sim-fetch-abs-index _sim-fetch-abs-index)
+
+(defprim 1 _sim-fetch-app-exp _sim-fetch-app-exp)
+(defprim 1 _sim-fetch-app-args _sim-fetch-app-args)
+
+
+(defprim (_sim-fetch-bt-tag* e*) (map _sim-fetch-bt-tag e*))
+(defprim 1 _sim-fetch-eod-tag _sim-fetch-eod-tag)
+
+(defprim 1 _sim-lookup-goal-procedure _sim-lookup-goal-procedure)
+(defprim 2 _sim-make-pseudo-call _sim-make-pseudo-call)
+
+(defprim 2 _sim-fetch-udp-def _sim-fetch-udp-def)
+
+(defprim 1 _sim-build-cst _sim-build-resid-cst)
+
+(defprim 1 _sim-build-var _sim-build-resid-var)
+(defprim 1 _sim-isresidVar? _sim-isresidVar?)
+
+(defprim 3 _sim-build-cond _sim-build-resid-cond)
+
+(defprim 4 _sim-build-let _sim-build-resid-let)
+
+(defprim 2 _sim-build-begin _sim-build-resid-begin)
+
+(defprim 2 _sim-build-primop _sim-build-resid-primop)
+(defprim _sim-build-primop-l _sim-build-resid-primop-l)
+
+(defprim 2 _sim-build-cstr _sim-build-resid-cstr)
+
+(defprim 4 _sim-build-sel _sim-build-resid-sel)
+
+(defprim 3 _sim-build-pred _sim-build-resid-pred)
+
+(defprim 2 _sim-build-pcall _sim-build-resid-pcall)
+
+(defprim 2 _sim-build-abs _sim-build-resid-abs)
+
+(defprim 2 _sim-build-app _sim-build-resid-app)
+
+(defprim 3 _sim-build-def _sim-build-resid-def)
+
+(defprim 1 _sim-bt-static? _sim-bt-static?)
+(defprim 1 _sim-bt-closure? _sim-bt-closure?)
+(defprim 1 _sim-bt-dynamic? _sim-bt-dynamic?)
+(defprim 1 _sim-bt-psds? _sim-bt-psds?)
+
+; These operators access **Similix-udo**, but are not evaluation order
+; dependent; they are therefore declared dynamic rather than opaque
+(defprim-dynamic 2 _sim-delta-reduce _sim-udo-apply*)
+(defprim-dynamic 2 _sim-cstr-reduce _sim-udo-apply*)
+(defprim-dynamic 2 _sim-sel-reduce _sim-udo-apply)
+(defprim-dynamic 2 _sim-pred-reduce _sim-udo-apply)
+
+(defprim 2 _sim-make-constr-val _sim-make-constr-val)
+(defprim 1 _sim-get-constr-val-cstr-name _sim-get-constr-val-cstr-name)
+(defprim 1 _sim-get-constr-val-args _sim-get-constr-val-args)
+
+(defconstr (_sim-make-closure _sim-get-closure-index
+			      _sim-get-closure-values
+			      _sim-get-closure-projection
+			      _sim-get-closure-activation)
+	   (_sim-make-psds _sim-get-psds-projection
+			   _sim-get-psds-value))
+
+;------------------------------------------------------------------------------
+
+(defprim 0 _sim-init-cache _sim-init-cache)
+(defprim 3 _sim-lookup-cache-d _sim-lookup-cache-d)
+(defprim 3 _sim-lookup-cache-ps _sim-lookup-cache-ps)
+(defprim 4 _sim-lookup-cache-cl _sim-lookup-cache-cl)
+(defprim 5 _sim-upd-cache-d _sim-upd-cache-d)
+(defprim 5 _sim-upd-cache-ps _sim-upd-cache-ps)
+(defprim 6 _sim-upd-cache-cl _sim-upd-cache-cl)
+(defprim 1 _sim-pos-pairs-in-cache _sim-pos-pairs-in-cache)
+
+;------------------------------------------------------------------------------
+
+(defprim 2 _sim-select-value _sim-select-value)
+(defprim 4 _sim-conditional-build-let _sim-conditional-build-let)
+
+;------------------------------------------------------------------------------
+
+(defprim (_sim-coerce static-*e? offset value/rexp)
+  (if (list-ref static-*e? offset)
+      (_sim-build-cst value/rexp)
+      value/rexp))
+
+;------------------------------------------------------------------------------
+
+(defconstr (_sim-name-value-cons _sim-name-value-car _sim-name-value-cdr))
+
+(defconstr (_sim-binding-nil)
+	   (_sim-binding-cons _sim-binding-car _sim-binding-cdr))
+
+;------------------------------------------------------------------------------
+
+(defprim-dynamic (_sim-generalize x) x)
+
+;------------------------------------------------------------------------------

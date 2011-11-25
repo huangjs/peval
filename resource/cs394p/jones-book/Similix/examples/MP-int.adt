@@ -1,0 +1,82 @@
+; Similix primitives for MP-interpreter
+; Copyright (C) 1993 Anders Bondorf and Olivier Danvy
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+; Syntax:
+
+(defprim 1 P->V1* cdadr)
+(defprim 1 P->V2* cdaddr)
+(defprim 1 P->B cadddr)
+
+(defprim 1 emptyBlock? null?)
+(defprim 1 headBlock car)
+(defprim 1 tailBlock cdr)
+
+(defprim 1 C-Assignment->V cadr)
+(defprim 1 C-Assignment->E caddr)
+(defprim 1 C-Conditional->E cadr)
+(defprim 1 C-Conditional->B1 caddr)
+(defprim 1 C-Conditional->B2 cadddr)
+(defprim 1 C-While->E cadr)
+(defprim 1 C-While->B caddr)
+
+(defprim (isAssignment? c) (and (pair? c) (equal? (car c) ':=)))
+(defprim (isConditional? c) (and (pair? c) (equal? (car c) 'if)))
+(defprim (isWhile? c) (and (pair? c) (equal? (car c) 'while)))
+
+(defprim (isQuote? e) (and (pair? e) (equal? (car e) 'quote)))
+(defprim (isVariable? e) (not (pair? e)))
+(defprim (isPrim? e)
+  (and (pair? e) (member (car e) '(cons equal car cdr atom))))
+
+(defprim (is-cons? op) (equal? op 'cons))
+(defprim (is-equal? op) (equal? op 'equal))
+(defprim (is-car? op) (equal? op 'car))
+(defprim (is-cdr? op) (equal? op 'cdr))
+(defprim (is-atom? op) (equal? op 'atom))
+
+(defprim 1 E->operator car)
+(defprim 1 E->E1 cadr)
+(defprim 1 E->E2 caddr)
+
+;-----------------------------------------------------------------------------
+; True and false ---
+; the empty list () counts as false in MP:
+
+(defprim (eval-equal v1 v2) (if (equal? v1 v2) #t '()))
+(defprim (eval-atom v) (if (pair? v) '() #t))
+
+(defprim (is-true? value) (not (null? value)))
+
+;-----------------------------------------------------------------------------
+; Environment:
+
+(defprim (init-environment v1* v2*) (append v1* v2*))
+(defprim (lookup-env v env)
+  (let f ((env env) (n 0))
+    (if (equal? v (car env)) n (f (cdr env) (+ 1 n)))))
+
+;-----------------------------------------------------------------------------
+; Store:
+
+(defprim-opaque (init-store! input-V1* length-V2*)
+  (set! store
+	(append
+	 input-V1*
+	 (let f ((n length-V2*))
+	   (if (= n 0) '() (cons '() (f (- n 1))))))))
+(defprim-opaque (update-store! location value)
+  (set-car! (list-tail store location) value))
+(defprim-opaque (lookup-store location) (list-ref store location))
+; Also safe because of the particular way lookup-store is called in the
+; interpreter:
+; (defprim-dynamic (lookup-store location) (list-ref store location))
+
+;-----------------------------------------------------------------------------
+; Error:
+
+(defprim-abort-eoi err _sim-error)
+
+;-----------------------------------------------------------------------------

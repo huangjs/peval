@@ -1,0 +1,40 @@
+; Similix job for running Mixwell interpreter example
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(load "../system/sim-scm.scm") ; (load "../system/sim-chez.so")
+
+(loads "mw-int.sim")
+
+(define app (file->list "app.mw"))
+; result = L int (source,data):
+(define result (ntimes (lambda () (run-mixwell app '((1 2 3) (4 5 6 7)))) 100))
+
+; target = L mix (int,source) (1 times):
+(define target (similix 'run-mixwell (list app '***) "mw-int.sim" 1))
+(load-residual-program)
+
+; new-result = L target data:
+(define new-result
+  (ntimes (lambda () (run-mixwell-0 '((1 2 3) (4 5 6 7)))) 100))
+; result = new-result?:
+(equal? result new-result)
+
+; comp = L cogen int:
+(cogen 'run-mixwell '(s d) "mw-int.sim" 1 "mw-cmp.sim")
+(compile-sim-file "mw-cmp.sim")
+
+; new-target = L comp source (1 times):
+(define new-target
+  (comp (string-append "mw-cmp" **Similix-compiled-sim-suffix**)
+	(list app '***)
+        1))
+; target = new-target?:
+(equal? target new-target)
+
+(exit)
+
+;-----------------------------------------------------------------------------

@@ -1,0 +1,66 @@
+                 Trace of Lisp Interpreter Written in Lisp
+
+
+     > (trace m-eval m-apply)
+     > (m-eval '(factorial 3) nil)
+     1 Enter M-EVAL (FACTORIAL 3) NIL
+     | 2 Enter M-EVAL 3 NIL
+     | 2 Exit M-EVAL 3
+     | 2 Enter M-APPLY (LAMBDA (N) (IF (<= N 1) 1 (* N (FACTORIAL (1- N))))) (3) NIL
+     |   3 Enter M-EVAL (IF (<= N 1) 1 (* N (FACTORIAL (1- N)))) ((N . 3))
+     |   | 4 Enter M-EVAL (<= N 1) ((N . 3))
+     |   |   5 Enter M-EVAL N ((N . 3))
+     |   |   5 Exit M-EVAL 3
+     |   |   5 Enter M-EVAL 1 ((N . 3))
+     |   |   5 Exit M-EVAL 1
+     |   | 4 Exit M-EVAL NIL
+     |   | 4 Enter M-EVAL (* N (FACTORIAL (1- N))) ((N . 3))
+     |   |   5 Enter M-EVAL N ((N . 3))
+     |   |   5 Exit M-EVAL 3
+     |   |   5 Enter M-EVAL (FACTORIAL (1- N)) ((N . 3))
+     |   |   | 6 Enter M-EVAL (1- N) ((N . 3))
+     |   |   |   7 Enter M-EVAL N ((N . 3))
+     |   |   |   7 Exit M-EVAL 3
+     |   |   | 6 Exit M-EVAL 2
+     |   |   | 6 Enter M-APPLY (LAMBDA (N) (IF (<= N 1) 1 (* N (FACTORIAL (1- N)))))
+                               (2) ((N . 3))
+     |   |   |   7 Enter M-EVAL (IF (<= N 1) 1 (* N (FACTORIAL (1- N))))
+                                ((N . 2) (N . 3))
+     |   |   |   | 8 Enter M-EVAL (<= N 1) ((N . 2) (N . 3))
+     |   |   |   |   9 Enter M-EVAL N ((N . 2) (N . 3))
+     |   |   |   |   9 Exit M-EVAL 2
+     |   |   |   |   9 Enter M-EVAL 1 ((N . 2) (N . 3))
+     |   |   |   |   9 Exit M-EVAL 1
+     |   |   |   | 8 Exit M-EVAL NIL
+     |   |   |   | 8 Enter M-EVAL (* N (FACTORIAL (1- N))) ((N . 2) (N . 3))
+     |   |   |   |   9 Enter M-EVAL N ((N . 2) (N . 3))
+     |   |   |   |   9 Exit M-EVAL 2
+     |   |   |   |   9 Enter M-EVAL (FACTORIAL (1- N)) ((N . 2) (N . 3))
+     |   |   |   |   | 10 Enter M-EVAL (1- N) ((N . 2) (N . 3))
+     |   |   |   |   |   11 Enter M-EVAL N ((N . 2) (N . 3))
+     |   |   |   |   |   11 Exit M-EVAL 2
+     |   |   |   |   | 10 Exit M-EVAL 1
+     |   |   |   |   | 10 Enter M-APPLY (LAMBDA (N) (IF (<= N 1) 1 (* N (FACT ...
+                                        (1) ((N . 2) (N . 3))
+     |   |   |   |   |   11 Enter M-EVAL (IF (<= N 1) 1 (* N (FACTORIAL (1- N))))
+                                         ((N . 1) (N . 2) (N . 3))
+     |   |   |   |   |   | 12 Enter M-EVAL (<= N 1) ((N . 1) (N . 2) (N . 3))
+     |   |   |   |   |   |   13 Enter M-EVAL N ((N . 1) (N . 2) (N . 3))
+     |   |   |   |   |   |   13 Exit M-EVAL 1
+     |   |   |   |   |   |   13 Enter M-EVAL 1 ((N . 1) (N . 2) (N . 3))
+     |   |   |   |   |   |   13 Exit M-EVAL 1
+     |   |   |   |   |   | 12 Exit M-EVAL T
+     |   |   |   |   |   | 12 Enter M-EVAL 1 ((N . 1) (N . 2) (N . 3))
+     |   |   |   |   |   | 12 Exit M-EVAL 1
+     |   |   |   |   |   11 Exit M-EVAL 1
+     |   |   |   |   | 10 Exit M-APPLY 1
+     |   |   |   |   9 Exit M-EVAL 1
+     |   |   |   | 8 Exit M-EVAL 2
+     |   |   |   7 Exit M-EVAL 2
+     |   |   | 6 Exit M-APPLY 2
+     |   |   5 Exit M-EVAL 2
+     |   | 4 Exit M-EVAL 6
+     |   3 Exit M-EVAL 6
+     | 2 Exit M-APPLY 6
+     1 Exit M-EVAL 6
+     6

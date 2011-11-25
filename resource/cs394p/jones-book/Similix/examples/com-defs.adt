@@ -1,0 +1,10 @@
+; Similix adt-file for parser for Lazy combinator source programs
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(defprim-opaque 1 file->list file->list)
+
+;-----------------------------------------------------------------------------

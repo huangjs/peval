@@ -1,0 +1,429 @@
+GETTING STARTED
+
+This section contains an introduction to running Simu. Assuming the
+Simu system is installed in the directory "/home/ask2/lpzong/Simu", we
+contain the complete session as follows, to demonstrate how Simu
+works.
+
+The session uses an example program called "norma-int.sim", which is
+an interpreter written in Scheme for a miniature flow chart language
+with only two variables, x and y. Program input is through x, and
+output is the final value of y.
+
+(define (execute pgm x y)
+   (run pgm pgm x y))
+ 
+(define (run pgm ptail x y)
+   (if (null? ptail)
+      y
+   (if (equal? (car ptail) 'x:=x+1)
+      (run pgm (cdr ptail) (+ x 1) y)
+   (if (equal? (car ptail) 'x:=x-1)
+      (run pgm (cdr ptail) (- x 1) y)
+   (if (equal? (car ptail) 'y:=y+1)
+      (run pgm (cdr ptail) x (+ y 1))
+   (if (equal? (car ptail) 'y:=y-1)
+      (run pgm (cdr ptail) x (- y 1))
+   (if (equal? (caar ptail) 'goto)
+      (run pgm (nth pgm (cadar ptail)) x y)
+   (if (equal? (caar ptail) 'ifx=0goto)
+      (if (equal? x 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+   (if (equal? (caar ptail) 'ify=0goto)
+      (if (equal? y 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+      'Syntax-error)))))))))
+
+(define (nth pgm i)
+   (if (null? pgm)
+      pgm
+      (if (equal? i 0)
+         pgm
+         (nth (cdr pgm) (- i 1)))))
+
+Following is the interpreted language's program syntax:
+
+Program ::= (I0 I1 ... In-1)
+I       ::= x:=x+1 | x:=x-1 | y:=y+1 | y:=y-1
+        |  (goto Label) | (ifx=0goto Label) | (ify=0goto Label)
+Label   ::= 0 | 1 | ... (Label >= n causes program termination)
+
+We will specialize this interpreter to static program input 
+pgm.norma, which is
+
+
+(ifx=0goto 5)
+y:=y+1 
+y:=y+1
+x:=x-1
+(goto 0)
+
+and dynamic x and y. (This example is in the directory
+/home/ask2/lpzong/Simu/ex-norma.)
+
+I. Starting Simu/Exiting
+
+(1) Starting Simu:
+
+Simu starts by presenting a small bulletin board that contains six
+menu commands and two button commands, and a working area displaying
+the output of Similix. The user may pull down the respective menu
+items and choose one of them to do the required work at any time Simu
+is running.  However, when Simu is invoked, some menu items being
+masked are not available, since they will only be available after
+certain operations have been performed.
+
+The working area is a text window where the user may search for and
+scroll through the output text from Similix. Unfortunately, it is used
+only for viewing the output with the Append editing type. Except for
+some special characters (such as Ctrl-c, Ctrl-s, Ctrl-x, and Ctrl-q),
+it simply echoes the character which the user is typing.
+
+After Simu is started up, a window system for Simu pops up and Simu's
+working area displays:
+ 
+Welcome to Similix 5.0
+Copyright (C) 1993 Anders Bondorf
+Contributions by Olivier Danvy and Jesper Joergensen
+
+util langext abssyn miscspec runtime front lam-lift bt-eod sp oc rl post spec 
+#<unspecified>
+> #<unspecified>
+> 
+
+(2) Exiting from the Simu system:
+
+Choose the Exit button, and click on OK button in the next dialog
+box. Then all of the windows in Simu will be closed and the whole
+system will be quited.
+
+II. Basic operations
+
+(1) Changing the working directory:
+
+In the working area type Ctrl-q, then a small command-line window is
+activated. In this window, type (chdir "ex-norma") followed by Return,
+then a new label pops up at the upper working area, indicating the
+current working directory is /net/ask/home/ask2/lpzong/Simu/ex-norma.
+And the working area displays:
+
+> (chdir "/examples/ex-norma")
+#t
+>
+
+If the user wants to remove this small window, just clicks on Close
+button in the left upper of the command-line window
+
+(2) Loading the program:
+
+Choose the "Load sim-file" item in the "System" menu, type the example
+program name norma-int.sim in the input entry of the dialog box, and
+click on OK button. Then the program with goal function execute is
+loaded into Similix, and the working area displays:
+
+> (loads "norma-int.sim")
+()
+>
+
+(3) Converting the file "pgm.norma" into a list:
+
+Choose the "File->list" item in the "System" menu, type the file name
+pgm.norma and the list name pgm in the two input entries of the
+working board, and click on OK button. Then the file pgm.norma is
+converted into a list pgm and the working area displays:
+
+> (define pgm (file->list "pgm.norma"))
+#<unspecified>
+>
+
+(4) Applying the program to its arguments:
+
+Choose the "Run original program" item in the "Run" menu, type the
+goal function name execute and a list of arguments ,pgm 2 0 in the
+first two input entries of the working board respectively, and click
+on OK button. Then the program runs and the working area displays:
+
+> (apply execute `(,pgm 2 0))
+4
+>
+
+(Please note: Simu always supplies the user with the default name or
+value which is specified in some input entry the last time. The user
+may modify or delete it if the default name or value is not
+appropriate.)
+
+(5) Timing the program running:
+
+Choose the "Run original program" item in the "Run" menu again, type
+the goal function name execute, a list of arguments ,pgm 2 0 and the
+running times 1000, in the three input entries of the working board
+respectively, and click on OK button. Then the program runs with the
+timing information and the working area displays:
+
+> (ntimes (lambda() (apply execute `(,pgm 2 0))) 1000)
+Run time: 3.8833333333333 seconds
+4
+> 
+
+III. Preprocessing
+
+(1) Preprocessing the program:
+
+Choose the "Preprocess program" item in the "Preprocess" menu, type
+the program name norma-int.sim, the goal function name execute and the
+argument binding-time pattern s d d, in the three input entries of the
+working board respectively, and click on OK button. Then the program
+is preprocessed and the working area displays:
+
+> (preprocess! `execute `(s d d) "norma-int.sim")
+front-end flow bt sp eod oc rl 
+done
+>
+
+(2) Showing the current preprocessed program (or with the data flow
+classes):
+
+Choose the "Show current preprocessed program" item in the
+"Preprocess" menu, click on OK buttons in order for the label of "Show
+current preprocessed program" and for the one of "Show current
+preprocessed program" with all of flows respectively in the working
+box "Show Current Preprocessed Program Functions". Then in the two
+showing windows, the current preprocessed program and the one with all
+of the data flow classes are displayed with the pretty-printing
+separatedly, where the boldface indicates the dynamic names or valuse,
+or the numbers of the data flow class. Now the working area displays:
+
+> (writelpp (showpall) "temp%%%")
+#<unspecified>
+> (writelpp (showpallflow) "temp%%%")
+#<unspecified>
+> 
+
+In the corresponding showing window, click on Close button in the
+upper left, and click on OK button in the next dialog box. Then the
+showing window is closed in order.
+
+(3) Showing the current preprocessed program with the number of flow:
+
+Choose the "Show current preprocessed program" item again in the
+"Preprocess" menu, type 6 in the input entry of the working box "Show
+Current Preprocessed Program Functions" and click on the last OK
+button. Then the current preprocessed program with the number of data
+flow class, 6, is displayed with the pretty-printing in the showing
+window, where the boldface indicates the dynamic names or valuse, or
+6, which is the number of the data flow class. Now the working area
+displays:
+
+> (displayflow 6)
+(writelpp (showpallflowid) "temp%%%")
+#<unspecified>
+> #<unspecified>
+>
+
+In this showing window, click on Close button in the upper left, and
+click on OK button in the next dialog box. Then the showing window is
+closed.
+
+(4) Writing the preprocessed program:
+
+Choose the "Write preprocessed program" item in the "Preprocess" menu,
+type the name of the preprocessed program without flow, norma.ann, in
+the first input entry of the working board, and click on OK
+button. Then the preprocessed program is written onto the file
+norma.ann. Now the working area displays:
+
+> (writelpp (showpall) "norma-int.ann")
+#<unspecified>
+>
+
+(5) Showing the preprocessed program:
+
+Choose the "Show preprocessed program" item in the "Preprocess" menu,
+type the preprocessed program name, norma-int.ann, in the input entry
+of the dialog box, and click on OK button. Then the preprocessed
+program norma-int.ann is displayed in the showing window, with
+boldface indicating dynamic names or values. In the corresponding
+showing window, click on Close button in the upper left, and click on
+OK button in the next dialog box. Then the showing window is closed.
+
+(6) Printing the preprocessed program:
+
+Choose the "Print preprocessed program" item in the "Preprocess" menu,
+type the preprocessed program name norma-int.ann, the printer type 0
+and the printer name ciqm1a, in the three input entries of the working
+board respectively, and click on OK button. Then the file
+norma-int.ann is printed out by the lineprinter ciqm1a.
+
+IV. Specializing
+
+(1) Specializing the program:
+
+Choose the "Specialize program" item in the "Specialize" menu, type
+the program name norma-int.sim, the goal function name execute and the
+argument pattern ,pgm *** ***, in the three input entries of the
+working board respectively, and click on OK button.  Then the program
+is specialized and the working area displays:
+
+> (similix `execute `(,pgm *** ***) "norma-int.sim")
+front-end flow bt sp eod oc rl 
+specializing
+((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+ (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+> 
+
+V. Residual program
+
+(1) Showing the current residual program:
+
+Choose the "Show current residual program" item in the "Specialize"
+menu, and click on OK button in the working box "Show Current Residual
+Program". Then the current residual program is displayed in the
+showing window and the working area displays:
+
+> (writelpp (residual-program) "temp%%%")
+#<unspecified>
+>
+
+In the corresponding showing window, click on Close button in the
+upper left, and click on OK button in the next dialog box. Then the
+showing window is closed.
+
+(2) Writing the residual program:
+
+Choose the "Write residual program" item in the "Specialize" menu,
+type the residual program name, norma-res.sim, in the input entry of
+the dialog box, and click on OK button. Then the residual program is
+written onto the file norma-res.sim and the working area displays:
+
+> (writelpp (residual-program) "norma-res.sim")
+#<unspecified>
+>
+
+(3) Showing the residual program:
+
+Choose the "Show residual program" item in the "Specialize" menu, type
+the residual program name, norma-res.sim, in the input entry of the
+dialog box, and click on OK button. Then the residual program
+norma-res.sim is displayed in the showing window. In the corresponding
+showing window, click on Close button in the upper left, and click on
+OK button in the next dialog box. Then the showing window is closed.
+
+(4) Printing the residual program:
+
+Choose the "Print residual program" item in the "Specialize" menu,
+type the residual program name norma-res.sim, the printer type 0 and
+the printer name ciqm1a in the three input entries of the working
+board respectively, and click on OK button.  Then the file
+norma-res.sim is printed out by the lineprinter ciqm1a.
+
+(5) Applying the residual program to its dynamic arguments:
+
+Choose the "Run residual program" item in the "Run" menu, leave the
+first input entry of the working board empty, type a list of dynamic
+arguments 2 0 in the second input entry, and click on OK button. Then
+the residual program with the default goal function execute-0 is
+loaded and runs. The working area displays:
+
+> (load-residual-program)
+(apply execute-0 `(2 0))
+()
+> 4
+>
+
+(6) Timing the residual program:
+
+Choose the "Run residual program" item in the "Run" menu again, leave
+the first input entry of the working board empty, type a list of
+dynamic arguments 2 0 and the running times 1000 in the second and the
+third input entries respectively, and click on OK button. Then the
+residual program with the default goal function execute-0 runs with
+the timing information. The working area displays:
+
+> (load-residual-program)
+(ntimes (lambda() (apply execute-0 `(2 0))) 1000)
+()
+> Run time: 733.33333333333e-3 seconds
+4
+>
+
+VI. Generating extension
+
+(1) Generating a generating extension (currying):
+
+Choose the "Compiler generation" item in the "Cogen" menu, type the
+program name norma-int.sim, the goal function name execute and the
+argument binding-time pattern s d d in the first three input entries
+of the working board respectively, leave the other input entries
+empty, and click on OK button.  Then the Similix compiler generator is
+used to generate a generating extension of norma-int, and the working
+area displays:
+
+> (cogen `execute `(s d d) "norma-int.sim")
+front-end flow bt sp eod oc rl 
+generating compiler
+()
+>
+
+(2) Showing the current compiler program:
+
+Choose the "Show current compiler" item in the "Cogen" menu, and click
+on OK button in the working box "Show Current Compiler Program". Then
+the current compiler program is displayed in the showing window and
+the working area displays:
+
+> (writelpp (current-compiler) "temp%%%")
+#<unspecified>
+> 
+
+In the corresponding showing window, click on Close button in the
+upper left, and click on OK button in the next dialog box. Then the
+showing window is closed.
+
+(3) Writing the compiler program:
+
+Choose the "Write compiler" item in the "Cogen" menu, type the
+compiler program name norma-int.com in the input entry of the dialog
+box, and click on OK button. Then the compiler program is written onto
+the file norma-int.com and the working area displays:
+
+> (writelpp (current-compiler) "norma-cmp.sim")
+#<unspecified>
+> 
+
+(4) Showing the compiler program:
+
+Choose the "Show compiler" item in the "Cogen" menu, type the compiler
+program name norma-cmp.sim in the input entry of the dialog box, and
+click on OK button. Then the compiler program norma-cmp.sim is
+displayed in the showing window. In the corresponding showing window,
+click on Close button in the upper left, and click on OK button in the
+next dialog box. Then the showing window is closed.
+
+(5) Printing the compiler program:
+
+Choose the "Print compiler" item in the "Cogen" menu, type the
+compiler program name norma-cmp.sim, the printer type 0 and the
+printer name ciqm1a in the three input entries of the working board
+respectively, and click on OK button.  Then the file norma-cmp.sim is
+printed out by the lineprinter ciqm1a.
+
+(6) Running the generating extension:
+
+Choose the "Compile" item in the "Compile" menu, type the compiler
+program name norma-cmp.sim in the first input entry of the working
+board, and the argument pattern ,pgm *** *** in the third input entry,
+leave the other input entries empty, and click on OK button. Then the
+generating extension is now applied to the same input that
+norma-int.sim was specialized with respect to above, generating the
+specialized norma-int program that we have already seen. The working
+area displays:
+
+> (comp "norma-int.com" `(,pgm *** ***))
+loading compiler norma-int.com
+specializing
+((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+ (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+>
+

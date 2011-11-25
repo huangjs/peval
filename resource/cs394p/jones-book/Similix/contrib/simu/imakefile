@@ -1,0 +1,8 @@
+LOCAL_LIBRARIES = XawClientLibs
+DEPLIBS = XawClientDepLibs
+
+SRCS = simu0.c simu01.c simu02.c simu03.c simua.c simua0.c simub.c simuc.c simud.c simue.c simuf.c simug.c simug1.c simug0.c ScrollByL.c
+
+OBJS = simu0.o simu01.o simu02.o simu03.o simua.o simua0.o simub.o simuc.o simud.o simue.o simuf.o simug.o simug1.o simug0.o ScrollByL.o
+
+ComplexProgramTarget(simu)

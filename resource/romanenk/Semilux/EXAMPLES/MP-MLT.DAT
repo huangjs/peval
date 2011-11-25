@@ -1,0 +1,10 @@
+;; File: mp-mlt.dat
+
+(program (pars x y) (vars out next kn)
+  ((write x)
+   (write y)
+   (:= kn y)
+   (while kn
+     ((:= next (cons x next))
+      (:= kn (cdr kn))))
+   (write next)))

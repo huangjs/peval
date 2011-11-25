@@ -1,0 +1,43 @@
+; Similix job for running MP-example
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(load "../system/sim-scm.scm") ; (load "../system/sim-chez.so")
+
+(load "MP-int.sim")
+
+(define power (file->item "power.MP"))
+; result = L int (source,data):
+(define result (begin (define store "garbage")
+		      (ntimes (lambda () (run power '((a b c d) (e f g h)))) 1)
+		      store))
+
+; target = L mix (int,source) (1 times):
+(similix 'run (list power '***) "MP-int.sim" 1 "power.sim")
+(define target (residual-program))
+(load "power.sim")
+
+; new-result = L target data:
+(define new-result (begin (define store "garbage")
+			  (ntimes (lambda () (run-0 '((a b c d) (e f g h)))) 1)
+			  store))
+; result = new-result?:
+(equal? result new-result)
+
+; comp = L cogen int:
+(cogen 'run '(s d) "MP-int.sim" 1 "MP-cmp.sim")
+(compile-sim-file "MP-cmp.sim")
+
+; new-target = L comp source (1 times):
+(define new-target
+  (comp (string-append "MP-cmp" **Similix-compiled-sim-suffix**)
+	(list power '***)))
+; target = new-target?:
+(equal? target new-target)
+
+(exit)
+
+;-----------------------------------------------------------------------------

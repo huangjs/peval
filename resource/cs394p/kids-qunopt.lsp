@@ -1,0 +1,66 @@
+; kids-qunopt.lsp                  G. Novak           ; 01 Apr 05
+; Direct implementation of KIDS Queens in Lisp, unoptimized
+(defmacro while (test &rest forms) `(loop (unless ,test (return)) ,@forms) )
+
+(defun queens (k)
+  (if (and (injective '() (set1k k))
+	   (no-two-queens-per-up-diagonal '())
+	   (no-two-queens-per-down-diagonal '()) )
+      (queens_gs k '())
+      '() ) )
+
+(defun queens_gs (k part_sol)
+  (let ((assign part_sol))
+    (if (and (no-two-queens-per-down-diagonal assign)
+	     (no-two-queens-per-up-diagonal assign)
+	     (bijective assign (set1k k)) )
+	(list assign)
+        (let (new_part_sol result)
+	  (dotimes (i k)
+	    (setq new_part_sol (append part_sol (list (1+ i))))
+	    (if (and (no-two-queens-per-down-diagonal new_part_sol)
+		     (no-two-queens-per-up-diagonal new_part_sol)
+		     (injective new_part_sol (set1k k))
+		     (< (length part_sol) k))
+		(push (queens_gs k new_part_sol) result)) )
+	  (and result (reduce #'union result))) ) ))
+
+; make a set {1..k}, reusing the old value if possible.
+(defvar *lastk* -1)    (defvar *set1k* nil)
+(defun set1k (k)
+  (if (= k *lastk*)
+      *set1k*
+      (let (res)
+	(dotimes (i k) (push (1+ i) res))
+	(setq *set1k* (nreverse res))
+	(setq *lastk* k)
+	*set1k*) ) )
+
+(defun injective (m s)
+  (and (subsetp m s)
+       (let ((ok t))
+	 (while m
+	   (setq ok (and ok (not (member (car m) (cdr m)))))
+	   (pop m))
+	 ok)))
+
+(defun set= (x y) (and (subsetp x y) (subsetp y x)))
+(defun bijective (m s) (and (injective m s) (set= m s)))
+
+(defun no-two-queens-per-up-diagonal (s)
+  (let ((ok t))
+    (dotimes (i (length s))
+      (dotimes (j (length s))
+	(if (not (= i j))
+	    (setq ok (and ok (not (= (- (nth i s) i)
+				     (- (nth j s) j))))))))
+    ok))
+
+(defun no-two-queens-per-down-diagonal (s)
+  (let ((ok t))
+    (dotimes (i (length s))
+      (dotimes (j (length s))
+	(if (not (= i j))
+	    (setq ok (and ok (not (= (+ (nth i s) i)
+				     (+ (nth j s) j))))))))
+    ok))

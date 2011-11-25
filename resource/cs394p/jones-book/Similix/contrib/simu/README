@@ -1,0 +1,143 @@
+                                 Simu
+
+                             DIKU, June 1994
+
+
+Simu is a user interface system for Similix (a Self-Applicable Partial
+Evaluator for a Large Subset of Scheme). The whole procedure of
+partial evaluation using Similix is directed through Simu.  According
+to the Similix working process model, six main components ( System,
+Preprocess, Specialize, Cogen, Compile and Run) are made up by
+Simu. In addition, on-lined Help is also supported. Under the X-Window
+environment, the user interacts with Similix by means of a set of
+interactive tools in Simu, such as menus, dialog boxes, and so on.
+
+
+A. Installation guide
+
+The Simu system directory contains the following files and
+subdirectories:
+
+README:            this file
+imakefile:         imakefile for Simu system
+*.c:               Simu system C files
+*.h:               Simu system include files
+*.scm:             Similix showing files relating to Simu
+simu.manual.nroff: on-lined help file for Simu system
+ex-norma/:         example of running Simu
+                   --- an interpreter for a miniature flow chart language
+                       with only two variables
+ex-lam/:           example of running Simu
+                   --- an interpreter for lambda expressions
+getting-started:   an introduction session for running Simu
+simu.dvi:          Simu manual in TeX dvi-format
+
+
+B. System requirements
+
+Simu is an organic whole which depends on the systems of Scheme (Scm
+or similar), Similix and X-Window (X Version 11, Release 5). Here, we
+need to emphasize that, Simu is supported by X-Window environment, and
+running Simu has to be on the machine which is installed with Xlib,
+Xtoolkit Intrinsics and Athena Widget Set, after installing Scm and
+Similix.  In order to understand Simu, "Similix 5.0 Manual" written by
+Anders Bondorf is required, as well as the knowledge of Scheme.
+
+C. Installing Scm, Similix and Simu on the machines
+
+In order to run Simu, the user needs to install the systems of Scm,
+Similix and Simu one by one. The installation for Scm, Similix and
+Simu systems follows the README of Similix.
+
+As a whole, it is necessary for the user to record three locations,
+i.e. the location for Scm (Location1), the location for Similix
+(Location2) and the location for Simu (Location3). After installing
+Scm, Similix and Simu into your environment, keep these path names
+respectively.
+
+
+D. Running Simu
+
+I. Move *.scm files to Similix directory
+
+The *.scm files in the Simu system directory, i.e. simu.scm,
+abssyn0.scm, simu0.scm, abssyn1.scm, simu1.scm, are all concerned with
+showing functions, and they will be loaded when running Simu.
+Moreover, Simu supposes them to be together with all of the other
+Similix system files. Therefore the user should first move these *.scm
+files to the Similix system directory (Location2).
+
+II. New definitions in simudefs.h
+
+The user needs to define the new names in Simu's include file
+simudefs.h (see the file), for those relating to the locations for
+Scm, Similix and Simu, so that all of the files relating to Scm (scm),
+the initialization file for Similix (sim-scm.scm), the Similix showing
+files (*.scm files originally in Simu directory), and the on-lined
+help file for Simu (simu.manual.nroff), etc. can be located when
+running Simu.
+
+First, define SCM as the appropriate Location1/scm which defines where
+and which Scm is. Because Scm has the different versions when running
+on the machines with the different architectures, SCM should make
+sense when Scm is running on certain machine. For example, at DIKU Scm
+can be running on hugin, a SPARC station machine, or tyr, an HP
+machine, then SCM is defined as follows:
+
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/sun4/scm"
+#endif
+
+or
+
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/hp9000s700/scm"
+#endif
+
+Then, define SIMILIXPATH as the appropriate Location2 which defines
+where Similix system is.  For example, if Similix is loaded in the
+directory /home/ask2/lpzong/Similix/system, then SIMILIXPATH is
+defined as:
+
+#ifndef SIMILIXPATH
+#define SIMILIXPATH "/home/ask2/lpzong/Similix/system"
+#endif
+
+Finally, define HELPFILE as the appropriate
+Location3/simu.manual.nroff. Here, Location3 defines where Simu system
+is, and Location3/simu.manual.nroff defines the on-lined help file for
+Simu. For example, if all of Simu system files (also the on-lined help
+file) are loaded into Location3 which is /home/ask2/lpzong/Simu, then
+HELPFILE is defined as:
+
+#ifndef HELPFILE
+#define HELPFILE "/home/ask2/lpzong/Simu/simu.manual.nroff"
+#endif
+
+III. Making Simu on the machine
+
+Under Simu system environment with the file imakefile, run "xmkmf" to
+get the file Makefile --- this automatedly generated Makefile is the
+one concerning the specific machine architecture. Then corresponding
+to the Makefile, run "make" to compile all of *.c source files, link
+all concerned libraries and finally get the executable Simu version
+--- simu.
+
+The user now may begin to run "simu". Try to run the job
+"getting-started" in the Simu system directory.
+
+
+E. Communication
+
+Please direct any Simu communication to Liping Zong, preferably
+by e-mail:
+
+        Liping Zong
+        DIKU, Department of Computer Science
+        University of Copenhagen
+        Universitetsparken 1
+        DK-2100, Copenhagen East
+        Denmark
+
+        e-mail: lpzong@diku.dk
+

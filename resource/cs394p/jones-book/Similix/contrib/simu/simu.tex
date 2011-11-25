@@ -1,0 +1,2036 @@
+\documentstyle[11pt]{article}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\topsep=0.1cm
+\parsep=0.1cm
+\itemsep=0.0cm
+\newenvironment{nquote}[1]%
+{\list{}{\leftmargin=#1}\item[]}%
+{\endlist}
+
+\begin{document}
+\bibliographystyle{alpha}
+
+\bibliographystyle{/common/lib/tex/macros/BST-0.99/alpha}
+
+\begin{sloppypar}
+
+\title{Simu Manual}
+
+\author{Liping Zong}
+
+\date{June 1994}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+
+Simu is a user interface system for Similix (a Self-Applicable Partial
+Evaluator for a Large Subset of Scheme). The whole procedure of
+partial evaluation using Similix is directed through Simu.  According
+to the Similix working process model, six main components ({\bf
+System, Preprocess, Specialize, Cogen, Compile} and {\bf Run}) are
+made up by Simu. In addition, on-lined {\bf Help} is also
+supported. Under the X-Window environment, the user interacts with
+Similix by means of a set of interactive tools in Simu, such as menus,
+dialog boxes, and so on.
+
+Content features for this manual include the installation of Simu, the
+session of getting started with Simu and the detailed description of
+Simu commands.
+
+\end{abstract}
+
+\tableofcontents
+
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+\medskip
+\par
+
+
+\noindent {\bf Acknowledgement}
+\medskip
+\par
+\medskip
+\par
+
+   Many people deserve thanks for their support, encouragement and
+advice. The special thanks are due to my supervisor, Neil D. Jones,
+for giving me the chance to research Simu, and for the invaluable
+guidance throughout. This opportunity allows me to work with the
+combination of efficient partial evaluator and advanced user interface
+technology. I am most grateful to Jesper Joergensen for many
+stimulating discussions and reading the initial Simu manual draft, to
+Morten Voetman Christiansen for the helpful suggestions and constant
+technical assistance, and to Robert Glueck for the careful review of
+Simu Manual and many constructive comments. I also would like to
+express my thanks to Anders Bondorf, Peter Holst Andersen, Ryo
+Nakashige and other members at DIKU, particularly Erik Froekjaer for
+their sincere support. I am greatly indebted to Evon Liu in SUN
+Microsystems at Boston for the technical instructions, to Maoshun Ding
+in the Institute of Software, Academia Sinica, for the encouragement,
+to Mian Tuo in the Institute of Computing Technology, Academia Sinica,
+for the help and understanding, to Dirk Dussart and Ton Hospel at the
+Department of Computer Science, Leuven University, Belgium, for the
+advice and ideas. Finally, I wish to thank the whole TOPPS Group at
+DIKU for providing a fruitful and congenial environment, and thank the
+people who have shown their interest in the Simu system.
+
+
+\pagebreak
+
+
+\section{INSTALLATION}
+
+
+\subsection{Installation guide}
+
+The Simu system directory contains the following files and subdirectories:
+
+\begin{verbatim}
+README:            this file
+imakefile:         imakefile for Simu system
+*.c:               Simu system C files
+*.h:               Simu system include files
+*.scm:             Similix showing files relating to Simu
+simu.manual.nroff: on-lined help file for Simu system
+ex-norma/:         example of running Simu
+                   --- an interpreter for a miniature flow chart language
+                      with only two variables
+ex-lam/:           example of running Simu
+                   --- an interpreter for lambda expressions
+getting-started:   an introduction session for running Simu
+simu.dvi:          Simu manual in TeX dvi-format
+\end{verbatim}
+
+
+\subsection{System requirements}
+
+
+Simu is an organic whole which depends on the systems of Scheme (Scm
+or similar), Similix \cite{Bondorf:93:manual} and X-Window (X Version
+11, Release 5).  Here, we need to emphasize that, Simu is supported by
+X-Window environment \cite{Mikes:92}, and running Simu has to be on
+the machine which is installed with Xlib
+\cite{ScheiflerGettys:90,GettysScheifler:91}, Xtoolkit Intrinsics
+\cite{AsenteSwick:90,McCormackAsenteSwick:91}, and Athena Widget Set
+\cite{Peterson:91}, after installing Scm and Similix. In order to
+understand this manual, \cite{Bondorf:93:manual} is required, as well
+as the knowledge of Scheme.
+
+
+\subsection{Installing Scm, Similix and Simu on the machine}
+
+
+In order to run Simu, the user needs to install the systems of Scm,
+Similix and Simu one by one.  The installation for Scm, Similix and
+Simu systems follows the {\tt README} of Similix.
+
+As a whole, it is necessary for the user to record three locations,
+i.e. the location for Scm (Location1), the location for Similix
+(Location2) and the location for Simu (Location3). After installing
+Scm, Similix and Simu into your environment, keep these path names
+respectively.
+
+
+\subsection{Running Simu}
+
+\subsubsection{Move *.scm files to Similix directory}
+
+The {\tt *.scm} files in the Simu system directory, i.e. {\tt
+simu.scm, abssyn0.scm, simu0.scm, abssyn1.scm}, and {\tt simu1.scm},
+are all concerned with showing functions, and they will be loaded when
+running Simu.  Moreover, Simu supposes them to be together with all of
+the other Similix system files. Therefore the user should first move
+these {\tt *.scm} files to the Similix system directory (Location2).
+
+\subsubsection{New definitions in simudefs.h}
+
+The user needs to define the new names in Simu's include file {\tt
+simudefs.h} (see the file), for those relating to the locations for
+Scm, Similix and Simu, so that all of the files relating to Scm ({\tt
+scm}), the initialization file for Similix ({\tt sim-scm.scm}), the
+Similix showing files ({\tt *.scm} files originally in Simu
+directory), and the on-lined help file for Simu ({\tt
+simu.manual.nroff}), etc. can be located when running Simu.
+
+First, define {\tt SCM} as the appropriate Location1{\tt /scm} which
+defines where and which Scm is. Because Scm has the different versions
+when running on the machines with the different architectures, {\tt
+SCM} should make sense when Scm is running on certain machine. For
+example, at DIKU Scm can be running on {\tt hugin}, a SPARC station
+machine, or {\tt tyr}, an HP machine, then {\tt SCM} is defined as
+follows:
+
+\begin{verbatim}
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/sun4/scm"
+#endif
+\end{verbatim}
+   or
+\begin{verbatim}
+#ifndef SCM
+#define SCM "/home/hugin/mix/bin/hp9000s700/scm"
+#endif
+\end{verbatim}
+
+Then, define {\tt SIMILIXPATH} as the appropriate Location2 which
+defines where Similix system is.  For example, if Similix is loaded in
+the directory {\tt /home/ask2/lpzong/Similix/system}, then {\tt
+SIMILIXPATH} is defined as:
+
+\begin{verbatim}
+#ifndef SIMILIXPATH
+#define SIMILIXPATH "/home/ask2/lpzong/Similix/system"
+#endif
+\end{verbatim}
+
+Finally, define {\tt HELPFILE} as the appropriate Location3{\tt
+/simu.manual.nroff}. Here, Location3 defines where Simu system is, and
+Location3{\tt /simu.manual.nroff} defines the on-lined help file for
+Simu. For example, if all of Simu system files (also the on-lined help
+file) are loaded into Location3 which is {\tt /home/ask2/lpzong/Simu},
+then {\tt HELPFILE} is defined as:
+
+\begin{verbatim}
+#ifndef HELPFILE
+#define HELPFILE "/home/ask2/lpzong/Simu/simu.manual.nroff"
+#endif
+\end{verbatim}
+
+
+\subsubsection{Making Simu on the machine}
+
+
+Under Simu system environment with the file {\tt imakefile}, run {\tt
+xmkmf} to get the file {\tt Makefile} --- this automatedly generated
+{\tt Makefile} is the one concerning the specific machine
+architecture. Then corresponding to the {\tt Makefile}, run {\tt make}
+to compile all of {\tt *.c} source files, link all concerned libraries
+and finally get the executable Simu version --- {\tt simu}.
+
+The user now can begin to run {\tt simu}.
+
+
+
+\section{GETTING STARTED}
+
+
+This section contains an introduction to running Simu. Assuming the
+Simu system is installed in the directory {\tt
+/home/ask2/lpzong/Simu}, we contain the complete session as follows,
+to demonstrate how Simu works.
+
+The session uses an example program called {\tt norma-int.sim}, which
+is an interpreter written in Scheme for a miniature flow chart
+language with only two variables, {\tt x} and {\tt y}. Program input
+is through {\tt x}, and output is the final value of {\tt y}.
+
+\begin{verbatim}
+(define (execute pgm x y)
+   (run pgm pgm x y))
+
+(define (run pgm ptail x y)
+   (if (null? ptail)
+      y
+   (if (equal? (car ptail) 'x:=x+1)
+      (run pgm (cdr ptail) (+ x 1) y)
+   (if (equal? (car ptail) 'x:=x-1)
+      (run pgm (cdr ptail) (- x 1) y)
+   (if (equal? (car ptail) 'y:=y+1)
+      (run pgm (cdr ptail) x (+ y 1))
+   (if (equal? (car ptail) 'y:=y-1)
+      (run pgm (cdr ptail) x (- y 1))
+   (if (equal? (caar ptail) 'goto)
+      (run pgm (nth pgm (cadar ptail)) x y)
+   (if (equal? (caar ptail) 'ifx=0goto)
+      (if (equal? x 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+   (if (equal? (caar ptail) 'ify=0goto)
+      (if (equal? y 0)
+         (run pgm (nth pgm (cadar ptail)) x y)
+         (run pgm (cdr ptail) x y))
+      'Syntax-error)))))))))
+
+(define (nth pgm i)
+   (if (null? pgm)
+      pgm
+      (if (equal? i 0)
+         pgm
+         (nth (cdr pgm) (- i 1)))))
+\end{verbatim}
+
+   Following is the interpreted language's program syntax:
+
+\begin{verbatim}
+Program ::= (I0 I1 ... In-1)
+I       ::= x:=x+1 | x:=x-1 | y:=y+1 | y:=y-1
+        |  (goto Label) | (ifx=0goto Label) | (ify=0goto Label)
+Label   ::= 0 | 1 | ... (Label >= n causes program termination)
+\end{verbatim}
+
+   We will specialize this interpreter to static program input
+{\tt pgm.norma}, which is
+
+\begin{verbatim}
+(ifx=0goto 5)
+y:=y+1
+y:=y+1
+x:=x-1
+(goto 0)
+\end{verbatim}
+
+\noindent and dynamic {\tt x} and {\tt y}. (This example is in the directory
+{\tt /home/ask2/lpzong/Simu/ex-norma}.)
+
+
+\noindent {\bf I. Starting Simu/Exiting}
+\begin{enumerate}
+\item Starting Simu:
+
+     Simu starts by presenting a small {\it bulletin board} that
+contains six {\it menu commands} and two {\it button commands}, and a
+{\it working area} displaying the output of Similix. The user may pull
+down the respective menu items and choose one of them to do the
+required work at any time Simu is running.  However, when Simu is
+invoked, some menu items are not available, since they will only be
+available after certain operations have been performed.
+
+     The working area is a text window where the user may search for
+and scroll through the output text from Similix. Unfortunately, it is
+mainly used for viewing the output with the {\tt Append} editing type.
+Except for some special characters (such as Ctrl-c, Ctrl-s, Ctrl-x and
+Ctrl-q), it simply echoes the character which the user is typing.
+
+   After Simu is started up, a window system for Simu pops up and
+Simu's working area displays:
+
+\begin{verbatim}
+Welcome to Similix 5.0
+Copyright (C) 1993 Anders Bondorf
+Contributions by Olivier Danvy and Jesper Joergensen
+
+util langext abssyn miscspec runtime front lam-lift bt-eod sp oc rl post spec
+#<unspecified>
+> #<unspecified>
+>
+\end{verbatim}
+
+\item Exiting from the Simu system:
+
+     Choose the {\bf Exit} button, and click on {\bf OK} button in the
+next dialog box. Then all of the windows in Simu will be closed and
+the whole system will be quited.
+\end{enumerate}
+
+\noindent {\bf II. Basic operations}
+\begin{enumerate}
+
+\item Changing the working directory:
+
+In the working area type Ctrl-q, then a small {\it command-line
+window} is activated. In this window, type {\tt (chdir "ex-norma")}
+followed by Return, then a new label pops up at the upper working
+area, indicating the current working directory is {\tt
+/net/ask/home/ask2/lpzong/Simu/ex-norma}. And the working area
+displays:
+
+\begin{verbatim}
+> (chdir "/examples/ex-norma")
+#t
+>
+\end{verbatim}
+
+If the user wants to remove this small window, just clicks on {\bf
+Close} button in the left upper of the command-line window.
+
+\item Loading the program:
+
+   Choose the {\bf Load sim-file} item in the {\bf System} menu, type
+the example program name {\tt norma-int.sim} in the input entry of the
+{\it dialog box}, and click on {\bf OK} button.  Then the program with
+goal function {\tt execute} is loaded into Similix, and the working
+area displays:
+
+\begin{verbatim}
+> (loads "norma-int.sim")
+()
+>
+\end{verbatim}
+
+\item Converting the file {\tt pgm.norma} into a list:
+
+   Choose the {\bf File-$>$list} item in the {\bf System} menu, type
+the file name {\tt pgm.norma} and the list name {\tt pgm} in the two
+input entries of the {\it working board}, and click on {\bf OK}
+button. Then the file {\tt pgm.norma} is converted into a list {\tt
+pgm} and the working area displays:
+
+\begin{verbatim}
+> (define pgm (file->list "pgm.norma"))
+#<unspecified>
+>
+\end{verbatim}
+
+\item Applying the program to its arguments:
+
+   Choose the {\bf Run original program} item in the {\bf Run} menu,
+type the goal function name {\tt execute} and a list of arguments {\tt
+,pgm 2 0} in the first two input entries of the working board
+respectively, and click on {\bf OK} button. Then the program runs and
+the working area displays:
+
+\begin{verbatim}
+> (apply execute `(,pgm 2 0))
+4
+>
+\end{verbatim}
+
+   (Please note: Simu always supplies the user with the default name
+or value which is specified in some input entry the last time. The
+user may modify or delete it if the default name or value is not
+appropriate.)
+
+\item Timing the program running:
+
+   Choose the {\bf Run original program} item in the {\bf Run} menu
+again, type the goal function name {\tt execute}, a list of arguments
+{\tt ,pgm 2 0} and the running times {\tt 1000}, in the three input
+entries of the working board respectively, and click on {\bf OK}
+button. Then the program runs with the timing information and the
+working area displays:
+
+\begin{verbatim}
+> (ntimes (lambda() (apply execute `(,pgm 2 0))) 1000)
+Run time: 3.8833333333333 seconds
+4
+>
+\end{verbatim}
+\end{enumerate}
+
+\noindent {\bf III. Preprocessing}
+\begin{enumerate}
+\item Preprocessing the program:
+
+   Choose the {\bf Preprocess program} item in the {\bf Preprocess}
+menu, type the program name {\tt norma-int.sim}, the goal function
+name {\tt execute} and the argument binding-time pattern {\tt s d d},
+in the three input entries of the working board respectively, and
+click on {\bf OK} button. Then the program is preprocessed and the
+working area displays:
+
+\begin{verbatim}
+> (preprocess! `execute `(s d d) "norma-int.sim")
+front-end flow bt sp eod oc rl
+done
+>
+\end{verbatim}
+
+\item Showing the current preprocessed program (or with the data flow classes):
+
+   Choose the {\bf Show current preprocessed program} item in the {\bf
+Preprocess} menu, click on {\bf OK} buttons for the label of {\bf Show
+current preprocessed program} and for the one of {\bf Show current
+preprocessed program with all of flows} respectively in the working
+box {\bf Show Current Preprocessed Program Functions}. Then in the two
+showing windows, the current preprocessed program and the one with all
+of the data flow classes are displayed with the pretty-printing
+separatedly, where the boldface indicates the dynamic names or values,
+or the numbers of the data flow class. Now the working area displays:
+
+\begin{verbatim}
+> (writelpp (showpall) "temp%%%")
+#<unspecified>
+> (writelpp (showpallflow) "temp%%%")
+#<unspecified>
+>
+\end{verbatim}
+
+   In the corresponding showing window, click on {\bf Close} button in
+the upper left, and click on {\bf OK} button in the next dialog
+box. Then the showing window is closed in order.
+
+\item Showing the current preprocessed program with the number of flow:
+
+   Choose the {\bf Show current preprocessed program} item again in
+the {\bf Preprocess} menu, type {\tt 6} in the input entry of the
+working box {\bf Show Current Preprocessed Program Functions} and
+click on the last {\bf OK} button. Then the current preprocessed
+program with the number of data flow class, {\tt 6}, is displayed with
+the pretty-printing in the showing window, where the boldface
+indicates the dynamic names or values, or {\tt 6}, which is the number
+of the data flow class. Now the working area displays:
+
+\begin{verbatim}
+> (displayflow 6)
+(writelpp (showpallflowid) "temp%%%")
+#<unspecified>
+> #<unspecified>
+>
+\end{verbatim}
+
+    In this showing window, click on {\bf Close} button in the upper
+left, and click on {\bf OK} button in the next dialog box. Then the
+showing window is closed.
+
+\item Writing the preprocessed program:
+
+    Choose the {\bf Write preprocessed program} item in the {\bf
+Preprocess} menu, type the name of the preprocessed program without
+flow, {\tt norma.ann}, in the first input entry of the working board,
+and click on {\bf OK} button. Then the preprocessed program is written
+onto the file {\tt norma.ann}. Now the working area displays:
+
+\begin{verbatim}
+> (writelpp (showpall) "norma-int.ann")
+#<unspecified>
+>
+\end{verbatim}
+
+\item Showing the preprocessed program:
+
+    Choose the {\bf Show preprocessed program} item in the {\bf
+Preprocess} menu, type the preprocessed program name, {\tt
+norma-int.ann}, in the input entry of the dialog box, and click on
+{\bf OK} button.  Then the preprocessed program {\bf norma-int.ann} is
+displayed in the showing window, with boldface indicating dynamic
+names or values. In the corresponding showing window, click on {\bf
+Close} button in the upper left, and click on {\bf OK} button in the
+next dialog box. Then the showing window is closed.
+
+\item Printing the preprocessed program:
+
+    Choose the {\bf Print preprocessed program} item in the {\bf
+Preprocess} menu, type the preprocessed program name {\tt
+norma-int.ann}, the printer type {\tt 0} and the printer name {\tt
+ciqm1a}, in the three input entries of the working board respectively,
+and click on {\bf OK} button. Then the file {\bf norma-int.ann} is
+printed out by the lineprinter {\tt ciqm1a}, and the underscore on the
+paper is the boldface on the screen.
+\end{enumerate}
+
+\noindent {\bf IV. Specializing}
+
+\begin{enumerate}
+\item Specializing the program:
+
+    Choose the {\bf Specialize program} item in the {\bf Specialize}
+menu, type the program name {\tt norma-int.sim}, the goal function
+name {\tt execute} and the argument pattern {\tt ,pgm *** ***}, in the
+three input entries of the working board respectively, and click on
+{\bf OK} button. Then the program is specialized and the working area
+displays:
+
+\begin{verbatim}
+> (similix `execute `(,pgm *** ***) "norma-int.sim")
+front-end flow bt sp eod oc rl
+specializing
+((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+ (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+>
+\end{verbatim}
+\end{enumerate}
+
+\noindent {\bf V. Residual program}
+\begin{enumerate}
+\item Showing the current residual program:
+
+    Choose the {\bf Show current residual program} item in the {\bf
+Specialize} menu, and click on {\bf OK} button in the working box {\bf
+Show Current Residual Program}. Then the current residual program is
+displayed in the showing window and the working area displays:
+
+\begin{verbatim}
+> (writelpp (residual-program) "temp%%%")
+#<unspecified>
+>
+\end{verbatim}
+
+    In the corresponding showing window, click on {\bf Close} button
+in the upper left, and click on {\bf OK button} in the next dialog
+box. Then the showing window is closed.
+
+\item Writing the residual program:
+
+    Choose the {\bf Write residual program} item in the {\bf
+Specialize} menu, type the residual program name, {\tt norma-res.sim},
+in the input entry of the dialog box, and click on {\bf OK}
+button. Then the residual program is written onto the file {\tt
+norma-res.sim} and the working area displays:
+
+\begin{verbatim}
+> (writelpp (residual-program) "norma-res.sim")
+#<unspecified>
+>
+\end{verbatim}
+
+\item Showing the residual program:
+
+    Choose the {\bf Show residual program} item in the {\bf
+Specialize} menu, type the residual program name, {\tt norma-res.sim},
+in the input entry of the dialog box, and click on {\bf OK}
+button. Then the residual program {\tt norma-res.sim} is displayed in
+the showing window. In the corresponding showing window, click on {\bf
+Close} button in the upper left, and click on {\bf OK} button in the
+next dialog box. Then the showing window is closed.
+
+\item Printing the residual program:
+
+    Choose the {\bf Print residual program} item in the {\bf
+Specialize} menu, type the residual program name {\tt norma-res.sim},
+the printer type {\tt 0} and the printer name {\tt ciqm1a} in the
+three input entries of the working board respectively, and click on
+{\bf OK} button. Then the file {\tt norma-res.sim} is printed out by
+the lineprinter {\tt ciqm1a}, using the Unix {\tt lpr} command.
+
+\item Applying the residual program to its dynamic arguments:
+
+    Choose the {\bf Run residual program} item in the {\bf Run menu},
+leave the first input entry of the working board empty, type a list of
+dynamic arguments {\tt 2 0} in the second input entry, and click on
+{\bf OK} button. Then the residual program with the default goal
+function {\tt execute-0} is loaded and runs. The working area
+displays:
+
+\begin{verbatim}
+> (load-residual-program)
+(apply execute-0 `(2 0))
+()
+> 4
+>
+\end{verbatim}
+
+\item Timing the residual program:
+
+    Choose the {\bf Run residual program} item in the {\bf Run} menu
+again, leave the first input entry of the working board empty, type a
+list of dynamic arguments {\tt 2 0} and the running times {\tt 1000}
+in the second and the third input entries respectively, and click on
+{\bf OK} button.  Then the residual program with the default goal
+function {\tt execute-0} runs with the timing information. The working
+area displays:
+
+\begin{verbatim}
+> (load-residual-program)
+(ntimes (lambda() (apply execute-0 `(2 0))) 1000)
+()
+> Run time: 733.33333333333e-3 seconds
+4
+>
+\end{verbatim}
+\end{enumerate}
+
+\noindent {\bf VI. Generating extension}
+\begin{enumerate}
+\item Generating a generating extension (currying):
+
+    Choose the {\bf Compiler generation} item in the {\bf Cogen} menu,
+type the program name {\tt norma-int.sim}, the goal function name {\tt
+execute} and the argument binding-time pattern {\tt s d d} in the
+first three input entries of the working board respectively, leave the
+other input entries empty, and click on {\bf OK} button.  Then the
+Similix compiler generator is used to generate a generating extension
+of {\tt norma-int}, and the working area displays:
+
+\begin{verbatim}
+> (cogen `execute `(s d d) "norma-int.sim")
+front-end flow bt sp eod oc rl
+generating compiler
+()
+>
+\end{verbatim}
+
+\item Showing the current compiler program:
+
+    Choose the {\bf Show current compiler} item in the {\bf Cogen}
+menu, and click on {\bf OK} button in the working box {\bf Show
+Current Compiler Program}.  Then the current compiler program is
+displayed in the showing window and the working area displays:
+
+\begin{verbatim}
+> (writelpp (current-compiler) "temp%%%")
+#<unspecified>
+>
+\end{verbatim}
+
+    In the corresponding showing window, click on {\bf Close} button
+in the upper left, and click on {\bf OK} button in the next dialog
+box. Then the showing window is closed.
+
+\item Writing the compiler program:
+
+    Choose the {\bf Write compiler} item in the {\bf Cogen} menu, type
+the compiler program name {\tt norma-int.com} in the input entry of
+the dialog box, and click on {\bf OK} button.  Then the compiler
+program is written onto the file {\tt norma-int.com} and the working
+area displays:
+
+\begin{verbatim}
+> (writelpp (current-compiler) "norma-cmp.sim")
+#<unspecified>
+>
+\end{verbatim}
+
+\item Showing the compiler program:
+
+    Choose the {\bf Show compiler} item in the {\bf Cogen} menu, type
+the compiler program name {\tt norma-cmp.sim} in the input entry of
+the dialog box, and click on {\bf OK} button. Then the compiler
+program {\tt norma-cmp.sim} is displayed in the showing window. In the
+corresponding showing window, click on {\bf Close} button in the upper
+left, and click on {\bf OK} button in the next dialog box. Then the
+showing window is closed.
+
+
+\item Printing the compiler program:
+
+     Choose the {\bf Print compiler} item in the {\bf Cogen} menu,
+type the compiler program name {\tt norma-cmp.sim}, the printer type
+{\tt 0} and the printer name {\tt ciqm1a} in the three input entries
+of the working board respectively, and click on {\bf OK} button. Then
+the file {\tt norma-cmp.sim} is printed out by the lineprinter {\tt
+ciqm1a}, using the Unix {\tt lpr} command.
+
+
+\item Running the generating extension:
+
+     Choose the {\bf Compile} item in the {\bf Compile} menu, type the
+compiler program name {\tt norma-cmp.sim} in the first input entry of
+the working board, and the argument pattern {\tt ,pgm *** ***} in the
+third input entry, leave the other input entries empty, and click on
+{\bf OK} button.  Then the generating extension is now applied to the
+same input that {\tt norma-int.sim} was specialized with respect to
+above, generating the specialized {\tt norma-int} program that we have
+already seen. The working area displays:
+
+\begin{verbatim}
+> (comp "norma-int.com" `(,pgm *** ***))
+loading compiler norma-int.com
+specializing
+((define (execute-0 x_0 y_1) (define (run-1-1 x_0 y_1) (if (equal? x_0 0) y_1
+ (run-1-1 (- x_0 1) (+ (+ y_1 1) 1)))) (run-1-1 x_0 y_1)))
+>
+\end{verbatim}
+\end{enumerate}
+
+
+\section{MENU COMMANDS}
+
+
+There are six menu commands in Simu, and they are: {\bf System,
+Preprocess, Specialize, Cogen, Compile} and {\bf Run}. This section
+describes all of these commands in detail. By placing the mouse
+pointer on any menu command and clicking on a button, the user may
+pull down the corresponding menu and select one of the items.
+
+
+
+\subsection{System}
+
+
+There are eleven items in the {\bf System} menu, and all of them are
+relating to general Similix and Scheme utilities, and basic operations
+in Simu.
+
+
+
+\subsubsection{Reset Similix}
+
+
+The corresponding command in Similix is: {\tt (reset-similix)}. It
+resets flags and other global variables used by Similix, and it's
+useful for resetting flags and for freeing heap space. These flags are
+relating to verbose preprocessing, post unfolding, verbose
+specializing and memoization. 
+
+When the user chooses this item, a {\it working box} will pop up, in
+order to let the user decide whether to do the reseting.
+
+
+
+\subsubsection{Load sim-file}
+
+
+The corresponding command in Similix is: {\tt (loads} {\it
+sim-file}{\tt )}, which loads {\it sim-file}.  This item should be
+used at the top-level instead of the item {\bf Load scheme-file}, if
+{\it sim-file} contains {\tt casematch-} or {\tt caseconstr-}
+forms. {\tt (loads} {\it sim-file}{\tt )} is the another version of
+{\tt (load }{\it scheme-file}{\tt )} in Similix.
+
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+
+
+\subsubsection{Load scheme-file}
+
+
+The corresponding command in Similix is: {\tt (load }{\it
+scheme-file}{\tt )}, which loads {\it scheme-file}.
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the Scheme source file name.
+
+
+
+\subsubsection{Reload ADT-file}
+
+
+The corresponding command in Similix is: {\tt (loadt!} {\it file}{\tt
+)}, which recompiles and reloads primitive operators and
+constructors. If during a session, a file {\it file} with primitive
+operator and constructor definitions is modified, we always follow the
+modifications by choosing this item; otherwise, the modification will
+not come into effect during the session.  You must redo the {\tt
+loadt!}  for all possible full file names (with paths) that are used
+to refer to {\it file} (this may be relevant if you are specializing
+programs from different directories that all use the file).
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the name of the {\tt .adt} file.
+
+
+
+\subsubsection{File-$>$list}
+
+
+The corresponding command in Similix is: {\tt (define }{\it list-name
+}{\tt (file->list }{\it file}{\tt ))}, which returns a list of the
+objects in {\it file}.
+   
+When the user chooses this item, a working board will pop up, in order
+to get the file name and the list name in two input entries.
+
+
+
+\subsubsection{File-$>$item}
+
+
+The corresponding command in Similix is: {\tt (define }{\it item-name
+}{\tt (file->item }{\it file}{\tt ))}, which returns the first object
+in {\it file}.
+   
+When the user chooses this item, a working board will pop up, in order
+to get the file name and the item name in two input entries.
+
+
+
+\subsubsection{Sim-$>$scheme}
+
+
+The corresponding command in Similix is: {\tt (sim2scheme }{\it
+sim-file}{\tt )}. It converts Similix Scheme programs into stand-alone
+Scheme programs which can be run without loading Similix first.  All
+definitions in files loaded and loadt'ed by {\it sim-file} are
+in-lined, and primitive operator and constructor definitions are
+converted to ordinary Scheme definitions. The output is written on the
+file {\it file-name.postfix}, where {\it file-name} is equal to {\it
+sim-file} without possible {\tt .sim} suffix and {\it postfix} is the
+standard postfix used for source files in the Scheme system used.
+   
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+
+\subsubsection{Compile sim-file}
+
+
+The corresponding command in Similix is: {\tt (compile-sim-file }{\it
+sim-file}{\tt )}, which compiles {\it sim-file}.
+   
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+
+
+\subsubsection{Compile and load sim-file}
+
+
+The corresponding command in Similix is: {\tt
+(compile-and-load-sim-file }{\it sim-file}{\tt )}, which compiles and
+loads {\it sim-file}.
+   
+When the user chooses this item, a dialog box will pop up, in order to
+get the Similix source file name.
+
+
+
+\subsubsection{Frontend program}
+
+
+\begin{enumerate}
+\item {\tt (front-end)}
+\item {\tt (front-end} {\it goal source-sim-file} {\tt )}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+
+\item displays information about input formats to {\tt front-end}.
+
+\item expands and converts the program in file {\it source-sim-file} with the
+goal function {\it goal} into internal abstract syntax.
+
+\end{enumerate}
+
+   Procedure {\tt front-end} is typically not called directly by the
+user, but it may for instance be useful for debugging. It returns the
+program text represented in abstract syntax.
+   
+When the user chooses this item, a working board will pop up, in order
+to get the Similix source file name and the source goal function name
+in two input entries.
+
+
+
+\subsubsection{Text editor}
+
+
+{\bf Text editor} is especially used in editing text file.  Simu
+supports multiple windows, so the user may open an {\it editor window}
+at any time, to create, open or save the file being specified, or
+close any one of editor windows freely. The editing functions of the
+window are similar to those of EMACS, thus the user may use almost all
+of the EMACS editing functions, such as search for, scroll through,
+cut and paste in the text, and so on. See also Section 5 ``{\bf TEXT
+EDITOR FOR USERS}'' below.
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the file name to be opened.
+
+
+
+\subsection{Preprocess}
+
+
+There are seven items in the {\bf Preprocess} menu, and all of them
+are relating to the preprocessing in Similix.
+
+
+\subsubsection{Preprocess program}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (preprocess!)}
+\item {\tt (preprocess!} {\it goal bt-pat source-sim-file}{\tt )}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+\item displays information about input formats to {\tt preprocess!}.
+
+\item front-ends and preprocesses the program in file {\it source-sim-file}
+   with the goal function {\it goal} w.r.t. binding-time pattern {\it
+   bt-pat}.  Argument {\it bt-pat} is a list of binding-time values; a
+   binding-time value must be one of either {\tt s, static, d,
+   dynamic}, or the symbol denoting dynamic input (initially {\tt
+   ***}, redefinable by {\tt (set-dynamic-input-symbol...)}); the
+   forms {\tt s} and {\tt static} are equivalent: they specify static
+   first-order input; the forms {\tt d, dynamic}, and the symbol
+   denoting dynamic input are also equivalent: they specify dynamic
+   input. The length of {\it bt-pat} must be equal to the number of
+   parameters to the goal function.
+
+\end{enumerate}
+
+   Procedure {\tt preprocess!} is typically not called directly by the
+user, but it may be useful for binding-time debugging when inspecting
+preprocessed (annotated) programs; the preprocessed program can be
+displayed by {\tt showp}/{\tt showpall} in Similix, and by the menu
+item {\bf Show current preprocessed program}/{\bf Show preprocessed
+program} in Simu.
+
+   When the user chooses this item, a working board will pop up, in
+order to get the Similix source file name, the source goal function
+name and the argument binding-time pattern in three input entries.
+
+
+\subsubsection{Show current preprocessed program}
+\label{subsubsec-show-cur-pre-prog}
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (writelpp (showpall) "temp\%\%\%")}
+\item {\tt (writelpp (showpallflow) "temp\%\%\%")}
+\item {\tt (displayflow} {\it flow-num}{\tt )},
+      {\tt (writelpp (showpallflowid) "temp\%\%\%")}
+\end{enumerate}
+
+\noindent where {\tt temp\%\%\%} is the temporary file name and {\it flow-num}
+is the number of the data flow class \cite{BondorfJoergensen:93:jfp}.
+
+   This item is used to show the current preprocessed program, or the
+current preprocessed program with all of the data flow classes or
+certain data flow class, with the pretty-printing on the screen, right
+after the preprocessing.
+   
+After preprocessing the program, if the user chooses this item, a
+working board will pop up.  The user may simply click on the
+respective {\bf OK} button, then the current preprocessed program or
+this program with all of the data flow classes will be displayed in
+the {\it showing window}. If the user inputs the number of the data
+flow class in the input entry and then clicks on {\bf OK} button, the
+current preprocessed program with this data flow class will be
+displayed in the showing window.
+
+   When displaying the preprocessed program, the boldface indicates
+the dynamic names or values, or the numbers of data flow class.
+
+
+\subsubsection{Write preprocessed program}
+\label{subsubsec-write-pre-prog}
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (writelpp (showpall)} {\it file}{\tt )}
+\item {\tt (writelpp (showpallflow)} {\it file}{\tt )}
+\item {\tt (displayflow} {\it flow-num}{\tt )},
+      {\tt (writelpp (showpallflowid)} {\it file}{\tt )}
+\end{enumerate}
+
+This item is used to write the current preprocessed program, or the
+current preprocessed program with all of the data flow classes or
+certain data flow class, onto the file {\it file} with the
+pretty-printing.
+
+After preprocessing program, if the user chooses this item, a working
+board will pop up.  The user may input the respective file name in the
+first two input entries, then the current preprocessed program or this
+program with all of the data flow classes will be written onto their
+files correspondingly.  If the user inputs the number of the data flow
+class in the third input entry and the file name in the fourth input
+entry, then the current preprocessed program with this data flow class
+number will be written onto the file.
+
+
+\subsubsection{Show preprocessed program}
+\label{subsubsec-show-pre-prog}
+
+This item is used to show preprocessed programs or preprocessed
+program with the data flow class(es) on the screen.
+
+After writing out a preprocessed program, if the user chooses this
+item with the name of the preprocessed program, then the preprocessed
+program is shown in a showing window with boldface indicating the
+dynamic names or values, or the number of data flow class.
+
+
+\subsubsection{Print preprocessed program}
+\label{subsubsec-print-pre-prog}
+
+This item is used to print out the preprocessed program using any one
+of laserprinters or lineprinters which is available.
+
+When the user chooses this item, a working board will pop up, in order
+to get the name of preprocessed program, the printer type (the
+lineprinter type is {\tt 0}, and the laserprinter type is any other
+value which is not equal to {\tt 0}), and the printer name in three
+input entries.
+
+If the printer type is specified as {\tt 0}, then the lineprinter is
+used to print out the file, and the characters which are displayed in
+boldface on the screen will be underscored on the paper.  Otherwise,
+if the printer type is specified as any other value, then the
+laserprinter is used, and the characters which are displayed in
+boldface on the screen will also be boldfaced on the paper.
+
+
+
+\subsubsection{Verbose preprocessing}
+\label{subsubsec-verb-pre-prog}
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (verbose-prep-on)}
+\item {\tt (verbose-prep-off)}
+\end{enumerate}
+
+\noindent which set and clear the verbose preprocessing flag respectively.
+Initially, the flag is set. When the flag is set, the preprocessor
+gives warnings when different procedure (function) arities are mixed
+and when constructors from different constructor families are
+mixed. Such mixings make more expressions dynamic.
+
+When the user chooses this item, a {\it radio} indicating the current
+flag state of verbose preprocessing will pop up, and the user may
+select one of the two {\it radio buttons} to set or clear the flag.
+
+
+\subsubsection{Memoization}
+\label{subsubsec-memo}
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (standard-memoization-on)}
+\item {\tt (standard-memoization-off)}
+\end{enumerate}
+
+\noindent which set and clear the standard memoization flag respectively.
+Initially, the flag is set. When the flag is set, standard memoization
+points are inserted when programs are preprocessed. Standard
+memoization points are generated from dynamic conditionals
+(conditionals that are not reduced at specialization time due to a
+dynamic test) and dynamic lambda-expressions (lambdas that are not
+beta-reduced at specialization time). When the flag is not set,
+memoization points are only inserted when user-specified by {\tt
+\_sim-memoize}. This is useful as it gives the user full control of
+memoization point insertion; dynamic choice of static values is
+enabled when the flag is cleared.
+
+   When the user chooses this item, a radio indicating the current
+flag state of standard memoization will pop up, and the user may
+select one of the two radio buttons to set or clear the flag.
+
+
+
+\subsection{Specialize}
+
+
+There are nine items in the {\bf Specialize} menu, and all of them are
+relating to the specializing in Similix.
+
+
+
+\subsubsection{Specialize program}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (similix)}
+\item {\tt (similix} {\it goal arg-pat source-sim-file [n] [resid-goal] [resid-sim-file} {\tt 'pp}{\it ]}{\tt )}
+\item {\tt (similix} {\it arg-pat [n] [resid-goal] [resid-sim-file} {\tt 'pp}{\it]}{\tt)}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+
+\item displays information about input formats to {\tt similix}.
+
+\item partially evaluates the program in file {\it source-sim-file} with the
+   goal function {\it goal} with respect to the input specified by
+   {\it arg-pat}.  The {\it arg-pat} is a list of pe-values, a
+   pe-value being either the symbol {\tt ***} denoting a dynamic value
+   or some static value (the symbol denoting dynamic input may be
+   redefined by {\tt (set-dynamic-input-symbol...)}). If the static
+   value is the name of list or item (converted by a file), then the
+   name should be preceded by the symbol {\tt ,} (Scheme unquote). The
+   length of {\it arg-pat} must be equal to the arity of {\it
+   goal}. If {\it n} is specified, the specialization is run {\it n}
+   times and timing information is output.  The timing figures include
+   specialization time only, not time for preprocessing. If {\it
+   resid-goal} is supplied, the goal function of the residual program
+   gets the name {\it resid-goal}. Otherwise, it gets the default name
+   {\it goal}{\tt -0}. The residual program is written onto the file
+   {\it resid-sim-file} if this argument is supplied, and it is
+   pretty-printed, since the argument {\tt 'pp} now is always supplied
+   in Simu.
+
+\item specializes an already preprocessed program with respect to the
+   input specified by {\it arg-pat}.  The form is useful for avoiding
+   preprocessing if the program to be partially evaluated has already
+   been preprocessed with respect to the same binding-time pattern (no
+   change in which parameters are static and which are dynamic). If
+   {\it n} is specified, the specialization is run {\it n} times and
+   timing information is output. The timing figures include
+   specialization time only, not time for preprocessing.  If {\it
+   resid-goal} is supplied, the goal function of the residual program
+   gets the name {\it resid-goal}.  Otherwise, it gets the default
+   name {\it goal}{\tt -0}.  The residual program is written onto the
+   file {\it resid-sim-file} if this argument is supplied, and it is
+   pretty-printed, since the argument {\tt 'pp} now is always supplied
+   in Simu.
+\end{enumerate}
+\medskip
+\par
+   When the user chooses this item, a working board will pop up, in
+order to get the Similix source file name, the source goal function
+name, the argument pattern, the residual program name, the residual
+goal function name and the running times, in six input entries (but
+some input entries may be left empty).
+
+
+
+\subsubsection{Show current residual program}
+\label{subsubsec-show-cur-res-prog}
+
+The corresponding command in Similix is: {\tt (writelpp
+(residual-program) "temp\%\%\%")}, where {\tt temp\%\%\%} is the
+temporary file name.  This item is used to show the current residual
+program with the pretty-printing on the screen, right after the
+specializing.
+
+   After specializing the program, if the user chooses this item, a
+working box will pop up. The user may simply click on {\bf OK} button,
+then the current residual program will be displayed in the showing
+window.
+
+
+
+\subsubsection{Write residual program}
+\label{subsubsec-write-res-prog}
+
+The corresponding command in Similix is: {\tt (writelpp
+(residual-program)} {\it file}{\tt )}, which writes the latest
+generated specialized (residual) program with the pretty-printing onto
+the file.
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the name of the residual program.
+
+
+
+\subsubsection{Show residual program}
+\label{subsubsec-show-res-prog}
+
+This item is used to show residual programs on the screen. After
+writing out a residual program, if the user chooses this item with the
+name of the residual program, the residual program will be shown in a
+showing window.
+
+
+
+\subsubsection{Print residual program}
+\label{subsubsec-print-res-prog}
+
+This item is used to print out the residual program using any one of
+laserprinters or lineprinters which is available.
+
+   When the user chooses this item, a working board will pop up, in
+order to get the residual program name, the printer type (the
+lineprinter type is {\tt 0}, and the laserprinter type is any other
+value which is not equal to {\tt 0}), and the printer name, in three
+input entries.
+
+
+
+\subsubsection{Post unfolding}
+\label{subsubsec-post-unfd}
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (postunfold-on)}
+\item {\tt (postunfold-off)}
+\end{enumerate}
+
+\noindent which set and clear the post-unfold flag respectively. Initially, the
+flag is set. When the flag is set, residual procedure calls are
+post-unfolded by the phase of postprocessing. When the flag is not
+set, residual procedure calls are never post-unfolded.
+
+   When the user chooses this item, a radio indicating the current
+flag state of post-unfold will pop up, and the user may select one of
+the two radio buttons to set or clear the flag.
+
+
+
+\subsubsection{Verbose specialization}
+\label{subsubsec-verb-spec}
+
+The corresponding command in Similix is: {\tt (verbose-spec} {\it
+n}{\tt )}, where argument {\it n} must be {\tt 0}, {\tt 1} or {\tt
+2}. The value of {\it n} controls trace information generated during
+specialization. This information is particularly useful if
+specialization does not terminate as it may help to locate what cause
+the loop. If {\it n} $=$ {\tt 0}, no trace information is printed;
+this is the initial value. If {\it n} $=$ {\tt 1}, the information is
+printed each time the specializer encounters a
+specialization/memoization point.  The information printed is {\tt
+sp:}{\it name}, where {\it name} is the name of the specialization
+point in the source program. If {\it n} $=$ {\tt 2}, the information
+printed if {\it n} $=$ {\tt 1} is also printed. Additionally, each
+time a call to a user-defined procedure {\tt P} is unfolded, the name
+{\tt P} is printed. The two forms are distinguishable as
+specialization point names are preceded by {\tt sp:} .
+
+   When the user chooses this item, a radio indicating the current
+value state of verbose specialization will pop up, and the user may
+select one of the three radio buttons to set the required value.
+
+
+\subsubsection{Verbose preprocessing}
+
+See ``{\bf Verbose preprocessing}'' in
+Section~\ref{subsubsec-verb-pre-prog}.
+
+
+\subsubsection{Memoization}
+
+See ``{\bf Memoization}'' in
+Section~\ref{subsubsec-memo}.
+
+
+\subsection{Cogen}
+
+There are thirteen items in the {\bf Cogen} menu, and all of them are
+relating to the compiler generation in Similix.
+
+
+\subsubsection{Compiler generation}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (cogen)}
+\item {\tt (cogen} {\it goal bt-pat source-sim-file [n] [cmp-goal]
+      [cmp-sim-file} {\tt 'pp}{\it ]}{\tt )}
+\item {\tt (cogen} {\it [n] [cmp-goal] [cmp-sim-file} {\tt 'pp}{\it ]}{\tt )}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+\item displays information about input formats to {\tt cogen}.
+
+\item generates a generating extension of the program in file
+   {\it source-sim-file} with the goal function {\it goal}.  Argument
+   {\it bt-pat} is a binding-time pattern, i.e.  a list of
+   binding-time values; a binding-time value must be one of either
+   {\tt s, static, d, dynamic}, or the symbol denoting dynamic input
+   (initially {\tt ***}, redefinable by {\tt
+   (set-dynamic-input-symbol...)}); the forms {\tt s} and {\tt static}
+   are equivalent: they specify static first-order input; the forms
+   {\tt d, dynamic}, and the symbol denoting dynamic input are also
+   equivalent: they specify dynamic input. The length of {\it bt-pat}
+   must be equal to the number of parameters to the goal
+   function. Static parameters become the ``early'' parameters in the
+   generating extension, dynamic parameters become the ``late'' ones.
+   The generating extension is run by using procedure {\tt comp}. The
+   generation of a generating extension is done in two steps: first,
+   the source program is preprocessed with respect to the giving {\it
+   bt-pat} (see the description of procedure {\tt preprocess!}), then
+   the Similix-generated compiler generator is applied to the
+   preprocessed source program.  A typical application of {\tt cogen}
+   is to generate a compiler from an interpreter. The interpreter's
+   program parameter is classified as {\tt static}, and the data
+   parameter is classified as {\tt dynamic}. If {\it n} is specified,
+   the compiler generator is applied {\it n} times to the preprocessed
+   program and timing information is output. The timing figures do not
+   include the time used for preprocessing the source program. If {\it
+   cmp-goal} is supplied, the goal function of the generated
+   generating extension gets the name {\it cmp-goal}. Otherwise, it
+   gets the default name {\tt \_sim-specialize-0}. The generating
+   extension is written onto the file {\it cmp-sim-file} if this
+   argument is supplied, and it is pretty-printed, since the argument
+   {\tt 'pp} now is always supplied in Simu.
+
+\item curries an already preprocessed program. The form is useful for
+   avoiding preprocessing if the program to be curried has already
+   been preprocessed. If {\it n} is specified, the compiler generator
+   is applied {\it n} times to the preprocessed program and timing
+   information is output.  The timing figures do not include the time
+   used for preprocessing the source program. If {\it cmp-goal} is
+   supplied, the goal function of the generated generating extension
+   gets the name {\it cmp-goal}. Otherwise, it gets the default name
+   {\tt \_sim-specialize-0}. The generating extension is written onto
+   the file {\it cmp-sim-file} if this argument is supplied, and it is
+   pretty-printed, since the argument {\tt 'pp} now is always supplied
+   in Simu.
+\end{enumerate}
+\medskip
+\par
+   When the user chooses this item, a working board will pop up, in
+order to get the Similix source file name, the source goal function
+name, the argument binding-time pattern, the compiler program name,
+the compiler goal function name and the running times, in six input
+entries (but some input entries may be left empty).
+
+
+\subsubsection{Show current compiler}
+
+
+The corresponding command in Similix is: {\tt (writelpp
+(current-compiler) "temp\%\%\%")}, where {\tt temp\%\%\%} is the
+temporary file name.  This item is used to show the current compiler
+program with the pretty-printing on the screen, right after the
+compiler generation.
+
+   After generating the compiler program, if the user chooses this
+item, a working box will pop up. The user may simply click on {\bf OK}
+button, then the current compiler program will be displayed in the
+showing window.
+
+
+\subsubsection{Write compiler}
+
+
+The corresponding command in Similix is: {\tt (writelpp
+(current-compiler)} {\it file}{\tt )}, which writes the latest
+generated compiler program with the pretty-printing onto the file {\it
+file}.
+
+   When the user chooses this item, a dialog box will pop up, in order
+to get the name of the compiler program.
+
+
+\subsubsection{Show compiler}
+
+
+This item is used to show compiler programs on the screen.
+
+   After writing out a compiler program, if the user chooses this item
+with the name of the compiler program, then the compiler program will
+be shown in a showing window.
+
+
+
+\subsubsection{Print compiler}
+
+
+This item is used to print out the compiler program using any one of
+laserprinters or lineprinters which is available.
+
+   When the user chooses this item, a working board will pop up, in
+order to get the name of the compiler program, the printer type (the
+lineprinter type is {\tt 0}, and the laserprinter type is any other
+value which is not equal to {\tt 0}), and the printer name, in three
+input entries.
+
+
+\subsubsection{Show current preprocessed program}
+
+See ``{\bf Show current preprocessed program}'' in
+Section~\ref{subsubsec-show-cur-pre-prog}.
+
+\subsubsection{Write preprocessed program}
+
+See ``{\bf Write preprocessed program}'' in
+Section~\ref{subsubsec-write-pre-prog}.
+
+\subsubsection{Show preprocessed program}
+
+See ``{\bf Show preprocessed program}'' in
+Section~\ref{subsubsec-show-pre-prog}.
+
+\subsubsection{Print preprocessed program}
+
+See ``{\bf Print preprocessed program}'' in
+Section~\ref{subsubsec-print-pre-prog}.
+
+\subsubsection{Post unfolding}
+
+See ``{\bf Post unfolding}'' in
+Section~\ref{subsubsec-post-unfd}.
+
+\subsubsection{Verbose specialization}
+
+See ``{\bf Verbose specialization}'' in
+Section~\ref{subsubsec-verb-spec}.
+
+\subsubsection{Verbose preprocessing}
+
+See ``{\bf Verbose preprocessing}'' in
+Section~\ref{subsubsec-verb-pre-prog}.
+
+\subsubsection{Memoization}
+
+See ``{\bf Memoization}'' in
+Section~\ref{subsubsec-memo}.
+
+
+\subsection{Compile}
+
+
+There are seven items in the {\bf Compile} menu, and all of them are
+relating to the compiling in Similix.
+
+
+\subsubsection{Compile}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (comp)}
+\item {\tt (comp} {\it [cmp-goal] [cmp-file] arg-pat [n] [resid-goal]
+      [resid-sim-file} {\tt 'pp}{\it ]}{\tt )}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+
+\item displays information about input formats to {\tt comp}.
+
+\item applies a generating extension generated by {\tt cogen} to {\it
+   arg-pat}. The length of {\it arg-pat} must be equal to the length
+   of the {\it bt-pat} that was supplied to {\tt cogen} when
+   generating the generating extension. For those arguments that were
+   specified as static in {\it bt-pat} when running {\tt cogen},
+   supply a value in {\it arg-pat}. If the static value is the name of
+   list or item (converted by a file), then the name should be
+   preceded by the symbol {\tt ,} (Scheme unquote). For those
+   arguments that were specified as dynamic in {\it bt-pat} when
+   running {\tt cogen}, supply the symbol {\tt ***}.  A typical
+   application of {\tt comp} is to run a compiler generated by
+   applying {\tt cogen} to an interpreter. If {\it cmp-goal} is
+   supplied, the goal function of the generating extension is assumed
+   to have this name (this name must be equal to the {\it cmp-goal}
+   specified when generating the generating extension by {\tt
+   cogen}). Otherwise, the default name {\tt \_sim-specialize-0} is
+   chosen. If {\it cmp-file} is supplied, the generating extension is
+   read from this file.  Otherwise, the program in {\tt
+   **Similix-current-compiler**} is used.  If {\it n} is supplied, the
+   generating extension is applied {\it n} times and timing
+   information is output.  If {\it resid-goal} is supplied, the goal
+   function of the residual program gets the name {\it resid-goal}.
+   Otherwise, it gets the default name {\it goal}{\tt -0} where {\it
+   goal} is the goal function name of the source program that was
+   specified when generating the generating extension. The residual
+   program is written onto the file {\it resid-sim-file} if this
+   argument is supplied, and it is pretty-printed, since the argument
+   {\tt 'pp} now is always supplied in Simu.
+\end{enumerate}
+\par
+   When the user chooses this item, a working board will pop up, in
+order to get the compiler program name, the compiler goal function
+name, the argument pattern, the residual program name, the residual
+goal function name and the running times, in six input entries (but
+some input entries may be left empty).
+
+\subsubsection{Show current residual program}
+
+See ``{\bf Show current residual program}'' in
+Section~\ref{subsubsec-show-cur-res-prog}.
+
+\subsubsection{Write residual program}
+
+See ``{\bf Write residual program}'' in
+Section~\ref{subsubsec-write-res-prog}.
+
+\subsubsection{Show residual program}
+
+See ``{\bf Show residual program}'' in
+Section~\ref{subsubsec-show-res-prog}.
+
+\subsubsection{Print residual program}
+
+See ``{\bf Print residual program}'' in
+Section~\ref{subsubsec-print-res-prog}.
+
+\subsubsection{Post unfolding}
+
+See ``{\bf Post unfolding}'' in
+Section~\ref{subsubsec-post-unfd}.
+
+\subsubsection{Verbose specialization}
+
+See ``{\bf Verbose specialization}'' in
+Section~\ref{subsubsec-verb-spec}.
+
+
+\subsection{Run}
+
+
+There are two items in the {\bf Run} menu, and both of them are
+relating to the running and timing in Similix.
+
+
+\subsubsection{Run original program}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (apply} {\it goal args}{\tt )}
+\item {\tt (ntimes (lambda() (apply} {\it goal args}{\tt ))} {\it  n}{\tt )}
+\end{enumerate}
+
+\noindent where the commands do the following:
+
+\begin{enumerate}
+\item executes the goal function {\it goal} in a Similix source file with
+   respect to a list of arguments {\it args}, only after the
+   corresponding Similix source file being loaded into Similix.
+
+\item applies {\tt (lambda() (apply} {\it goal args}{\tt ))} {\it n} times
+   and prints the respective timing information of running, only after
+   the corresponding Similix source file being loaded into Similix.
+\end{enumerate}
+\medskip
+\par
+   When the user chooses this item, a working board will pop up, in
+order to get the source goal function name, a list of arguments and
+running times, in three input entries.
+
+
+\subsubsection{Run residual program}
+
+
+The corresponding commands in Similix are:
+
+\begin{enumerate}
+\item {\tt (apply} {\it resid-goal args}{\tt )}
+\item {\tt (ntimes (lambda() (apply}
+      {\it resid-goal args}{\tt ))} {\it n}{\tt )}
+\end{enumerate}
+\noindent where the commands do the following:
+
+\begin{enumerate}
+\item executes the goal function {\it resid-goal} in a residual program
+   which is latest generated, with respect to a list of dynamic
+   arguments {\it args}. If {\it resid-goal} is supplied in the
+   specialization, the goal function of the residual program gets the
+   name {\it resid-goal}; otherwise, it gets the default name {\it
+   goal}{\tt -0}, where {\it goal} is the goal function name of the
+   source program.
+
+\item applies {\tt (lambda() (apply }{\it resid-goal args}{\tt ))} {\it n}
+   times and prints timing information of running the residual program
+   which is latest generated.  If {\it resid-goal} is supplied in the
+   specializing or compiling, the goal function of the residual
+   program gets the name {\it resid-goal}; otherwise, it gets the
+   default name {\it goal}{\tt -0}, where {\it goal} is the goal
+   function name of the source program.
+\end{enumerate}
+\medskip
+\par
+   When the user chooses this item, a working board will pop up, in
+order to get the goal function name of the residual program, a list of
+dynamic arguments and running times, in three input entries.
+
+
+\section{BUTTON COMMANDS}
+
+There are two button commands in Simu, and they are {\bf Help} and
+{\bf Exit}. This section gives the description of these two button
+commands.
+
+\subsection{Help}
+
+Simu supplies the user with an on-lined manual about the system, in
+order to help the user through the system. The {\bf Help} button
+serves the showing window to display the whole manual.  Whenever the
+user presses this button at any time running Simu, the Simu manual
+text will be presented in a showing window.
+
+\subsection{Exit}
+
+The {\bf Exit} button gives a way to quit the whole Simu system. After
+the user chooses the button, a dialog box will pop up to let the user
+confirm again whether he/she really wants to quit Simu or not.
+
+
+
+\section{TEXT EDITOR FOR USERS}
+
+
+The {\bf Text editor} \cite{Peterson:91} provides many of the common
+keyboard editing commands. These commands allow users to move around
+and edit the buffer. Actually, the working area in Simu is a text
+editor, too, but with the {\tt Append} editing type. Some of the
+editing functions about the {\bf Text editor} here are also suitable
+to the working area.
+
+   The default key bindings are patterned after those in the EMACS
+text editor:
+
+\begin{verbatim}
+Ctrl-a                  Beginning of line
+Ctrl-b                  Backward character
+Ctrl-d                  Delete next character
+Ctrl-e                  End of line
+Ctrl-f                  Forward character
+Ctrl-g                  Multiply reset
+Ctrl-h                  Delete previous character
+Ctrl-j                  Newline and indent
+Ctrl-k                  Kill to end of line
+Ctrl-l                  Redraw display
+Ctrl-m                  Newline
+Ctrl-n                  Next line
+Ctrl-o                  Newline and backup
+Ctrl-p                  Previous line
+Ctrl-r                  Search/replace backward
+Ctrl-s                  Search/replace forward
+Ctrl-t                  Transpose characters
+Ctrl-u                  Multiply by 4
+Ctrl-v                  Next page
+Ctrl-w                  Kill selection
+Ctrl-y                  Unkill
+Ctrl-z                  Scroll one line up
+
+Meta-b                  Backward word
+Meta-f                  Forward word
+Meta-i                  Insert file
+Meta-k                  Kill to end of paragraph
+Meta-q                  Form paragraph
+Meta-v                  Previous page
+Meta-y                  Inset current selection
+Meta-z                  Scroll one line down
+Meta-d                  Delete next word
+Meta-D                  Kill word
+Meta-h                  Delete previous word
+Meta-H                  Backward kill word
+Meta-<                  Beginning of file
+Meta->                  End of file
+Meta-]                  Forward paragraph
+Meta-[                  Backward paragraph
+
+Meta-Delete             Delete previous word
+Meta-Shift Delete       Kill previous word
+Meta-Backspace          Delete previous word
+Meta-Shift Backspace    Kill previous word
+\end{verbatim}
+
+   In addition, the mouse may be used to cut and paste text:
+
+\begin{verbatim}
+Button 1 Down           Start selection
+Button 1 Motion         Adjust selection
+Button 1 Up             End selection (cut)
+
+Button 2 Down           Insert current selection (paste)
+
+Button 3 Down           Extend current selection
+Button 3 Motion         Adjust selection
+Button 3 Up             End selection (cut)
+\end{verbatim}
+
+
+\subsection{Search and replace}
+
+
+The text editor provides a search {\it popup} that can be used to
+search for a string within the current editor. The popup can be
+activated by typing either Ctrl-r or Ctrl-s. If Ctrl-s is used, the
+search will be forward in the file from the current location of the
+insertion point; if Ctrl-r is used, the search will be backward.  The
+activated popup is placed under the mouse pointer.  It has a number of
+buttons that allow both text searches and text replacements to be
+performed.
+
+   At the top of the search popup are two {\it toggle buttons} labeled
+{\bf backward} and {\bf forward}.  One of these buttons will always be
+highlighted; this is the direction in which the search will be
+performed. The user can change the direction at any time by clicking
+on the appropriate button.
+
+   Directly under the buttons there are two text areas, one labeled
+{\bf Search for:} and the other labeled {\bf Replace with:}. After
+each of these labels will be a text field. This fields will allow the
+user to enter a string to search for and the string to replace it
+with. Only one of these text fields will have a window border around
+it; this is the active text field. Any key presses that occur when the
+focus in the search popup will be directed to the active text
+field. There are also a few special key sequences:
+
+\begin{verbatim}
+Return                  Execute the action, and pop down the search window.
+Tab                     Execute the action, then move to the next field.
+Shift Return            Execute the action, then move to the next field.
+Ctrl-q Tab              Enter a Tab into a text field.
+Ctrl-c                  Pop down the search popup.
+\end{verbatim}
+
+   Using these special key sequences should allow simple searches
+without ever removing one's hands from the keyboard.
+
+   At the bottom of the search popup is a row of buttons. These
+buttons allow the same actions to be performed as the key sequences,
+but the buttons will leave the popup active. This can be quite useful
+if many searches are being performed, as the popup will be left on the
+display.  Since the search popup is a transient window, it may be
+picked up with the window manager and pulled off to the side for use
+at a later time.
+
+\begin{verbatim}
+Search                  Search for the specified string.
+
+Replace                 Replace the currently highlighted string with the
+                        string in the Replace with text field, and move
+                        onto the next occurrence of the Search for text
+                        field. The functionality is commonly referred to
+                        as query-replace.
+
+Replace-All             Replace all occurrences of the search string with
+                        the replace string from the current insertion
+                        point position to the end (or beginning) of the
+                        file. There is no key sequence to perform this
+                        action.
+
+Cancel                  Remove the search popup from the screen.
+\end{verbatim}
+
+\subsection{File insertion}
+
+To insert a file into a text window, type the key sequence Meta-i,
+which will activate the file insert popup. This popup will appear
+under the mouse pointer, and any text typed while the focus is in this
+popup will be redirected to the text field used for the filename. When
+the desired filename has been entered, click on {\bf Insert File}, or
+type Return. The named file will then be inserted in the text window
+beginning at the insertion point position. If an error occurs when
+opening the file, an error message will be printed, prompting the user
+to enter the filename again.  The file insert may be aborted by
+clicking on {\bf Cancel}. If Meta-i is typed at a text window that is
+{\tt Read-only}, it will beep, as no file insertion is allowed.
+
+
+
+\section{ADDITIONAL FACILITIES}
+
+
+\subsection{Command-line in Simu}
+
+Each time when the user types Ctrl-q in the working area, this
+operation will remove the previous command-line window (if any) and
+create the new one. The command-line window is a small input window,
+and is especially used to let the user input any command-line to
+Similix. It acts as if the user is working on the own environment of
+Similix. Within the command-line window, when the user types any
+command which is followed by Return, the command will be sent to
+Similix, and the output from Similix will be displayed in the working
+area. At the same time, the small window will be empty again to be
+ready to receive the next new input from the user. If the user wants
+to remove this small window, just clicks on {\bf Close} button in the
+left upper of the command-line window.
+
+   If a special command in Similix which the user wants to use is not
+custom-made in Simu's menu items, the command-line form in Simu is a
+kind of remedy, and this is just the purpose of the small command-line
+window.
+
+
+\subsection{Interrupting Similix}
+
+
+When the user types something wrong, or there for some other reasons
+is no output from Similix in the working area, this could mean that
+Similix needs to be interrupted by the user. Then, the user may type
+Ctrl-c in the small command-line window to interrupt Similix.
+Alternately, the user may simply type Ctrl-c in the working area to
+break Similix.
+
+
+\subsection{Helps at the running}
+
+
+During the interaction between the user and Simu, for instance, when
+the dialog box or the working board pops up, there always is a {\bf
+Help} button. If the user presses this button, the brief directions
+will be shown. Corresponding to each level of system components which
+the user is operating on, this kind of {\bf Help}s tell the user how
+and what to do concisely.
+
+
+\subsection{Other key bindings}
+
+
+Simu still contains a set of preinstalled keyboard definitions,
+besides those used in the {\bf Text editor}. These are a set of key
+bindings that perform many of the additional operations. It is not
+necessary to use the mouse, and these actions can be performed more
+quickly.
+
+   The default key bindings for Simu are as follows.
+
+   In the working area:
+
+\begin{verbatim}
+
+Ctrl-x                  A dialog box pops up, to get the name of the
+                        file onto which the content of the working
+                        area will be saved.
+\end{verbatim}
+
+   In any input entry of dialog box or working board:
+
+\begin{verbatim}
+Return                  Has the same effect as the one clicks on OK button.
+\end{verbatim}
+
+   In the showing window only:
+
+\begin{verbatim}
+b                       Page back
+f                       Page forward
+<Space>                 Page forward
+1                       One line forward
+2                       Two lines forward
+3                       Three lines forward
+4                       Four lines forward
+\end{verbatim}
+
+\subsection{Known problems in Simu}
+
+When the preprocessed program with the boldface is displayed in the
+showing window on the screen, if the user scrolls this showing window,
+sometimes the text in the window will become ``dirty''. One solution
+to this problem is to use the mouse to choose {\tt Refresh} function
+supported by twm and make the text ``clean''.
+
+Some machines might not support {\tt format} facility, which is used
+to print the preprocessed program in Simu by the laserprinter. For
+instance, at DIKU {\tt tyr} can't accept {\tt format}, so that it will
+not work well when the user wants to print the preprocessed program by
+the laserprinter.
+
+Finally, Simu is relating to two processes in the operating system
+\cite{BellLaboratories:83,YoungPew:92}, and the child process is {\tt
+scm}. When the user quits Simu, it's suggested that the user should
+use the command {\tt sps -a} to get all of the current process states
+(IDs), in order to check whether the child process really exits or
+not. If it still exists, the user should use {\tt kill} {\it ID} to
+kill the process, where {\it ID} is the number of process {\tt scm}.
+
+
+\section{CONCLUSION}
+
+The Simu system presented here was done during the period from June,
+1993 to May, 1994 at DIKU, Department of Computer Science, University
+of Copenhagen, Denmark.
+
+{\bf More information about Similix} Simu serves for Similix 5.0, and
+the description about Similix in this manual quotes the part of
+``Similix 5.0 Manual'' \cite{Bondorf:93:manual} written by Anders
+Bondorf. For more detailed information the user is refered to the
+``Similix 5.0 Manual''.
+
+{\bf Advantages of Simu} The principle advantages for Simu are its
+efficient communication mechanisms between the user interface system
+and the other else executable systems, its portability to be
+potentially used in other machine environment, and its adequacy to the
+friendly practice in the partial evaluation theory.  At the end of
+1993, the students in the course of ``Introduction to Semantics'' at
+DIKU began to use the Simu system while studying the section of
+``Partial Evaluation''.
+
+{\bf Bug report and contacting address} Simu is still a system under
+development, and the current version was finished not long ago. So
+it's possible that it has some hidden errors or bugs which have not
+yet been found, though Simu has been tested many times. Users are very
+welcome to tell the author about bugs, comments, suggestions,
+etc. Please direct any Simu communication to the following address,
+preferably by e-mail ({\tt similix@diku.dk}):
+
+\begin{verbatim}
+        DIKU, Department of Computer Science
+        University of Copenhagen
+        Universitetsparken 1
+        DK-2100, Copenhagen East
+        Denmark
+\end{verbatim}
+
+\pagebreak
+
+
+\bibliography{/home/ask2/lpzong/tex/jj}
+
+
+\end{sloppypar}
+\end{document}
+

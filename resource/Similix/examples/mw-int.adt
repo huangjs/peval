@@ -1,0 +1,15 @@
+; Similix primitives for Mixwell interpreter
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(defprim 2 lookup-function assoc)
+
+(defconstr (binding * *))
+(defconstr (bindings-nil) (bindings-cons * *))
+
+(defprim-abort-eoi err _sim-error)
+
+;-----------------------------------------------------------------------------

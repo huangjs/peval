@@ -1,0 +1,197 @@
+
+        -----------------------------------------------------
+        -----------------------------------------------------
+                            Release:
+
+        Self-applicable partial evaluator for a Scheme subset
+
+                           Similix 5.1
+
+                    available via anonymous ftp
+        -----------------------------------------------------
+        -----------------------------------------------------
+
+
+    How to get Similix by ftp is described in the end of this mail
+
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                    General Description of Similix
+                    ------------------------------
+
+Similix is an autoprojector (self-applicable partial evaluator) for a
+large higher-order subset of the strict functional language Scheme.
+Similix treats source programs that use a limited class of
+side-effects, for instance input/output operations. Similix handles
+partially static data structures.
+
+Similix is automatic: in general, no user annotations (such as
+unfolding information) are required; user assistance may in some cases
+be required to avoid looping, however. Similix gives certain
+guarantees concerning the residual programs it generates: computations
+are never discarded (partial evaluation thus preserves termination
+properties) and never duplicated.
+
+Similix is well-suited for partially evaluating for instance
+interpreters that use environments represented as functions and
+interpreters written in continuation passing style. Since Similix is
+self-applicable, stand-alone compilers can be generated from
+interpreters.
+
+Similix is highly portable. It conforms to the IEEE and R4RS Scheme
+standards, but it also runs under R3RS Scheme. This distribution
+should immediately enable you to run Similix on Scm and on Chez
+Scheme. We have tested this version of Similix on Scm version 4c0 and
+on Chez Scheme version 3.2.
+
+Similix 5.1 is based on the former Similix 4.0 (by Anders Bondorf and
+Olivier Danvy). A part of Similix 5.1 has been written jointly by
+Anders Bondorf and Jesper J{\o}rgensen.
+
+Similix 5.1 is an update of Similix 5.0, containing a number of
+updates and improvements. Similix 5.1 is also bundled with the Simu
+system written by Liping Zong; an X windows interface to Similix.
+
+The manual contains a section that summarizes some often used
+binding-time improvements. These are needed in order to obtain good
+results of partial evaluation. The section is partly Similix-specific,
+but parts of it are of more general interest.
+
+-------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Main changes from Similix 5.0 to Similix 5.1:
+
+
+-- A number of comments have been added to the source code.
+
+-- 'defprim' statements of all sorts now can be put directly into the
+   program to be specialized. This is useful for small examples. For
+   larger programs we still recommend seperate adt-files. 
+
+-- The bt-field in the abstract syntax has been split into a bt-field
+   and an explicit flow field. This has been done to make it possible to
+   still access the flow information after the bt-analysis has finished. 
+
+-- An optional test-field has been added to the syntax of the
+   'defprim' statements.
+  
+   ***Important***
+
+   Since the last element of the 'defprims' is now optionally a legality
+   test for the primitive, implicit sequences are now no longer allowed
+   in the form1b and form1v primitives.
+
+   example:
+
+   (defprim (mycar x) (out "Mycar used") (car x))
+
+   should now be written
+
+   (defprim (mycar x) (begin (out "Mycar used") (car x)) pair? )
+
+-- legality tests have been written for the functions in scheme.adt.
+
+-- An extra constraint has been inserted in the binding-time analysis,
+   to make the system more adaptable when input is used as higher order
+   values. This is still not allowed, and we still make no
+   guarantees. Now it sometimes works, though :-). If you try this, be
+   sure to study the residual program (if one is generated) very, very
+   carefully. 
+
+-- _sim-sym/num/string-append has been generalized to work on anything
+   except vectors and functions.
+
+-- Similix 5.0 did not accept the form (cogen 'compiler "file1"),
+   where the first argument is a symbol. This bug has been fixed.
+
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+               Main improvements from Similix 4.0
+               ----------------------------------
+
+-- Similix 5.0 is highly portable.
+
+-- A larger Scheme subset is handled, in particular internal
+   definitions, letrec, and named (recursive) let.
+
+-- Partially static data structures are now available.
+
+-- User-defined constructors are now available (extension to Scheme).
+
+-- Pattern-matching facilities are now available (extension to
+   Scheme).
+
+-- The preprocessing phase is much faster (e.g. binding-time
+   analysis).
+
+-- A trace facility for tracking infinite specialization is now
+   available.
+
+-- For binding-time debugging: the show-facility for inspecting
+   preprocessed programs has been improved.
+
+-- User-control of specialization/memoization point insertion is now
+   possible; this enables dynamic choice of static values.
+
+-- The file scheme.adt is now always automatically loaded, so
+   user-programs need no longer contain the corresponding
+   loadt-expression.
+
+-- The manual has been improved in different ways; it now contains an
+   index.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+			WWW Home page
+			-------------
+	http://www.diku.dk/research-groups/topps/activities/similix.html
+
+                        Mailing Address
+                        ---------------
+
+        e-mail: similix@diku.dk
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+                Obtaining Similix via anonymous ftp:
+                ------------------------------------
+
+          ftp ftp.diku.dk
+
+login:    anonymous
+password: <your username, full e-mail address>
+          cd pub/diku/dists
+          binary
+          hash
+          get Similix.tar.Z
+          bye
+
+
+To decode the file Similix.tar.Z, run
+
+        uncompress < Similix.tar.Z | tar xvpf -
+
+A directory named
+
+        Similix
+
+then appears. Now read the file Similix/README.
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

@@ -1,0 +1,3 @@
+;; lam-int.adt
+
+(defprim (ext op a1 a2))

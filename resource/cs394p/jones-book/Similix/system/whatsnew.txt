@@ -1,0 +1,173 @@
+
+Similix 5.1 is a partial evaluator for a large subset of the Scheme
+language. This file describes the differences between Similix 5.1 and
+Similix 5.0 as described in the Similix manual.
+
+Similix is highly portable. It conforms to the IEEE and R4RS Scheme
+standards, but it also runs under R3RS Scheme. However, when running
+on a R3RS Scheme implementation, the generated code conforms to R3RS
+rather than R4RS. 
+
+System specific definitions are placed in the sim-<system>.<suffix>
+files eg. sim-scm.scm, sim-chez.ss. When porting to another Scheme
+implementations, a new such initialization file must be created, and
+the suffixes of the .scm files may have to be changed.
+
+If you port Similix to a scheme implementation, we would be grateful
+to receive a copy of your initialization file. Send e-mail to
+voet@diku.dk or knud@diku.dk.
+
+---
+
+We now bundle Simu with Similix.
+
+Simu is an independent contribution written by Liping Zong.
+
+Simu is an X11 based user interface for Similix. To compile Simu,
+'imake' and Athena Widgets are required.
+
+We highly recommend the use of Simu to those users running X
+Windows.  
+
+
+Changes from Similix 5.0 to Similix 5.1:
+
+
+--
+
+a) an initialization file for Scheme-to-C is included : sim-s2c.sc
+
+
+--
+
+b) a number of comments have been added to the source
+code.
+
+
+--
+
+c) the logo now says 'Similix 5.1' rather than 'Similix 5.0'
+
+
+--
+
+d) 'defprim' statements of all sorts now can be put directly into the
+program to be specialized. This is useful for small examples. For
+larger programs we still recommend seperate adt-files. 
+
+
+--
+
+e) A _sim-eval procedure is now defined in the initialization file. 
+
+_sim-eval performs a top-level evaluation of a list. In Similix 5.0
+this is emulated by a 'load', since 'eval' is not in the R4RS standard. This
+is still possible, but most implementations of Scheme has a built-in
+'eval' of some sort or other. We recommend that these are used when
+possible, since it reduces the number of temporary files created and
+immediately removed. This speeds up the front-end significantly.
+
+Some temporary files are still used, though, so it is still essential that
+the user has write permissions in his/her current directory, when
+running Similix.
+
+-- 
+
+f) The bt-field in the abstract syntax has been split into a bt-field
+and an explicit flow field. This has been done to make it possible to
+still access the flow information after the bt-analysis has finished. 
+
+Simu uses this to display flow information. 
+
+--
+
+g) An optional test-field has been added to the syntax of the
+'defprim' statements.
+
+Specialization would sometimes die in Similix 5.0 due to static
+errors.
+
+example:
+
+(if a 'ok (car 7))
+
+would kill the specializer if 'a' was dynamic of #f, but the original
+program would run ok as long as 'a' did not become false.
+
+
+(defprim 1 mycar car pair?)
+(if a 'ok (mycar 7))
+
+will now not perform the reduction if the test (here 'pair?') fails,
+but just generate the code (mycar 7) unchanged in the residual
+program.
+
+A procedure '_sim-make-warning' is useful when building these tests.
+
+example:
+
+(defprim 1 mycar car (_sim-make-warning pair? "mycar used on atom"))
+
+This will give a warning if the specialization meets any dubious
+'mycar' applications, but not stop the specialization.
+
+  
+***Important***
+
+Since the last element of the 'defprims' is now optionally a legality
+test for the primitive, implicit sequences are now no longer allowed
+in the form1b and form1v primitives.
+
+example:
+
+(defprim (mycar x) (out "Mycar used") (car x))
+
+should now be written
+
+(defprim (mycar x) (begin (out "Mycar used") (car x)) pair? )
+
+--
+
+h) legality tests have been written for the functions in scheme.adt.
+
+--
+
+i) An extra constraint has been inserted in the binding-time analysis,
+to make the system more adaptable when input is used as higher order
+values. This is still not allowed, and we still make no
+guarantees. Now it sometimes works, though :-). If you try this, be
+sure to study the residual program (if one is generated) very, very
+carefully. 
+
+--
+
+j) _sim-sym/num/string-append has been generalized to work on anything
+except vectors and functions.
+
+--
+
+k) Similix 5.0 did not accept the form (cogen 'compiler "file1"),
+where the first argument is a symbol. This bug has been fixed.
+
+
+-----
+
+We would like to hear from you if you use Similix. Error-reports,
+opinions, ideas and questions can be sent to
+
+
+			similix@diku.dk
+
+Regards
+
+Jesper Joergensen & Morten V. Christiansen
+
+
+
+
+
+
+
+
+
+

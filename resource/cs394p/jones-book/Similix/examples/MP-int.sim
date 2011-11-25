@@ -1,0 +1,103 @@
+; Similix primitives for MP-interpreter
+; Copyright (C) 1993 Anders Bondorf and Olivier Danvy
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+; Based on:
+; Peter Sestoft: "The structure of a self-applicable partial evaluator",
+; DIKU, University of Copenhagen, Denmark, technical report 85/11, 1985
+
+
+; Syntax of MP programs:
+; ----------------------
+;
+; P in Program
+; B in Block
+; C in Command
+; E in Expression
+; V in Variable
+; Cst in Constant
+;
+; P ::= (program (pars V1*) (vars V2*) B)
+; B ::= (C*)
+; C ::= (:= V E)
+;     | (if E B1 B2)		 # first branch iff exp not ()
+;     | (while E B)		 # loop iff Exp not ()
+; E ::= (quote Value)
+;     | V
+;     | (car E)
+;     | (cdr E)
+;     | (cons E1 E2)
+;     | (atom E)			 # () iff not atom
+;     | (equal E1 E2)		 # () iff not equal
+;
+; Data structures:
+; ----------------
+; value: Value = ...
+; env:	 Env   = Var -> Loc
+;	 Store = Loc -> Value
+
+(loadt "MP-int.adt")
+
+(define (run P value*)
+  (let* ((V2* (P->V2* P))
+	 (env (init-environment (P->V1* P) V2*)))
+    (init-store! value* (length V2*))
+    (evalBlock (P->B P) env)))
+
+(define (evalBlock B env)
+  (if (emptyBlock? B)
+      "Finished block"
+      (evalCommands (headBlock B) (tailBlock B) env)))
+
+(define (evalCommands C B env)
+  (if (emptyBlock? B)
+      (evalCommand C env)
+      (begin (evalCommand C env)
+	     (evalCommands (headBlock B) (tailBlock B) env))))
+
+(define (evalCommand C env)
+  (cond
+    ((isAssignment? C)
+     (update-store! (lookup-env (C-Assignment->V C) env)
+		    (evalExpression (C-Assignment->E C) env)))
+    ((isConditional? C)
+     (if (is-true? (evalExpression (C-Conditional->E C) env))
+	 (evalBlock (C-Conditional->B1 C) env)
+	 (evalBlock (C-Conditional->B2 C) env)))
+    ((isWhile? C)
+     (if (is-true? (evalExpression (C-While->E C) env))
+	 (begin (evalBlock (C-While->B C) env)
+		(evalCommand C env))
+	 "Finished loop"))
+    (else
+     (err 'evalCommand "Unknown command: ~s" C))))
+
+(define (evalExpression E env)
+  (cond
+    ((isQuote? E)
+     (E->E1 E))
+    ((isVariable? E)
+     (lookup-store (lookup-env E env)))
+    ((isPrim? E)
+     (let ((op (E->operator E)))
+       (cond
+	 ((is-cons? op)
+	  (cons (evalExpression (E->E1 E) env)
+		(evalExpression (E->E2 E) env)))
+	 ((is-equal? op)
+	  (eval-equal (evalExpression (E->E1 E) env)
+		      (evalExpression (E->E2 E) env)))
+	 ((is-car? op)
+	  (car (evalExpression (E->E1 E) env)))
+	 ((is-cdr? op)
+	  (cdr (evalExpression (E->E1 E) env)))
+	 ((is-atom? op)
+	  (eval-atom (evalExpression (E->E1 E) env)))
+	 (else
+	  (err 'evalExpression "Unknown operator: ~s" op)))))
+    (else
+     (err 'evalExpression "Unknown expression: ~s" E))))
+
+;-----------------------------------------------------------------------------

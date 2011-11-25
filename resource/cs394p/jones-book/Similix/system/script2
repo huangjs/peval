@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rm cogen.ss
+rm spec.ss

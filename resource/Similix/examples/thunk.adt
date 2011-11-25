@@ -1,0 +1,17 @@
+; Similix thunk primitive for Lazy combinator interpreter
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+(defprim-dynamic (save s)
+  (let ((v '())
+	(tag #t))
+    (lambda ()
+      (if tag
+	  (begin
+	    (set! v (s))
+	    (set! tag #f)))
+      v)))
+
+;-----------------------------------------------------------------------------

@@ -1,0 +1,17 @@
+This archive, Scheme0-ieee.tar.Z, contains a version of the Scheme0
+partial evaluator, REVISED to better conform to IEEE Scheme + eval.
+
+It is known to work with Aubray Jaffer's SCM version 4c5, which was
+obtained by ftp from altdorf.ai.mit.edu:archive/scm/scm4c5.tar.gz
+
+Thanks to Jesper Joergensen at Copenhagen University and Jim Royer at
+Syracuse University for bug reports and fixes.
+
+The Scheme0 partial evaluator is described in Chapter 5 and Appendix A
+of the book:
+N.D. Jones, C.K. Gomard, and P. Sestoft,
+Partial Evaluation and Automatic Program Generation.
+Prentice Hall International, June 1993.  xii + 415 pages. ISBN 0-13-020249-5.
+List price: 44.95 US dollars.
+
+Peter Sestoft (sestoft@id.dtu.dk) 1994-08-22

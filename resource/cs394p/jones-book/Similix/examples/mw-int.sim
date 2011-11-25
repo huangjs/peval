@@ -1,0 +1,81 @@
+; Similix Mixwell interpreter
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+; P ::= (D1 D2 ... Dn)
+; D ::= (F (V1 ... Vn) = E)
+; E ::= V | (quote C)
+;     | (car E) | (cdr E) | (atom E) | (cons E E) | (equal E E)
+;     | (if E E E) | (call F E1 ... En)
+
+;------------------------------------------------------------------------------
+
+(loadt "mw-int.adt")
+
+;------------------------------------------------------------------------------
+
+(define (run-mixwell P vals)
+  (casematch P
+    (((_ Vs '= E) . _)
+     (ev E
+	 (let ((arity (length Vs)))
+	   (let loop ((i 0))
+	     (if (= i arity)
+		 (init-env)
+		 (upd-env (list-ref Vs i)
+			  (list-ref vals i)
+			  (loop (+ 1 i))))))
+	 P))
+    (else
+     (err 'run-mixwell "Illegal program syntax: ~s" P))))
+
+(define (ev E r P)
+  (if (symbol? E)
+      (lookup-env E r) ; E = variable V
+      (casematch E
+	(('quote C)
+	 C)
+	(('car E)
+	 (car (ev E r P)))
+	(('cdr E)
+	 (cdr (ev E r P)))
+	(('atom E)
+	 (not (pair? (ev E r P))))
+	(('cons E1 E2)
+	 (cons (ev E1 r P) (ev E2 r P)))
+	(('equal E1 E2)
+	 (equal? (ev E1 r P) (ev E2 r P)))
+	(('if E1 E2 E3)
+	 (if (ev E1 r P) (ev E2 r P) (ev E3 r P)))
+	(('call F . Es)
+	 (let ((D (lookup-function F P)))
+	   (casematch D
+	     ((F Vs = E)
+	      (ev E
+		  (let loop ((Vs Vs) (Es Es))
+		    (if (null? Vs)
+			(init-env)
+			(upd-env (car Vs)
+				 (ev (car Es) r P)
+				 (loop (cdr Vs) (cdr Es)))))
+		  P))
+	     (else
+	      (err 'ev "Illegal definition syntax: ~s" D)))))
+	(else
+	 (err 'ev "Illegal expression syntax: ~s" E)))))
+
+(define (init-env) (bindings-nil))
+(define (upd-env V val r) (bindings-cons (binding V val) r))
+(define (lookup-env V r)
+  (let loop ((bs r))
+    (caseconstr bs
+      ((bindings-nil)
+       (err 'lookup-env "Name ~s not bound" V))
+      ((bindings-cons (binding V1 val) bs)
+       (if (equal? V V1) val (loop bs)))
+      (else ; no bs argument:
+       (err 'lookup-env "Internal error: illegal environment")))))
+
+;------------------------------------------------------------------------------

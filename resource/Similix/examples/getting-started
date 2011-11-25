@@ -1,0 +1,27 @@
+; Similix example job from manual
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+(load "../system/sim-scm.scm") ; (load "../system/sim-chez.so")
+
+(load "append.sim")
+(append1 '(1 2 3) '(4 5 6))
+
+(similix 'append1 (list '(1 2 3) '***) "append.sim")
+(load-residual-program)
+(append1-0 '(4 5 6))
+(define target (residual-program))
+
+(pp (showpall))
+
+(cogen 'append1 '(static dynamic) "append.sim")
+(comp (list '(1 2 3) '***))
+(define new-target (residual-program))
+(equal? target new-target)
+
+(exit)
+
+;-----------------------------------------------------------------------------

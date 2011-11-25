@@ -1,0 +1,204 @@
+; Similix representations
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;-----------------------------------------------------------------------------
+
+Concrete Syntax (after macro-expansion)
+---------------------------------------
+
+On the fly:
+- the LetExp's are "curried", so that LetExp ::= (let ((Var Exp)) Exp)
+
+Pgm ::= ((FileName*). (Def+))
+
+Def ::= (define (Name Var*) Exp)
+
+Exp ::= Cst | Var | Cond | LetExp | (begin Exp Exp)
+      | (ProcName Exp*) | (PrimName Exp*)
+      | (CstrName Exp*) | (SelName Exp) | (PredName Exp)
+      | (lambda (Var*) Exp) | (Exp Exp*) | LetrecExp
+
+Cst ::= <any constant: number, etc. or quoted expression>
+
+Cond ::= (if Exp Exp Exp)
+
+LetExp ::= (let ((Var Exp)) Exp)
+
+LetrecExp ::= (letrec ((Var (lambda (Var*) Exp))+) Exp)
+
+
+-------------------------------------------------------------------------------
+
+Conversion from concrete to abstract syntax,
+Format of the representation of user defined procedures: udp
+------------------------------------------------------------
+
+Abstract closure sets:
+AcsTag ::= (AbsIndex*)
+
+
+Pgm ::= #(Adts Udp Uda)
+
+Adts ::= (FileName*)
+
+Udp ::= #(Def+)
+
+Tags ::= #(BtTag EodTag)
+
+LocalDefs ::= ((Index*)*) ; for show facility: tracks original position
+		          ; of letrecs before lambda lifting
+
+VarName ::= (Name . Index) ; index is a unique identification (cf. alpha-conv.)
+                           ; within a procedure body
+			   ; (uniqueness disobeyed when inserting let-exps)
+
+Def ::= #(Name
+	  (VarName*) (BtTag*)				; parameters
+	  Exp						; body
+	  Unfoldability)
+	where Name is the name of the function,
+	      (VarName*) is the list of its formal parameters
+	      (BtTag*) is a dual list of binding time tags
+	      Exp is the body of the function
+	      Unfoldability is a tag {to-be-unfolded, to-be-specialized}
+
+Exp ::= CstExp | VarExp | CondExp | LetExp | BeginExp | PrimOpExp
+      | ProcCallExp | AbsExp | AppExp | LetrecExp
+
+CstExp ::= #(cst Tags LocalDefs Value)
+	where Value is the value
+
+VarExp ::= #(var Tags LocalDefs VarName DeBruijnIndex)
+	where VarName is the name of the variable
+	      DeBruijnIndex is a DeBruijn index
+
+CondExp ::= #(cond Tags LocalDefs Exp Exp Exp)
+	where the Exp's are the test, the then and the else expressions
+
+LetExp ::= #(let Tags LocalDefs VarName Exp Exp Unfoldability)
+	where VarName is the formal parameter,
+	      Exp and Exp are the value bound and the body
+	      Unfoldability is a tag {unfoldable, residual}
+
+BeginExp ::= #(begin Tags LocalDefs Exp Exp Unfoldability)
+	where Exp are two abstract expressions
+	      Unfoldability is a tag {unfoldable, residual}
+
+PrimOpExp ::= #(primop Tags LocalDefs (Name Index) Referentiality (Exp*))
+	where Name is the name of the delta-rule
+	      Index is its index in the udo environment
+	      Referentiality is determined by the definition of the primop
+	      (Exp*) is a list of n abstract expressions
+
+CstrExp ::= #(cstr Tags LocalDefs (Name Index) (Exp*))
+	where Name is the name of the constructor
+	      Index is its index in the udo environment
+	      (Exp*) is a list of n abstract expressions
+
+SelExp ::= #(sel Tags LocalDefs (Name Index Proj Cstr) CstrIndex Exp)
+	where Name is the name of the selector
+	      Index is its index in the udo environment
+	      Proj is the field number selected by the selector
+	      Cstr is the name of the associated constructor
+	      CstrIndex is the index of the associated constructor
+			in the udo environment
+	      Exp is an abstract expression
+
+PredExp ::= #(pred Tags LocalDefs (Name Index Cstr) CstrIndex Exp)
+	where Name is the name of the predicate
+	      Index is its index in the udo environment
+	      Cstr is the name of the associated constructor
+	      CstrIndex is the index of the associated constructor
+			in the udo environment
+	      Exp is an abstract expression
+
+ProcCallExp ::= #(pcall Tags LocalDefs (Name Index) (Exp*))
+	where Name is the name of the procedure called
+	      Index is its index in the source program
+	      (Exp*) is the list of abstract actual arguments
+
+AbsExp ::= #(abs Tags
+		 AbsIndex
+		 (VarExp*)			; free var exp's
+		 (VarName*) (BtTag*)		; parameters
+		 Exp)
+	where AbsIndex identifies the abstraction
+	      (VarExp*) is a list of free variables (each Var has the
+		        abstract syntax of a variable expression)
+	      (VarName*) is the list of formal parameters
+	      (BtTag*) is a dual list of bt-tags
+	      Exp is the body expression
+
+AppExp ::= #(app Tags LocalDefs Exp (Exp*))
+	where Exp is the procedure expression to be applied
+	      (Exp*) is the list of actual argument expressions
+
+; only used intermediately in front-end (disappears after lambda-lifting):
+LetrecExp ::= #(letrec Def* Index* ((VarName*)*) Exp)
+	where Def* is a list of the local recursive definitions
+	      Index* is a dual list of procedure name indices
+	      (VarName*)* is a dual list of free variable names
+	      Exp is the body
+
+
+; Binding time tags:
+BtTag ::= bottom | static | psds | closure | dynamic
+
+; Evaluation order dependency tags:
+EodTag ::= functional | mixed | imperative
+
+
+; Uda (user defined abstractions) is a list of all abstractions in the
+; program; an abstraction is referenced by an index, which is a number.
+; Looking it up in Uda results in an Abs: a path, i.e. a list of numbers,
+; specifying an occurrence.
+
+Uda = #(Abs*)
+
+Abs ::= (Number+)
+
+-------------------------------------------------------------------------------
+
+Residual Abstract Syntax
+------------------------
+
+Pgm ::= ((FileName*) . (Def+))
+
+Def ::= #(Name (ResidName*) Exp)
+
+ResidName ::= (Name . Number)
+
+Exp ::= Cst | Var | CondExp | LetExp | PrimOp | ProcCall
+      | Abstraction | Application
+
+Cst ::= #(cst Value)
+
+Var ::= #(var ResidName)
+
+CondExp ::= #(cond Exp Exp Exp)
+
+LetExp ::= #(let ResidName EodTag Exp Exp)
+	where EodTag is the eod-tag of the actual parameter expression
+
+BeginExp ::= #(begin Exp+)
+
+PrimOp ::= #(primop Name Exp*)
+
+CstrExp ::= #(CstrName Exp*)
+
+SelExp ::= #(SelName Proj Cstr Exp)
+	where Proj is the field number selected by the selector
+	      Cstr is the name of the associated constructor
+
+PredExp ::= #(PredName Cstr Exp)
+	where Cstr is the name of the associated constructor
+
+ProcCall ::= #(pcall ResidName (Exp*))
+
+Abstraction ::= #(abs (Var*) Exp)
+
+Application ::= #(app Exp (Exp*))
+
+;------------------------------------------------------------------------------

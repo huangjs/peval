@@ -1,0 +1,108 @@
+;; File: pedef.adt
+
+;;(defprim 1 pgm#/ldf*)
+;;(defprim 1 pgm#/adt*)
+;;(defprim 1 pgm#/def*)
+;;(defprim 1 pgm#/lam*)
+
+;;(defprim 1 def#/name)
+;;(defprim 1 def#/formals)
+;;(defprim 1 def#/body)
+;;(defprim 1 def#/btp)
+;;(defprim 1 def#/acsp)
+;;(defprim 1 def#/unfold?)
+
+;;(defprim 1 error#?)
+;;(defprim 1 error#/args)
+
+;;(defprim 1 lift#?)
+;;(defprim 1 lift#/exp)
+;;(defprim 1 closure#?)
+;;(defprim 1 closure#/exp)
+
+;;(defprim 1 cst#?)
+;;(defprim 1 cst#/value)
+
+;;(defprim 1 ide#?)
+;;(defprim 1 ide#/name)
+
+;;(defprim 1 if-e#?)
+;;(defprim 1 if-r#?)
+;;(defprim 1 if#?)
+;;(defprim 1 if#/test)
+;;(defprim 1 if#/then)
+;;(defprim 1 if#/else)
+
+;;(defprim 1 let-e#?)
+;;(defprim 1 let-r#?)
+;;(defprim 1 let#?)
+;;(defprim 1 let#/formal)
+;;(defprim 1 let#/actual)
+;;(defprim 1 let#/bt-actual)
+;;(defprim 1 let#/body)
+
+;;(defprim 1 begin-e#?)
+;;(defprim 1 begin-r#?)
+;;(defprim 1 begin#?)
+;;(defprim 1 begin#/actual)
+;;(defprim 1 begin#/bt-actual)
+;;(defprim 1 begin#/body)
+
+;;(defprim 1 o-call#?)
+;;(defprim 1 o-call#/name)
+;;(defprim 1 o-call#/args)
+
+;;(defprim 1 p-call-e#?)
+;;(defprim 1 p-call-r#?)
+;;(defprim 1 p-call#?)
+;;(defprim 1 p-call#/name)
+;;(defprim 1 p-call#/args)
+
+;;(defprim 1 lam-ref#?)
+;;(defprim 1 lam-ref#/index)
+;;(defprim 1 lam#/index)
+;;(defprim 1 lam#/formals)
+;;(defprim 1 lam#/btp)
+;;(defprim 1 lam#/body)
+;;(defprim 1 lam#/free-names)
+;;(defprim 1 lam#/free-acsp)
+;;(defprim 1 lam#/free-btp)
+
+;;(defprim 1 app-e#?)
+;;(defprim 1 app-r#?)
+;;(defprim 1 app#?)
+;;(defprim 1 app#/acs)
+;;(defprim 1 app#/proc)
+;;(defprim 1 app#/args)
+
+(defprim (mk-closure index values))
+(defprim 1 closure/index)
+(defprim 1 closure/values)
+
+(defprim-opaque (generate-var-name! formal))
+(defprim-opaque (generate-proc-name! conf))
+(defprim-opaque (retrieve-proc-name! conf))
+(defprim-transparent (generate-param-name formal n))
+
+(defprim (x-apply name args))
+(defprim (x-call . name+args))
+
+(defprim (pe-lookup-def name pgm))
+(defprim (pe-lookup-lam index pgm))
+
+(defprim (list-index key lst))
+
+(defprim (keyword$? name))
+;;(defprim (build-def name formals body))
+;;(defprim (build-cst value))
+;;(defprim (build-ide name))
+;;(defprim (build-if test-e then-e else-e))
+;;(defprim (build-let formal bt-actual actual body))
+;;(defprim (build-begin bt-actual actual body))
+;;(defprim (build-o-call name args))
+;;(defprim (build-p-call name args))
+;;(defprim (build-lam formals body))
+;;(defprim (build-app proc args))
+;;(defprim (build-error args))
+
+(defprim (bt-resid? exp))

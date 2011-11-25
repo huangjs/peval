@@ -1,0 +1,251 @@
+\documentstyle[12pt]{article}
+\setlength{\oddsidemargin}{0 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{9.0 in}
+\setlength{\parskip}{0.1 in}
+\setlength{\topmargin}{-0.4in}
+\begin{document}
+\begin{center} {\Large {\bf Object-oriented Programming: Examples}}
+\end{center}
+
+\vspace{.15 in}
+
+\section{Introduction}
+
+This exercise introduces a simple object-oriented programming system,
+{\tt OOPS}, which is patterned after CLOS (Common Lisp Object Standard),
+using explicit message sending rather than generic functions.  Several
+exercises are given to illustrate the use of the {\tt OOPS} system and
+to illustrate interesting features of object-oriented programming.
+A subsequent exercise will be for the student to implement the {\tt OOPS}
+system itself in Lisp.
+
+\section{The OOPS System}
+
+The {\tt OOPS} system is provided in the file {\tt oops.b}.  The individual
+functions provided by {\tt OOPS} are described below.
+
+\begin{verbatim}
+
+(defclass <class-name> (<superclass-name>*)
+                       (<slot-spec>*)
+                       <class-options>*)
+
+\end{verbatim}
+{\tt defclass} is the function that defines a class.  {\tt <class-name>} is the
+name of the class.  The second argument is a list of the names of superclasses
+of the class, and the third argument is a list of slot specifications.
+The {\tt <class-options>} are specifications that apply to the class as a
+whole, including documentation.  The arguments of {\tt defclass} are not
+evaluated.
+
+A {\tt <slot-spec>} describes a slot that will appear in instances of the
+class. It is a list beginning with the name of the slot and followed by slot
+options.  Each option is a pair consisting of a keyword for the option
+followed by a value.  The option keywords that are defined are:
+\begin{verbatim}
+
+:initarg   <symbol>
+
+:initform  <form>
+
+\end{verbatim}
+The {\tt :initarg} option specifies a name by which the slot can be initialized
+when making a new instance with {\tt make-instance}; often, it is the name
+of the slot prefixed by a colon.  The {\tt :initform} option specifies a
+form that is evaluated to initialize the slot when no {\tt :initarg}
+initialization is specified by the user.  The {\tt <form>} is evaluated
+each time a new instance is created.
+
+An example of a call to {\tt defclass} is:
+\begin{verbatim}
+(defclass xyvector (vector)
+  ((x :initarg :x :initform 0)
+   (y :initarg :y :initform 0))
+  (:documentation "A simple x-y vector"))
+
+\end{verbatim}
+
+\begin{verbatim}
+(classp <class>)
+
+(class-of <instance>)
+
+(describe <instance>)
+
+\end{verbatim}
+{\tt classp} tests whether its argument is a class.  {\tt class-of} returns
+the class of its argument, or the type of basic Lisp objects.  {\tt describe}
+prints a simple description of the object given as its argument.
+
+\begin{verbatim}
+(make-instance <class> <init>*)
+
+\end{verbatim}
+{\tt make-instance} makes a new instance object of the class given by
+{\tt <class>}.  Slot values of the new instance may be initialized by
+specifying the {\tt :initarg} names as shown in the class definition,
+followed by corresponding values.  For example:
+\begin{verbatim}
+
+(make-instance 'xyvector :x 3 :y 4)
+\end{verbatim}
+
+\vspace{.3in}
+
+\begin{verbatim}
+(defmethod <selector> <args>) <code>)
+\end{verbatim}
+
+{\tt defmethod} is used to define a {\it method}, that is, a function that
+implements a message for a given kind of object.  {\tt <selector>} is the name
+of the message.  The list of arguments is similar to the argument list for
+a Lisp function, except that instead of being a simple variable name, an
+argument may have the form {\tt (<var> <type>)} where {\tt <var>} is a
+variable name and {\tt <type>} is the class of the argument.  The first
+argument used with {\tt defmethod} {\it must} be of this form; the method
+is stored with the class of the first argument.  For example:
+\begin{verbatim}
+
+(defmethod area ((c circle))
+  (* 3.1415926 (expt (slot-value c 'radius) 2)))
+\end{verbatim}
+
+\vspace{.3in}
+
+\begin{verbatim}
+(slot-value <object> <slot-name>)
+\end{verbatim}
+{\tt slot-value} retrieves the value stored in the slot {\tt <slot-name>} of
+the instance {\tt <object>}.  {\tt slot-value} can also be used with {\tt setf}
+to store slot values.  For example:
+\begin{verbatim}
+
+(setf (slot-value c 'radius) 7.0)
+\end{verbatim}
+
+\vspace{.3in}
+
+\begin{verbatim}
+(sendm <object> <selector> <args>)
+\end{verbatim}
+{\tt sendm} is the message-sending function.  It sends to {\tt <object>} the
+message whose {\tt <selector>} is specified, with optional arguments
+{\tt <args>}.
+For example, to get the area of a circle {\tt c}, we could use:
+\begin{verbatim}
+
+(sendm c 'area)
+\end{verbatim}
+The use of {\tt sendm} differs from CLOS, but is basically doing the same
+thing that CLOS does.  In CLOS, sending a message is performed by the generic
+function mechanism, so that the CLOS form corresponding to our {\tt sendm}
+call is:
+\begin{verbatim}
+
+(<selector> <object> <args>)
+\end{verbatim}
+For the example of finding the area of circle {\tt c}, in CLOS one would use:
+
+\begin{verbatim}
+
+(area c)
+\end{verbatim}
+
+\section{Vector Example}
+
+The file {\tt oopexa.lsp} contains some simple class definitions and methods
+for vectors.  This example illustrates how objects that are implemented in
+very different ways can look the same through their external message
+interfaces.  This file contains definitions of an {\tt xyvector} and an
+{\tt rthvector}.  The generic method {\tt +} for vectors will add two vectors,
+producing a new vector whose type is the same as the type of its first
+argument.
+
+The file {\tt oopexa.tst} contains some test cases to illustrate operations
+on vectors.  Step through this test file to see the effects of the commands
+that are given.
+
+The existing methods make an {\tt rthvector} look like an {\tt xyvector}
+externally.  Write methods to make an {\tt xyvector} usable as if it
+were an {\tt rthvector}.  Test your new methods.
+
+\section{Planet Example}
+
+This example illustrates how object-oriented programming can
+provide generality by allowing a method to work for objects whose
+internal structures are quite different; it also illustrates the use of
+multiple inheritance.  The example shows how a
+method that defines the {\tt density} of a physical object can work
+for objects as diverse as planets, bricks, and bowling balls.
+
+Write class definitions for the classes {\tt physical-object}, {\tt sphere},
+{\tt parallelepiped}, {\tt planet}, {\tt ordinary-object}, {\tt brick}, and
+{\tt bowling-ball}.  {\tt physical-object} has no slots and no supers, but
+it has a method {\tt density}, which is defined as {\tt mass} divided by
+{\tt volume}.  {\tt sphere} has no supers or slots; it has
+a method to compute {\tt volume} ($ 4/3 * \pi * radius^{\hbox{3}} $).
+{\tt parallelepiped} has no supers or slots; it has a method to compute
+{\tt volume} from {\tt length}, {\tt width}, and {\tt height}.  An
+{\tt ordinary-object} has as a superclass {\tt physical-object}; it has a
+method to compute {\tt mass} as {\tt weight}\ /\ 9.88 .  (We will assume
+MKS units.)\  A {\tt planet} is a {\tt physical-object} and a {\tt sphere};
+it has a {\tt mass} slot and a {\tt radius} slot.  A {\tt brick} is an
+{\tt ordinary-object} and a {\tt parallelepiped}; it has slots {\tt weight},
+{\tt length}, {\tt width}, and {\tt height}.  A {\tt bowling-ball}
+is an {\tt ordinary-object} and a {\tt sphere}; it has a {\tt type} slot,
+which has the possible values {\tt adult} or {\tt child}, and a method to
+compute its {\tt weight} (we will assume a weight of 8 kg for an adult ball
+and 4 kg for a child's ball; we will assume that the {\tt radius} of both
+types is 0.1 meter).
+
+First write the class definitions to describe this taxonomy of objects.
+Next, make some instance objects to use as test data.  (The earth has a
+radius of 6.37E6 meters and a mass of 5.98E24 kg.)\  Your ultimate goal
+is to be able to find the {\tt density} of a planet, brick, or bowling-ball
+using the single method defined under {\tt physical-object}.
+
+\section{Iterators}
+
+An {\it iterator} is an object that steps through a sequence.  It has a set
+of parameters and a state.  It accepts a message {\tt initialize}, which
+causes it to initialize its state from its parameters, and a message
+{\tt next}, which causes it to return the next item in the sequence and
+update its state.  After the sequence is finished, {\tt next} returns the
+value {\tt NIL}.
+
+Define objects for the following iterators:
+\begin{enumerate}
+\item A {\tt for-loop} iterator, with parameters {\tt start}, {\tt end}, and
+{\tt step}, and internal state {\tt current}.
+
+\item A {\tt list-iterator} that steps through the items in a list.
+
+\item A {\tt filter-iterator} that takes another iterator and a predicate, and
+returns the items from the other iterator that pass the predicate test.
+
+\item A {\tt prime-generator} that generates primes by filtering a sequence.
+\end{enumerate}
+
+\section{Virtual Files}
+
+A file can be considered to be a sequence of lines.  A file object has
+a message {\tt initialize}, which causes it to initialize its state from
+its parameters, and a message {\tt next}, which causes it to return the
+next line in the file and update its state.  After the file is finished,
+{\tt next} returns the value {\tt NIL}.  A file object has a {\tt file-name}
+slot, and perhaps others.
+
+It would be nice to have virtual files such as the following:
+\begin{enumerate}
+\item A {\tt file} object that returns each line in a file.
+
+\item A {\tt partial-file} object that has a {\tt line-numbers} parameter
+(a list of pairs of line numbers, in ascending order).  This object
+returns only those lines specified in its line-number list.
+
+\item A {\tt concatenated-file} object that concatenates the results from a
+list of other file iterators.
+\end{enumerate}
+
+\end{document}

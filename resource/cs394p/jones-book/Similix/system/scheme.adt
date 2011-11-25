@@ -1,0 +1,416 @@
+; Similix standard primitive operators
+; Copyright (C) 1993 Anders Bondorf
+; Please see the file README for copyright notice, license and disclaimer.
+
+
+;------------------------------------------------------------------------------
+; This file contains definitions for the standard procedures handled by
+; Similix
+
+
+;------------------------------------------------------------------------------
+; Booleans:
+
+(defprim 1 not not)
+
+(defprim 1 boolean? boolean?)
+
+;-----------------------------------------------------------------------------
+; Equivalence:
+
+(defprim 2 equal? equal?)
+
+;------------------------------------------------------------------------------
+; Pairs:
+
+(defprim 1 pair? pair?)
+(defprim-tin 2 cons cons)
+(defprim 1 car car (_sim-make-warning pair? "Dubious car."))
+(defprim 1 cdr cdr (_sim-make-warning pair? "Dubious cdr."))
+(defprim 1 caar caar (_sim-make-warning (lambda (arg)
+					  (and (pair? arg) (pair? (car arg)))) 
+					"Dubious caar."))
+(defprim 1 cdar cdar (_sim-make-warning (lambda (arg)
+					  (and (pair? arg) (pair? (car arg)))) 
+					"Dubious cdar."))
+(defprim 1 cadr cadr (_sim-make-warning (lambda (arg)
+					  (and (pair? arg) (pair? (cdr arg)))) 
+					"Dubious cadr."))
+(defprim 1 cddr cddr (_sim-make-warning (lambda (arg)
+					  (and (pair? arg) (pair? (cdr arg)))) 
+					"Dubious cddr."))
+(defprim 1 caaar caaar (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (car arg)) 
+						 (pair? (caar arg)))) 
+					  "Dubious caaar."))
+(defprim 1 cdaar cdaar (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (car arg)) 
+						 (pair? (caar arg)))) 
+					  "Dubious cdaar."))
+(defprim 1 cadar cadar (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (car arg)) 
+						 (pair? (cdar arg)))) 
+					  "Dubious cadar."))
+(defprim 1 cddar cddar (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (car arg)) 
+						 (pair? (cdar arg)))) 
+					  "Dubious cddar."))
+(defprim 1 caadr caadr (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (cdr arg)) 
+						 (pair? (cadr arg)))) 
+					  "Dubious caadr."))
+(defprim 1 cdadr cdadr(_sim-make-warning (lambda (arg)
+					   (and (pair? arg) (pair? (cdr arg)) 
+						(pair? (cadr arg)))) 
+					 "Dubious cdadr."))
+(defprim 1 caddr caddr (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (cdr arg)) 
+						 (pair? (cddr arg)))) 
+					  "Dubious caddr."))
+(defprim 1 cdddr cdddr (_sim-make-warning (lambda (arg)
+					    (and (pair? arg) (pair? (cdr arg)) 
+						 (pair? (cddr arg)))) 
+					  "Dubious cdddr."))
+(defprim 1 caaaar caaaar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (caar arg)) 
+						   (pair? (caaar arg)))) 
+					    "Dubious caaaar."))
+(defprim 1 cdaaar cdaaar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (caar arg)) 
+						   (pair? (caaar arg)))) 
+					    "Dubious cdaaar."))
+(defprim 1 cadaar cadaar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (caar arg)) 
+						   (pair? (cdaar arg)))) 
+					    "Dubious cadaar."))
+(defprim 1 cddaar cddaar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (caar arg)) 
+						   (pair? (cdaar arg)))) 
+					    "Dubious cddaar."))
+(defprim 1 caadar caadar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (cdar arg)) 
+						   (pair? (cadar arg)))) 
+					    "Dubious caadar."))
+(defprim 1 cdadar cdadar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (cdar arg)) 
+						   (pair? (cadar arg)))) 
+					    "Dubious cdadar."))
+(defprim 1 caddar caddar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (cdar arg)) 
+						   (pair? (cddar arg)))) 
+					    "Dubious caddar."))
+(defprim 1 cdddar cdddar (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (car arg)) 
+						   (pair? (cdar arg)) 
+						   (pair? (cddar arg)))) 
+					    "Dubious cdddar."))
+(defprim 1 caaadr caaadr (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (cdr arg)) 
+						   (pair? (cadr arg)) 
+						   (pair? (caadr arg)))) 
+					    "Dubious caaadr."))
+(defprim 1 cdaadr cdaadr(_sim-make-warning (lambda (arg)
+					     (and (pair? arg) 
+						  (pair? (cdr arg)) 
+						  (pair? (cadr arg)) 
+						  (pair? (caadr arg)))) 
+					   "Dubious cdaadr."))
+(defprim 1 cadadr cadadr(_sim-make-warning (lambda (arg)
+					     (and (pair? arg) 
+						  (pair? (cdr arg)) 
+						  (pair? (cadr arg)) 
+						  (pair? (cdadr arg)))) 
+					   "Dubious cadadr."))
+(defprim 1 cddadr cddadr (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (cdr arg)) 
+						   (pair? (cadr arg)) 
+						   (pair? (cdadr arg)))) 
+					    "Dubious cddadr."))
+(defprim 1 caaddr caaddr(_sim-make-warning (lambda (arg)
+					     (and (pair? arg) 
+						  (pair? (cdr arg)) 
+						  (pair? (cddr arg)) 
+						  (pair? (caddr arg)))) 
+					   "Dubious caaddr."))
+(defprim 1 cdaddr cdaddr (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (cdr arg)) 
+						   (pair? (cddr arg)) 
+						   (pair? (caddr arg)))) 
+					    "Dubious cdaddr."))
+(defprim 1 cadddr cadddr (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (cdr arg)) 
+						   (pair? (cddr arg)) 
+						   (pair? (cdddr arg)))) 
+					    "Dubious cadddr."))
+(defprim 1 cddddr cddddr (_sim-make-warning (lambda (arg)
+					      (and (pair? arg) 
+						   (pair? (cdr arg)) 
+						   (pair? (cddr arg)) 
+						   (pair? (cdddr arg)))) 
+					    "Dubious cddddr."))
+
+(defprim 1 null? null?)
+(defprim 1 list? list?)
+(defprim-tin list list)
+(defprim 1 length length (_sim-make-warning list? "length used on non-list"))
+(defprim-tin append append (_sim-make-warning (_sim-make-*pred list?)
+					      "append used on non-list"))
+(defprim 1 reverse reverse (_sim-make-warning list? "reverse used on non-list"))
+(defprim 2 list-ref list-ref (_sim-make-warning (lambda (lst k)
+						  (and (list? lst)
+						       (integer? k)
+						       (<= k (length lst))))
+						"Dubious List-ref."))
+
+(defprim 2 member member (_sim-make-warning (lambda (obj lst)
+					      (list? lst)) 
+					    "member used on non-list."))
+(defprim 2 assoc assoc (_sim-make-warning (lambda (obj alist)
+					    (apply (_sim-make-*pred pair?) alist))
+					  "Bad assoc."))
+
+;------------------------------------------------------------------------------
+; Symbols:
+
+(defprim 1 symbol? symbol?)
+(defprim 1 symbol->string symbol->string (_sim-make-warning symbol? "Bad symbol->string"))
+(defprim 1 string->symbol string->symbol (_sim-make-warning string? "Bad string->symbol"))
+
+;------------------------------------------------------------------------------
+; Numbers:
+
+(defprim 1 number? number?)
+(defprim 1 complex? complex?)
+(defprim 1 real? real?)
+(defprim 1 rational? rational?)
+(defprim 1 integer? integer?)
+
+(defprim 1 exact? exact?)
+(defprim 1 inexact? inexact?)
+
+(defprim = = (_sim-make-warning (_sim-make-*pred number?) "Bad comparison =."))
+(defprim < < (_sim-make-warning (_sim-make-*pred real?) "Bad comparison <."))
+(defprim > > (_sim-make-warning (_sim-make-*pred real?) "Bad comparison >."))
+(defprim <= <= (_sim-make-warning (_sim-make-*pred real?) "Bad comparison <=."))
+(defprim >= >= (_sim-make-warning (_sim-make-*pred real?) "Bad comparison >=."))
+
+(defprim 1 zero? zero? (_sim-make-warning number? "Bad zero? ."))
+(defprim 1 positive? positive? (_sim-make-warning real? "Bad positive? ."))
+(defprim 1 negative? negative? (_sim-make-warning real? "bad negative? ."))
+(defprim 1 odd? odd? (_sim-make-warning integer? "Bad odd? ."))
+(defprim 1 even? even? (_sim-make-warning integer? "Bad even? ."))
+
+(defprim max max (_sim-make-warning (_sim-make-*pred real?) "Bad max."))
+(defprim min min (_sim-make-warning (_sim-make-*pred real?) "Bad min."))
+
+(defprim-tin + + (_sim-make-warning (_sim-make-*pred number?) "Bad +"))
+(defprim-tin * * (_sim-make-warning (_sim-make-*pred number?) "Bad *"))
+
+(defprim-tin - -  (_sim-make-warning (_sim-make-*pred number?) "Bad -"))
+
+(defprim-tin / / (_sim-make-warning (lambda args
+				      (and
+				       (apply (_sim-make-*pred number?) args)
+				       (if (null? args)
+					   #t
+					   (apply (_sim-make-*pred (lambda (arg)
+							       (not (zero? 
+								     arg)))) 
+					    (cdr args)))))
+				    "Bad /"))
+
+(defprim 1 abs abs  (_sim-make-warning real? "Bad abs."))
+
+(defprim-tin 2 quotient quotient (_sim-make-warning (_sim-make-*pred integer?) "Bad quotient."))
+(defprim-tin 2 remainder remainder (_sim-make-warning (_sim-make-*pred integer?) "Bad remainder."))
+(defprim-tin 2 modulo modulo  (_sim-make-warning (_sim-make-*pred integer?) "Bad modulo."))
+
+(defprim 2 gcd gcd  (_sim-make-warning (_sim-make-*pred integer?) "Bad gcd."))
+(defprim-tin 2 lcm lcm (_sim-make-warning (_sim-make-*pred integer?) "Bad lcm."))
+
+(defprim 1 floor floor (_sim-make-warning (_sim-make-*pred real?) "Bad floor."))
+(defprim 1 ceiling ceiling (_sim-make-warning (_sim-make-*pred real?) "Bad ceiling."))
+(defprim 1 truncate truncate (_sim-make-warning (_sim-make-*pred real?) "Bad truncate."))
+(defprim 1 round round (_sim-make-warning (_sim-make-*pred real?) "Bad round."))
+
+(defprim number->string number->string (_sim-make-warning 
+					(lambda args
+					  (cond
+					   ((equal? (length args) 1)
+					    (number? (car args)))
+					   ((equal? (length args) 2)
+					    (and (number? (car args))
+						 (member? (cadr args) '(2 8 10 16))))
+					   (else #f)))
+					"Bad number->string"))
+
+(defprim string->number string->number (_sim-make-warning 
+					(lambda args
+					  (cond
+					   ((equal? (length args) 1)
+					    (string? (car args)))
+					   ((equal? (length args) 2)
+					    (and (string? (car args))
+						 (member? (cadr args) '(2 8 10 16))))
+					   (else #f)))
+					"Bad string->number"))
+
+
+;------------------------------------------------------------------------------
+; Characters:
+
+(defprim 1 char? char?)
+
+(defprim 2 char=? char=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char=?"))
+(defprim 2 char<? char<? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char<?"))
+(defprim 2 char>? char>? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char>?"))
+(defprim 2 char<=? char<=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char<=?"))
+(defprim 2 char>=? char>=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char>=?"))
+
+(defprim 2 char-ci=? char-ci=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char-ci=?"))
+(defprim 2 char-ci<? char-ci<? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char-ci<?"))
+(defprim 2 char-ci>? char-ci>? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char-ci>?"))
+(defprim 2 char-ci<=? char-ci<=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char-ci<=?"))
+(defprim 2 char-ci>=? char-ci>=? (_sim-make-warning (lambda (a b) (and (char? a) (char? b))) "Bad char-ci>=?"))
+
+(defprim 1 char-alphabetic? char-alphabetic? (_sim-make-warning char? "Bad char-alphabetic?" ))
+(defprim 1 char-numeric? char-numeric? (_sim-make-warning char? "Bad char-numeric?" ))
+(defprim 1 char-whitespace? char-whitespace? (_sim-make-warning char? "Bad char-whitespace?" ))
+(defprim 1 char-upper-case? char-upper-case? (_sim-make-warning char? "Bad char-upper-case?" ))
+(defprim 1 char-lower-case? char-lower-case? (_sim-make-warning char? "Bad char-lower-case?" ))
+
+(defprim 1 char->integer char->integer (_sim-make-warning char? "Bad char->integer?" ))
+(defprim 1 integer->char integer->char (_sim-make-warning integer? "Bad integer->char?" ))
+
+(defprim 1 char-upcase char-upcase (_sim-make-warning char? "Bad char-upcase" ))
+(defprim 1 char-downcase char-downcase (_sim-make-warning char? "Bad char-downcase" ))
+
+;------------------------------------------------------------------------------
+; Strings:
+
+(defprim 1 string? string?)
+
+(defprim make-string make-string)
+(defprim string string (_sim-make-*pred char?))
+
+(defprim 1 string-length string-length string?)
+(defprim 2 string-ref string-ref 
+  (_sim-make-warning (lambda (s k) 
+		       (and (string? s) (integer? k)
+			    (<= 0 k (string-length s)))) "Bad string-ref"))
+
+(defprim 2 string=? string=? (_sim-make-warning (_sim-make-*pred string?) "Bad string=?"))
+(defprim 2 string-ci=? string-ci=? (_sim-make-warning (_sim-make-*pred string?) "Bad string-ci=?"))
+
+(defprim 2 string<? string<? (_sim-make-warning (_sim-make-*pred string?) "Bad string<?"))
+(defprim 2 string>? string>? (_sim-make-warning (_sim-make-*pred string?) "Bad string>?"))
+(defprim 2 string<=? string<=? (_sim-make-warning (_sim-make-*pred string?) "Bad string<=?"))
+(defprim 2 string>=? string>=? (_sim-make-warning (_sim-make-*pred string?) "Bad string>=?"))
+(defprim 2 string-ci<? string-ci<? (_sim-make-warning (_sim-make-*pred string?) "Bad string-ci<?"))
+(defprim 2 string-ci>? string-ci>? (_sim-make-warning (_sim-make-*pred string?) "Bad string-ci>?"))
+(defprim 2 string-ci<=? string-ci<=? (_sim-make-warning (_sim-make-*pred string?) "Bad string-ci<=?"))
+(defprim 2 string-ci>=? string-ci>=? (_sim-make-warning (_sim-make-*pred string?) "Bad string-ci>=?"))
+
+(defprim 3 substring substring 
+  (_sim-make-warning (lambda (str start end)
+		       (and (string? str) (integer? start)
+			    (integer? end) (<= 0 start end (string-lenght str)))) 
+"Bad substring"))
+
+(defprim-tin string-append string-append (_sim-make-warning (_sim-make-*pred string?) "Bad string-append"))
+
+(defprim 1 string->list string->list (_sim-make-warning string? "Bad string->list"))
+(defprim 1 list->string list->string (_sim-make-warning list? "Bad list->string"))
+
+;------------------------------------------------------------------------------
+; Vectors:
+
+(defprim 1 vector? vector?)
+
+(defprim make-vector make-vector)
+(defprim vector vector)
+(defprim 1 vector-length vector-length (_sim-make-warning vector? "Bad vector-length"))
+(defprim 2 vector-ref vector-ref (_sim-make-warning (lambda (v k)
+						      (and (vector? v)
+							   (integer? k)
+							   (< -1 k (vector-length v))))
+						    "Bad vector-ref"))
+
+(defprim 1 vector->list vector->list (_sim-make-warning vector? "Bad vector->list"))
+(defprim 1 list->vector list->vector (_sim-make-warning list? "Bad list->vector"))
+
+;------------------------------------------------------------------------------
+; Control features:
+
+(defprim-dynamic 1 procedure? procedure?)
+
+;------------------------------------------------------------------------------
+; Input and output:
+
+(defprim-opaque 2 call-with-input-file call-with-input-file)
+(defprim-opaque 2 call-with-output-file call-with-output-file)
+
+(defprim-opaque 1 input-port? input-port?)
+(defprim-opaque 1 output-port? output-port?)
+
+(defprim-opaque 0 current-input-port current-input-port)
+(defprim-opaque 0 current-output-port current-output-port)
+
+(defprim-opaque 1 open-input-file open-input-file)
+(defprim-opaque 1 open-output-file open-output-file)
+
+(defprim-opaque 1 close-input-port close-input-port)
+(defprim-opaque 1 close-output-port close-output-port)
+
+(defprim-opaque read read)
+(defprim-opaque read-char read-char)
+(defprim-opaque peek-char peek-char)
+
+(defprim-opaque 1 eof-object? eof-object?)
+
+(defprim-opaque write write)
+(defprim-opaque display display)
+(defprim-opaque newline newline)
+(defprim-opaque write-char write-char)
+
+
+;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+; Error:
+
+(defprim-abort _sim-error _sim-error)
+
+;------------------------------------------------------------------------------
+; Manual memoization insertion:
+
+(defprim-dynamic 1 _sim-memoize _sim-memoize)
+
+;------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+;; File: scheme.adt
+
+(defprim 1 symbol?)
+(defprim 1 car)
+(defprim 1 cdr)
+(defprim 2 cons)
+(defprim 1 null?)
+(defprim 1 pair?)
+(defprim 2 equal?)
+(defprim 2 eq?)
+(defprim 2 eqv?)
+(defprim 1 not)
+(defprim 1 length)
+
+(defprim 2 +)
+(defprim 2 -)
+(defprim 2 =)
+
+(defprim * append)
+(defprim 2 list-ref)
+
+(defprim-opaque 0 read)
+(defprim-opaque 1 write)
+(defprim-opaque 0 newline)
+
+(defprim-dynamic (generalize x) x)
